@@ -5,6 +5,20 @@
     <string name="action_settings">Settings</string>
     <string name="heading">The easy way to:</string>
     <color name="light_blue">#59B6E5</color>
+    <string name="link1">Save</string>
+    <string name="page1">your receipts</string>
+    <string name="page2">Control your</string>
+    <string name="link2">budget</string>
+    <string name="link3">Search</string>
+    <string name="page3">your transactions</string>
+    <string name="page4">Know the latest</string>
+    <string name="link4">offers</string>
+    <string name="page5">Unite the</string>
+    <string name="link5">family</string>
+    <string name="page6">Make a shopping</string>
+    <string name="link6">list</string>
+    <string name="page7">Find associated</string>
+    <string name="link7">stores</string>
 
 
 </resources>
