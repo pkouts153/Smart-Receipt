@@ -65,7 +65,8 @@
 		        android:textSize="19sp"
 		        android:text="@string/link1"
 		        android:textStyle="italic"
-		        android:clickable="true" />
+		        android:clickable="true"
+		        android:onClick="goToSave" />
 	    			    
 		    <TextView
 		        android:layout_width="0dp"
@@ -99,7 +100,8 @@
 		        android:textSize="19sp"
 		        android:text="@string/link2"
 		        android:textStyle="italic"
-		        android:clickable="true" />
+		        android:clickable="true"
+		        android:onClick="goToBudget" />
 	    
 	    </LinearLayout>
 	    
@@ -119,7 +121,8 @@
 		        android:textSize="19sp"
 		        android:text="@string/link3"
 		        android:textStyle="italic"
-		        android:clickable="true" />
+		        android:clickable="true"
+		        android:onClick="goToSearch" />
 		    
 		    <TextView
 		        android:layout_width="0dp"
@@ -153,7 +156,8 @@
 		        android:textSize="19sp"
 		        android:text="@string/link4"
 		        android:textStyle="italic"
-		        android:clickable="true" />
+		        android:clickable="true"
+		        android:onClick="goToOffers" />
 		    
 		</LinearLayout>
 		    
@@ -180,7 +184,8 @@
 		        android:textSize="19sp"
 		        android:text="@string/link5"
 		        android:textStyle="italic"
-		        android:clickable="true" />
+		        android:clickable="true"
+		        android:onClick="goToFamily" />
 		    	   	
 		</LinearLayout>
 		
@@ -207,7 +212,8 @@
 		        android:textSize="19sp"
 		        android:text="@string/link6"
 		        android:textStyle="italic"
-		        android:clickable="true" />
+		        android:clickable="true"
+		        android:onClick="goToList" />
 		    
 		</LinearLayout>
 		
@@ -234,7 +240,8 @@
 		        android:textSize="19sp"
 		        android:text="@string/link7"
 		        android:textStyle="italic"
-		        android:clickable="true" />
+		        android:clickable="true"
+		        android:onClick="goToStores" />
 		   			    
 		</LinearLayout>
 		
