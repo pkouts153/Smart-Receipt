@@ -2,6 +2,7 @@ package com.SR.smartreceipt;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 
@@ -27,32 +28,38 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Budget link */
 	public void goToBudget(View view) {
-	    // Do something in response to button
+		Intent intent = new Intent(this, BudgetActivity.class);
+		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the Search link */
 	public void goToSearch(View view) {
-	    // Do something in response to button
+		Intent intent = new Intent(this, BudgetActivity.class);
+		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the Offers link */
 	public void goToOffers(View view) {
-	    // Do something in response to button
+		Intent intent = new Intent(this, BudgetActivity.class);
+		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the Family link */
 	public void goToFamily(View view) {
-	    // Do something in response to button
+		Intent intent = new Intent(this, BudgetActivity.class);
+		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the List link */
 	public void goToList(View view) {
-	    // Do something in response to button
+		Intent intent = new Intent(this, BudgetActivity.class);
+		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the Stores link */
 	public void goToStores(View view) {
-	    // Do something in response to button
+		Intent intent = new Intent(this, BudgetActivity.class);
+		startActivity(intent);
 	}
 
 }

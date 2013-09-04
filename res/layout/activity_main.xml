@@ -132,7 +132,7 @@
 		        android:layout_height="wrap_content"
 		    	android:layout_weight="1"
 		        android:textSize="17sp"
-		        android:text="@string/page1" />
+		        android:text="@string/text1" />
 		    
 	    </LinearLayout>
 	    	
@@ -150,7 +150,7 @@
 		        android:layout_width="103dp"
 		        android:layout_height="wrap_content"
 		        android:textSize="17sp"
-		        android:text="@string/page2" />
+		        android:text="@string/text2" />
 		    
 		    <TextView
 		        android:layout_width="0dp"
@@ -187,7 +187,7 @@
 		        android:layout_width="0dp"
 		        android:layout_height="wrap_content"
 		    	android:layout_weight="1"
-		        android:text="@string/page3"
+		        android:text="@string/text3"
 		        android:textSize="17sp" />
 		    
 		</LinearLayout>
@@ -205,7 +205,7 @@
 		    <TextView
 		        android:layout_width="128dp"
 		        android:layout_height="wrap_content"
-		        android:text="@string/page4"
+		        android:text="@string/text4"
 		        android:textSize="17sp" />
 		    
 		    <TextView
@@ -233,7 +233,7 @@
 		    <TextView
 		        android:layout_width="78dp"
 		        android:layout_height="wrap_content"
-		        android:text="@string/page5"
+		        android:text="@string/text5"
 		        android:textSize="17sp" />
 		    
 		    <TextView
@@ -262,7 +262,7 @@
 		        android:layout_width="142dp"
 		        android:layout_height="wrap_content"
 		        android:textSize="17sp"
-		        android:text="@string/page6" />
+		        android:text="@string/text6" />
 		    
 		    <TextView
 		        android:layout_width="0dp"
@@ -289,7 +289,7 @@
 		    <TextView
 		        android:layout_width="132dp"
 		        android:layout_height="wrap_content"
-		        android:text="@string/page7"
+		        android:text="@string/text7"
 		        android:textSize="17sp" />
 		    
 		    <TextView
