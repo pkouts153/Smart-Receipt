@@ -16,12 +16,12 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	private static final String TEXT_TYPE = " TEXT";
 	
 	private static final String SQL_CREATE_CATEGORIES =
-	    "CREATE TABLE IF NOT EXISTS" + FeedCategory.TABLE_NAME + " (" +
+	    "CREATE TABLE IF NOT EXISTS " + FeedCategory.TABLE_NAME + " (" +
 		FeedCategory._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 		FeedCategory.NAME + TEXT_TYPE + " )";
 	
 	private static final String SQL_CREATE_USER =
-		"CREATE TABLE IF NOT EXISTS" + FeedUser.TABLE_NAME + " (" +
+		"CREATE TABLE IF NOT EXISTS " + FeedUser.TABLE_NAME + " (" +
 		FeedUser._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 		FeedUser.USERNAME + TEXT_TYPE + "," +
 		FeedUser.PASSWORD + TEXT_TYPE + "," +
@@ -45,6 +45,12 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		values.put(FeedCategory.NAME, "Food");
 		db.insert(FeedCategory.TABLE_NAME, "null", values);
 		
+		values.put(FeedCategory.NAME, "Entertainment");
+		db.insert(FeedCategory.TABLE_NAME, "null", values);
+		
+		values.put(FeedCategory.NAME, "Clothes");
+		db.insert(FeedCategory.TABLE_NAME, "null", values);
+		
 		ContentValues values1 = new ContentValues();
 		
 		values1.put(FeedUser.USERNAME, "Vag");
@@ -52,18 +58,14 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		values1.put(FeedUser.EMAIL, "Vag@gmail.com");
 		db.insert(FeedUser.TABLE_NAME, "null", values1);
 		
-		/*values.put(FeedCategory.NAME, "Entertainment");
-		db.insert(FeedCategory.TABLE_NAME, "null", values);
-		
-		values.put(FeedCategory.NAME, "Clothes");
-		db.insert(FeedCategory.TABLE_NAME, "null", values);*/
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		switch (oldVersion) {
-		case 1:
-		}
+		//switch (oldVersion) {
+		//case 1:
+
+		//}
 		onCreate(db);
 
 	}

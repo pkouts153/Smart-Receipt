@@ -31,7 +31,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
-		/*FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
+		FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
 		
 		// Gets the data repository in write mode
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -61,6 +61,12 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener {
 		
 		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		adapter.add(category_name);
+		Spinner s = (Spinner) findViewById(R.id.category_spinner);
+		s.setAdapter(adapter);
+		
+		/*ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		adapter.add(category_name);
 		
@@ -82,13 +88,13 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener {
 		
 
 		
-		//configure category spinner
+		/*//configure category spinner
 		Spinner category_spinner = (Spinner) findViewById(R.id.category_spinner);
 		category_spinner.setOnItemSelectedListener(this);
 		
 		ArrayAdapter<CharSequence> category_adapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
 		category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		category_spinner.setAdapter(category_adapter);
+		category_spinner.setAdapter(category_adapter);*/
 
 		//configure family spinner
 		Spinner family_spinner = (Spinner) findViewById(R.id.family_spinner);

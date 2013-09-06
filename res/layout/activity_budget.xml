@@ -9,22 +9,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".BudgetActivity" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+   <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/drawable_horizontal_margin"
         android:paddingLeft="40dp"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        tools:context=".BudgetActivity" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/heading_activity_budget"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-        
-    </LinearLayout>
+        android:text="@string/heading_activity_budget"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <View
         android:layout_width="fill_parent"

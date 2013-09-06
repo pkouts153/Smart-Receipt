@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Family link */
 	public void goToFamily(View view) {
-		Intent intent = new Intent(this, BudgetActivity.class);
+		Intent intent = new Intent(this, AddFamilyMemberActivity.class);
 		startActivity(intent);
 	}
 	
