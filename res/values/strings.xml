@@ -26,6 +26,7 @@
     
     <string name="category_prompt">Type of expenses</string>
     <string-array name="categories_array">
+        <item>Type of expenses</item>
         <item>Food</item>
         <item>Entertainment</item>
         <item>Clothes</item>
@@ -37,8 +38,9 @@
     <string name="until_date">Until date dd/mm/yy</string>
     <string name="same_on">Same on</string>
     <string name="notify">Notify me</string>
-    <string name="member_prompt">Family member</string>
-    <string-array name="members_array">
+    <string name="family_prompt">Family member</string>
+    <string-array name="family_array">
+        <item>Family member</item>
         <item>Dad</item>
         <item>Mom</item>
         <item>Sister</item>

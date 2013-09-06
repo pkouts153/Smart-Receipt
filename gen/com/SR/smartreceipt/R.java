@@ -10,7 +10,7 @@ package com.SR.smartreceipt;
 public final class R {
     public static final class array {
         public static final int categories_array=0x7f070000;
-        public static final int members_array=0x7f070001;
+        public static final int family_array=0x7f070001;
     }
     public static final class attr {
     }
@@ -27,6 +27,8 @@ public final class R {
         public static final int activity_horizontal_margin=0x7f040000;
         public static final int activity_vertical_margin=0x7f040001;
         public static final int drawable_horizontal_margin=0x7f040002;
+        public static final int main_heights=0x7f040003;
+        public static final int main_pading_top=0x7f040004;
     }
     public static final class drawable {
         public static final int budget=0x7f020000;
@@ -39,17 +41,18 @@ public final class R {
         public static final int search=0x7f020007;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a0005;
-        public static final int from_date=0x7f0a0001;
-        public static final int money_preference=0x7f0a0000;
-        public static final int notify=0x7f0a0004;
-        public static final int same_on=0x7f0a0003;
-        public static final int until_date=0x7f0a0002;
+        public static final int action_settings=0x7f0a0007;
+        public static final int category_spinner=0x7f0a0000;
+        public static final int family_spinner=0x7f0a0005;
+        public static final int from_date=0x7f0a0002;
+        public static final int money_preference=0x7f0a0001;
+        public static final int notify=0x7f0a0006;
+        public static final int same_on=0x7f0a0004;
+        public static final int until_date=0x7f0a0003;
     }
     public static final class layout {
         public static final int activity_budget=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int categories_fragment=0x7f030002;
     }
     public static final class menu {
         public static final int budget=0x7f090000;
@@ -59,6 +62,7 @@ public final class R {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int category_prompt=0x7f050013;
+        public static final int family_prompt=0x7f050019;
         public static final int from_date=0x7f050015;
         public static final int heading=0x7f050002;
         public static final int heading_activity_budget=0x7f050012;
@@ -69,7 +73,6 @@ public final class R {
         public static final int link5=0x7f05000c;
         public static final int link6=0x7f05000e;
         public static final int link7=0x7f050010;
-        public static final int member_prompt=0x7f050019;
         public static final int money_preference=0x7f050014;
         public static final int notify=0x7f050018;
         public static final int same_on=0x7f050017;
