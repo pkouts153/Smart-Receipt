@@ -19,4 +19,15 @@ public final class FeedReaderConract {
         public static final String PASSWORD = "password";
         public static final String EMAIL = "email";
     }
+    
+    /* Inner class that defines the table contents */
+    public static abstract class FeedBudget implements BaseColumns {
+        public static final String TABLE_NAME = "budget";
+        public static final String EXPENSE_CATEGORY = "expense_category";
+        public static final String SPEND_LIMIT = "spend_limit";
+        public static final String START_DATE = "start_date";
+        public static final String END_DATE = "end_date";
+        public static final String NOTIFICATION = "notification";
+        public static final String USER = "user";
+    }    
 }

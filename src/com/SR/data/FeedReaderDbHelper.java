@@ -1,5 +1,6 @@
 package com.SR.data;
 
+import com.SR.data.FeedReaderConract.FeedBudget;
 import com.SR.data.FeedReaderConract.FeedCategory;
 import com.SR.data.FeedReaderConract.FeedUser;
 
@@ -10,23 +11,31 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "SmartReceipt.db";
-	
-	private static final String TEXT_TYPE = " TEXT";
 	
 	private static final String SQL_CREATE_CATEGORIES =
 	    "CREATE TABLE IF NOT EXISTS " + FeedCategory.TABLE_NAME + " (" +
 		FeedCategory._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-		FeedCategory.NAME + TEXT_TYPE + " )";
+		FeedCategory.NAME + " TEXT" + " )";
 	
 	private static final String SQL_CREATE_USER =
 		"CREATE TABLE IF NOT EXISTS " + FeedUser.TABLE_NAME + " (" +
 		FeedUser._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-		FeedUser.USERNAME + TEXT_TYPE + "," +
-		FeedUser.PASSWORD + TEXT_TYPE + "," +
-		FeedUser.EMAIL + TEXT_TYPE + " )";
+		FeedUser.USERNAME + " TEXT" + "," +
+		FeedUser.PASSWORD + " TEXT" + "," +
+		FeedUser.EMAIL + " TEXT" + " )";
     
+	private static final String SQL_CREATE_BUDGET =
+			"CREATE TABLE IF NOT EXISTS " + FeedBudget.TABLE_NAME + " (" +
+			FeedBudget._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+			FeedBudget.EXPENSE_CATEGORY + " TEXT" + "," +
+			FeedBudget.SPEND_LIMIT + " REAL" + "," +
+			FeedBudget.START_DATE + " TEXT" + "," +
+			FeedBudget.END_DATE + " TEXT" + "," +
+			FeedBudget.NOTIFICATION + " INTEGER" + "," +
+			FeedBudget.USER + " INTEGER" + " )";
+	
     public FeedReaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -35,6 +44,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(SQL_CREATE_CATEGORIES);
 		db.execSQL(SQL_CREATE_USER);
+		//db.execSQL(SQL_CREATE_BUDGET);
 		
 		// Gets the data repository in write mode
 		//db = getWritableDatabase();
@@ -45,11 +55,18 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		values.put(FeedCategory.NAME, "Food");
 		db.insert(FeedCategory.TABLE_NAME, "null", values);
 		
-		values.put(FeedCategory.NAME, "Entertainment");
-		db.insert(FeedCategory.TABLE_NAME, "null", values);
+		ContentValues values2 = new ContentValues();
+		values2.put(FeedCategory.NAME, "Entertainment");
+		db.insert(FeedCategory.TABLE_NAME, "null", values2);
 		
-		values.put(FeedCategory.NAME, "Clothes");
-		db.insert(FeedCategory.TABLE_NAME, "null", values);
+		ContentValues values3 = new ContentValues();
+		values3.put(FeedCategory.NAME, "Clothes");
+		db.insert(FeedCategory.TABLE_NAME, "null", values3);
+		
+		ContentValues values4 = new ContentValues();
+		
+		values4.put(FeedCategory.NAME, "All");
+		db.insert(FeedCategory.TABLE_NAME, "null", values4);
 		
 		ContentValues values1 = new ContentValues();
 		
@@ -62,11 +79,34 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		//switch (oldVersion) {
-		//case 1:
-
-		//}
-		onCreate(db);
+		switch (oldVersion) {
+		case 1:
+			db.execSQL(SQL_CREATE_BUDGET);
+		}
+		/*case 1:
+			db.execSQL(SQL_CREATE_CATEGORIES);
+			ContentValues values = new ContentValues();
+		
+			values.put(FeedCategory.NAME, "Food");
+			db.insert(FeedCategory.TABLE_NAME, "null", values);
+		case 2:
+			ContentValues values2 = new ContentValues();
+			
+			values2.put(FeedCategory.NAME, "Entertainment");
+			db.insert(FeedCategory.TABLE_NAME, "null", values2);
+		case 3:
+			ContentValues values3 = new ContentValues();
+			
+			values3.put(FeedCategory.NAME, "Clothes");
+			db.insert(FeedCategory.TABLE_NAME, "null", values3);
+			
+			ContentValues values4 = new ContentValues();
+			
+			values4.put(FeedCategory.NAME, "All");
+			db.insert(FeedCategory.TABLE_NAME, "null", values4);
+		}*/
+		
+		//onCreate(db);
 
 	}
 

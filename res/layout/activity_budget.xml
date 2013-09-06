@@ -32,13 +32,13 @@
 	    android:prompt="@string/category_prompt" />
     
     <EditText
-        android:id="@+id/money_preference"
+        android:id="@+id/spend_limit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 	    android:paddingLeft="@dimen/activity_horizontal_margin"
 	    android:paddingRight="@dimen/activity_horizontal_margin"
 	    android:paddingTop="@dimen/activity_vertical_margin"
-        android:hint="@string/money_preference" />
+        android:hint="@string/spend_limit" />
     
     <EditText
         android:id="@+id/from_date"
@@ -103,6 +103,7 @@
         tools:context=".BudgetActivity" >
 
 	    <Button
+	        android:id="@+id/submit"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentRight="true"

@@ -1,6 +1,8 @@
 package com.SR.smartreceipt;
 
+import com.SR.data.FeedReaderConract.FeedBudget;
 import com.SR.data.FeedReaderConract.FeedCategory;
+import com.SR.data.FeedReaderConract.FeedUser;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
@@ -8,9 +10,13 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.support.v4.app.NavUtils;
@@ -21,8 +27,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
-public class BudgetActivity extends Activity implements OnItemSelectedListener {
+public class BudgetActivity extends Activity implements OnItemSelectedListener,  OnClickListener {
 
+	Spinner category_spinner;
+	EditText money_preference;
+	EditText from_date;
+	EditText until_date;
+    CheckBox same_on;
+    Spinner family_spinner;
+    CheckBox notify;
+    Button submit;
+    
+    FeedReaderDbHelper mDbHelper;
+    SQLiteDatabase db;
+    
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,21 +49,27 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
-		FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
+		money_preference = (EditText)findViewById(R.id.spend_limit);
+		from_date = (EditText)findViewById(R.id.from_date);
+        until_date = (EditText)findViewById(R.id.until_date);
+        same_on = (CheckBox)findViewById(R.id.same_on);
+        notify = (CheckBox)findViewById(R.id.notify);
+
+        submit = (Button)findViewById(R.id.submit);
+        //submit.setOnClickListener(this);
+
+        
+		mDbHelper = new FeedReaderDbHelper(this);
 		
 		// Gets the data repository in write mode
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		db = mDbHelper.getWritableDatabase();
 
-		// Define a projection that specifies which columns from the database
-		// you will actually use after this query.
+		// Specifies which columns are needed from the database
 		String[] projection = {
-			FeedCategory._ID,
-		    FeedCategory.NAME
+				FeedCategory._ID,
+				FeedCategory.NAME
 		    };
-
-		// How you want the results sorted in the resulting Cursor
-		//String sortOrder = FeedCategory.COLUMN_NAME_UPDATED + " DESC";
-
+		
 		Cursor c = db.query(
 			FeedCategory.TABLE_NAME,  				  // The table to query
 		    projection,                               // The columns to return
@@ -62,39 +86,20 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener {
 		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		adapter.add(category_name);
-		Spinner s = (Spinner) findViewById(R.id.category_spinner);
-		s.setAdapter(adapter);
-		
-		/*ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
-		adapter.add(category_name);
+		category_spinner = (Spinner) findViewById(R.id.category_spinner);
+		category_spinner.setAdapter(adapter);
 		
 		while (!c.isLast ()) {
 			c.moveToNext ();
-			if (c.isAfterLast ()) {
-				c.close();
-				return;
-			}
+			//if (c.isAfterLast ()) {
+				//c.close();
+				//return;
+			//}
 			category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 			adapter.add(category_name);
-			c.close();
+			
 		}
-		
-		Spinner category_spinner = (Spinner) findViewById(R.id.category_spinner);
-		category_spinner.setOnItemSelectedListener(this);
-		
-		category_spinner.setAdapter(adapter);*/
-		
-
-		
-		/*//configure category spinner
-		Spinner category_spinner = (Spinner) findViewById(R.id.category_spinner);
-		category_spinner.setOnItemSelectedListener(this);
-		
-		ArrayAdapter<CharSequence> category_adapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
-		category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		category_spinner.setAdapter(category_adapter);*/
+		c.close();
 
 		//configure family spinner
 		Spinner family_spinner = (Spinner) findViewById(R.id.family_spinner);
@@ -105,8 +110,34 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener {
 		family_spinner.setAdapter(family_adapter);
 	}
 	
-    public void onItemSelected(AdapterView<?> parent, View view, 
-            int pos, long id) {
+	
+	/** Call database and save preferences */
+	public void submitBudgetPreferences(View view) {
+		mDbHelper = new FeedReaderDbHelper(this);
+		
+		// Gets the data repository in write mode
+		db = mDbHelper.getWritableDatabase();
+		
+		String s = from_date.getText().toString();
+		
+		//String s = e1.getText().toString();
+		//Float f= Float.parseFloat(s);
+
+		// Create a new map of values, where column names are the keys
+		ContentValues values = new ContentValues();
+		//values.put(FeedBudget.EXPENSE_CATEGORY, id);
+		
+		//values.put(FeedBudget.SPEND_LIMIT, title);
+		values.put(FeedBudget.START_DATE, s);
+		/*values.put(FeedBudget.END_DATE, content);
+		values.put(FeedBudget.NOTIFICATION, content);
+		values.put(FeedBudget.USER, 0);*/
+		
+		
+		db.insert(FeedBudget.TABLE_NAME, "null", values);
+	}
+
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
     }
@@ -149,8 +180,9 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	/** Call database and save preferences */
-	public void submitBudgetPreferences(View view) {
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
 		
 	}
 }

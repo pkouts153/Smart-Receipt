@@ -35,9 +35,9 @@
         <item>All</item>
     </string-array>
     
-    <string name="money_preference">How much money do you want to spend?</string>
-    <string name="from_date">From date dd/mm/yy</string>
-    <string name="until_date">Until date dd/mm/yy</string>
+    <string name="spend_limit">How much money do you want to spend?</string>
+    <string name="from_date">From date YYYY-MM-DD</string>
+    <string name="until_date">Until date YYYY-MM-DD</string>
     <string name="same_on">Same on</string>
     <string name="notify">Notify me</string>
     <string name="family_prompt">Family member</string>
