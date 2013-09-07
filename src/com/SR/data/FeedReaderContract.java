@@ -2,9 +2,9 @@ package com.SR.data;
 
 import android.provider.BaseColumns;
 
-public final class FeedReaderConract {
+public final class FeedReaderContract {
 	
-    public FeedReaderConract() {}
+    public void FeedReaderContract() {}
 
     /* Inner class that defines the table contents */
     public static abstract class FeedCategory implements BaseColumns {

@@ -1,8 +1,8 @@
 package com.SR.smartreceipt;
 
-import com.SR.data.FeedReaderConract.FeedBudget;
-import com.SR.data.FeedReaderConract.FeedCategory;
-import com.SR.data.FeedReaderConract.FeedUser;
+import com.SR.data.FeedReaderContract.FeedBudget;
+import com.SR.data.FeedReaderContract.FeedCategory;
+import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
@@ -30,7 +30,7 @@ import android.os.Build;
 public class BudgetActivity extends Activity implements OnItemSelectedListener,  OnClickListener {
 
 	Spinner category_spinner;
-	EditText money_preference;
+	EditText spend_limit;
 	EditText from_date;
 	EditText until_date;
     CheckBox same_on;
@@ -49,15 +49,12 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
-		money_preference = (EditText)findViewById(R.id.spend_limit);
+		spend_limit = (EditText)findViewById(R.id.spend_limit);
 		from_date = (EditText)findViewById(R.id.from_date);
         until_date = (EditText)findViewById(R.id.until_date);
         same_on = (CheckBox)findViewById(R.id.same_on);
         notify = (CheckBox)findViewById(R.id.notify);
-
         submit = (Button)findViewById(R.id.submit);
-        //submit.setOnClickListener(this);
-
         
 		mDbHelper = new FeedReaderDbHelper(this);
 		
@@ -66,8 +63,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 
 		// Specifies which columns are needed from the database
 		String[] projection = {
-				FeedCategory._ID,
-				FeedCategory.NAME
+			FeedCategory.NAME
 		    };
 		
 		Cursor c = db.query(
@@ -80,7 +76,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		    null                                 	  // The sort order
 		    );
 		
-		c.moveToFirst();
+		c.moveToPosition(2);
 		String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 		
 		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
@@ -91,13 +87,8 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		
 		while (!c.isLast ()) {
 			c.moveToNext ();
-			//if (c.isAfterLast ()) {
-				//c.close();
-				//return;
-			//}
 			category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 			adapter.add(category_name);
-			
 		}
 		c.close();
 
@@ -118,20 +109,25 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		// Gets the data repository in write mode
 		db = mDbHelper.getWritableDatabase();
 		
-		String s = from_date.getText().toString();
+		String cat_spinner = category_spinner.getSelectedItem().toString();
+		String s_limit = spend_limit.getText().toString();
+		Float limit= Float.parseFloat(s_limit);
+		String fd = from_date.getText().toString();
+		String ud = until_date.getText().toString();
+		int n;
+		if (notify.isChecked())
+			n = 1;
+		else
+			n = 0;
 		
-		//String s = e1.getText().toString();
-		//Float f= Float.parseFloat(s);
-
 		// Create a new map of values, where column names are the keys
 		ContentValues values = new ContentValues();
-		//values.put(FeedBudget.EXPENSE_CATEGORY, id);
-		
-		//values.put(FeedBudget.SPEND_LIMIT, title);
-		values.put(FeedBudget.START_DATE, s);
-		/*values.put(FeedBudget.END_DATE, content);
-		values.put(FeedBudget.NOTIFICATION, content);
-		values.put(FeedBudget.USER, 0);*/
+		values.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
+		values.put(FeedBudget.SPEND_LIMIT, limit);
+		values.put(FeedBudget.START_DATE, fd);
+		values.put(FeedBudget.END_DATE, ud);
+		values.put(FeedBudget.NOTIFICATION, n);
+		//values.put(FeedBudget.USER, 0);
 		
 		
 		db.insert(FeedBudget.TABLE_NAME, "null", values);
@@ -139,7 +135,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
+        parent.getItemAtPosition(pos);
     }
 
     public void onNothingSelected(AdapterView<?> parent) {

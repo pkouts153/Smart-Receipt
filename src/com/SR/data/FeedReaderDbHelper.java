@@ -1,8 +1,8 @@
 package com.SR.data;
 
-import com.SR.data.FeedReaderConract.FeedBudget;
-import com.SR.data.FeedReaderConract.FeedCategory;
-import com.SR.data.FeedReaderConract.FeedUser;
+import com.SR.data.FeedReaderContract.FeedBudget;
+import com.SR.data.FeedReaderContract.FeedCategory;
+import com.SR.data.FeedReaderContract.FeedUser;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "SmartReceipt.db";
 	
 	private static final String SQL_CREATE_CATEGORIES =
@@ -36,6 +36,17 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 			FeedBudget.NOTIFICATION + " INTEGER" + "," +
 			FeedBudget.USER + " INTEGER" + " )";
 	
+	private static final String SQL_ADD_CATEGORIES =
+			 "INSERT INTO '" + FeedCategory.TABLE_NAME + "'" +
+		     " SELECT NULL AS '" + FeedCategory._ID + "', '" + "Food" + "' AS '" + FeedCategory.NAME + "'" +
+		     " UNION SELECT NULL, '" + "Entertainment" + "'" +
+		     " UNION SELECT NULL, '" + "Clothes" + "'" +
+		     " UNION SELECT NULL, '" + "All" + "'";
+	
+	private static final String SQL_ADD_USER =
+			 "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
+		     " SELECT NULL AS '" + FeedUser._ID + "', '" + "Vag" + "' AS '" + FeedUser.USERNAME + "', '" + "Vag" + "' AS '" + FeedUser.PASSWORD + "', '" + "Vag" + "' AS '" + FeedUser.EMAIL + "'";
+	
     public FeedReaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -44,69 +55,13 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(SQL_CREATE_CATEGORIES);
 		db.execSQL(SQL_CREATE_USER);
-		//db.execSQL(SQL_CREATE_BUDGET);
-		
-		// Gets the data repository in write mode
-		//db = getWritableDatabase();
-
-		// Create a new map of values, where column names are the keys
-		ContentValues values = new ContentValues();
-		
-		values.put(FeedCategory.NAME, "Food");
-		db.insert(FeedCategory.TABLE_NAME, "null", values);
-		
-		ContentValues values2 = new ContentValues();
-		values2.put(FeedCategory.NAME, "Entertainment");
-		db.insert(FeedCategory.TABLE_NAME, "null", values2);
-		
-		ContentValues values3 = new ContentValues();
-		values3.put(FeedCategory.NAME, "Clothes");
-		db.insert(FeedCategory.TABLE_NAME, "null", values3);
-		
-		ContentValues values4 = new ContentValues();
-		
-		values4.put(FeedCategory.NAME, "All");
-		db.insert(FeedCategory.TABLE_NAME, "null", values4);
-		
-		ContentValues values1 = new ContentValues();
-		
-		values1.put(FeedUser.USERNAME, "Vag");
-		values1.put(FeedUser.PASSWORD, "Vag");
-		values1.put(FeedUser.EMAIL, "Vag@gmail.com");
-		db.insert(FeedUser.TABLE_NAME, "null", values1);
-		
+		db.execSQL(SQL_CREATE_BUDGET);
+		db.execSQL(SQL_ADD_CATEGORIES);
+		db.execSQL(SQL_ADD_USER);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		switch (oldVersion) {
-		case 1:
-			db.execSQL(SQL_CREATE_BUDGET);
-		}
-		/*case 1:
-			db.execSQL(SQL_CREATE_CATEGORIES);
-			ContentValues values = new ContentValues();
-		
-			values.put(FeedCategory.NAME, "Food");
-			db.insert(FeedCategory.TABLE_NAME, "null", values);
-		case 2:
-			ContentValues values2 = new ContentValues();
-			
-			values2.put(FeedCategory.NAME, "Entertainment");
-			db.insert(FeedCategory.TABLE_NAME, "null", values2);
-		case 3:
-			ContentValues values3 = new ContentValues();
-			
-			values3.put(FeedCategory.NAME, "Clothes");
-			db.insert(FeedCategory.TABLE_NAME, "null", values3);
-			
-			ContentValues values4 = new ContentValues();
-			
-			values4.put(FeedCategory.NAME, "All");
-			db.insert(FeedCategory.TABLE_NAME, "null", values4);
-		}*/
-		
-		//onCreate(db);
 
 	}
 
