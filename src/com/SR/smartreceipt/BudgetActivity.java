@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.support.v4.app.NavUtils;
 import android.annotation.SuppressLint;
@@ -41,6 +40,12 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
     
+    DatePickerFragment dateFragment = new DatePickerFragment();
+    
+    //ContentValues values = new ContentValues();
+    
+    String dateClicked;
+    
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +56,11 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		
 		spend_limit = (EditText)findViewById(R.id.spend_limit);
 		from_date = (EditText)findViewById(R.id.from_date);
-        until_date = (EditText)findViewById(R.id.until_date);
+		until_date = (EditText)findViewById(R.id.until_date);
         same_on = (CheckBox)findViewById(R.id.same_on);
         notify = (CheckBox)findViewById(R.id.notify);
         submit = (Button)findViewById(R.id.submit);
+        submit.setOnClickListener(this);
         
 		mDbHelper = new FeedReaderDbHelper(this);
 		
@@ -63,11 +69,11 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 
 		// Specifies which columns are needed from the database
 		String[] projection = {
-			FeedCategory.NAME
+				FeedCategory.NAME
 		    };
 		
 		Cursor c = db.query(
-			FeedCategory.TABLE_NAME,  				  // The table to query
+				FeedCategory.TABLE_NAME,  				  // The table to query
 		    projection,                               // The columns to return
 		    null,                                	  // The columns for the WHERE clause
 		    null,                            		  // The values for the WHERE clause
@@ -76,7 +82,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		    null                                 	  // The sort order
 		    );
 		
-		c.moveToPosition(2);
+		c.moveToFirst();
 		String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 		
 		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
@@ -101,38 +107,12 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		family_spinner.setAdapter(family_adapter);
 	}
 	
-	
-	/** Call database and save preferences */
-	public void submitBudgetPreferences(View view) {
-		mDbHelper = new FeedReaderDbHelper(this);
-		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-		
-		String cat_spinner = category_spinner.getSelectedItem().toString();
-		String s_limit = spend_limit.getText().toString();
-		Float limit= Float.parseFloat(s_limit);
-		String fd = from_date.getText().toString();
-		String ud = until_date.getText().toString();
-		int n;
-		if (notify.isChecked())
-			n = 1;
-		else
-			n = 0;
-		
-		// Create a new map of values, where column names are the keys
-		ContentValues values = new ContentValues();
-		values.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
-		values.put(FeedBudget.SPEND_LIMIT, limit);
-		values.put(FeedBudget.START_DATE, fd);
-		values.put(FeedBudget.END_DATE, ud);
-		values.put(FeedBudget.NOTIFICATION, n);
-		//values.put(FeedBudget.USER, 0);
-		
-		
-		db.insert(FeedBudget.TABLE_NAME, "null", values);
-	}
+	public void showEditPickerDialog(View v) {
 
+		dateFragment.setView(v);
+	    dateFragment.show(getFragmentManager(), "datePicker");
+	}
+	
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         parent.getItemAtPosition(pos);
@@ -175,10 +155,38 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
+
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+
+		mDbHelper = new FeedReaderDbHelper(this);
+    	
+		// Gets the data repository in write mode
+		db = mDbHelper.getWritableDatabase();
 		
+		String cat_spinner = category_spinner.getSelectedItem().toString();
+		String s_limit = spend_limit.getText().toString();
+		Float limit= Float.parseFloat(s_limit);
+		String fd = from_date.getText().toString();
+		String ud = until_date.getText().toString();
+		int n;
+		if (notify.isChecked())
+			n = 1;
+		else
+			n = 0;
+		
+		// Create a new map of values, where column names are the keys
+		ContentValues values = new ContentValues();
+		values.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
+		values.put(FeedBudget.SPEND_LIMIT, limit);
+		values.put(FeedBudget.START_DATE, fd);
+		values.put(FeedBudget.END_DATE, ud);
+		values.put(FeedBudget.NOTIFICATION, n);
+		//values.put(FeedBudget.USER, 0);
+		
+		db.insert(FeedBudget.TABLE_NAME, "null", values);
+
 	}
+
 }

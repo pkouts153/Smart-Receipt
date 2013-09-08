@@ -47,7 +47,10 @@
         android:hint="@string/from_date"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" />
+        android:paddingTop="@dimen/activity_vertical_margin" 
+        android:focusableInTouchMode="false"
+        android:clickable="true"
+        android:onClick="showEditPickerDialog" />
 	
     <EditText
         android:id="@+id/until_date"
@@ -56,8 +59,11 @@
         android:hint="@string/until_date"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" />
-    
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:focusableInTouchMode="false"
+        android:clickable="true"
+        android:onClick="showEditPickerDialog" />
+
 	<LinearLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
@@ -109,9 +115,9 @@
 	        android:layout_alignParentRight="true"
 	        android:layout_alignParentTop="true"
 	        android:layout_marginTop="16dp"
-	        android:onClick="submitBudgetPreferences"
+	        
 	        android:text="@string/submit" />
-    
+
     </RelativeLayout>
 
 	
