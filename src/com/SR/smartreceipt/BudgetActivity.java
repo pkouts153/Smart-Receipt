@@ -43,8 +43,6 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
     
     DatePickerFragment dateFragment = new DatePickerFragment();
     
-    //ContentValues values = new ContentValues();
-    
     String dateClicked;
     
 	@SuppressLint("NewApi")

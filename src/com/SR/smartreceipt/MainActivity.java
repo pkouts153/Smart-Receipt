@@ -12,7 +12,6 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 	}
 	
 	@Override
@@ -24,7 +23,8 @@ public class MainActivity extends Activity {
 
 	/** Called when the user clicks the Save link */
 	public void goToSave(View view) {
-	    // Do something in response to button
+		Intent intent = new Intent(this, SaveActivity.class);
+		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the Budget link */
