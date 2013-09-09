@@ -59,6 +59,9 @@
     <string name="scan">Scan</string>
     <string name="input_error">There is an error in your input! Please lookup the hints in the fields.</string>
 
+    <string name="delete">Delete</string>
+    <string name="no_family_members_add">Curently you dont have any family members in your list please add more.</string>
+    
     <string name="product_name">Product name</string>
     <string name="purchase_date">Date</string>
     <string name="price">Price</string>
