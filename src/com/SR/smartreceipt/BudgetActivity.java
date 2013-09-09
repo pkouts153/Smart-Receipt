@@ -2,11 +2,11 @@ package com.SR.smartreceipt;
 
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
-import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,12 +58,16 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		spend_limit = (EditText)findViewById(R.id.spend_limit);
 		from_date = (EditText)findViewById(R.id.from_date);
 		from_date.setOnClickListener(this);
+		
 		until_date = (EditText)findViewById(R.id.until_date);
 		until_date.setOnClickListener(this);
+		
         same_on = (CheckBox)findViewById(R.id.same_on);
         notify = (CheckBox)findViewById(R.id.notify);
+        
         submit = (Button)findViewById(R.id.submit);
         submit.setOnClickListener(this);
+        
         cancel = (Button)findViewById(R.id.cancel);
         cancel.setOnClickListener(this);
         
@@ -74,11 +78,11 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 
 		// Specifies which columns are needed from the database
 		String[] projection = {
-				FeedCategory.NAME
+			FeedCategory.NAME
 		    };
 		
 		Cursor c = db.query(
-				FeedCategory.TABLE_NAME,  				  // The table to query
+			FeedCategory.TABLE_NAME,  				  // The table to query
 		    projection,                               // The columns to return
 		    null,                                	  // The columns for the WHERE clause
 		    null,                            		  // The values for the WHERE clause
@@ -161,37 +165,50 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 	public void onClick(View v) {
 		if (v instanceof Button) {
 			if (submit.getId() == ((Button)v).getId()) {
-				mDbHelper = new FeedReaderDbHelper(this);
-		    	
-				// Gets the data repository in write mode
-				db = mDbHelper.getWritableDatabase();
+				try{
+					mDbHelper = new FeedReaderDbHelper(this);
+			    	
+					// Gets the data repository in write mode
+					db = mDbHelper.getWritableDatabase();
+					
+					String cat_spinner = category_spinner.getSelectedItem().toString();
+					
+					String s_limit = spend_limit.getText().toString();
+					Float limit= Float.parseFloat(s_limit);
+					
+					String fd = from_date.getText().toString();
+					String ud = until_date.getText().toString();
+					
+					int n;
+					if (notify.isChecked())
+						n = 1;
+					else
+						n = 0;
+					
+					if ((fd.equals("")) || (ud.equals(""))) {
+						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+						errorDialog.show(getFragmentManager(), "Dialog");
+					}
+					else {
+						
+						// Create a new map of values, where column names are the keys
+						ContentValues values = new ContentValues();
+						values.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
+						values.put(FeedBudget.SPEND_LIMIT, limit);
+						values.put(FeedBudget.START_DATE, fd);
+						values.put(FeedBudget.END_DATE, ud);
+						values.put(FeedBudget.NOTIFICATION, n);
+						//values.put(FeedBudget.USER, 0);
+						
+						db.insert(FeedBudget.TABLE_NAME, "null", values);
+					}
 				
-				String cat_spinner = category_spinner.getSelectedItem().toString();
-				String s_limit = spend_limit.getText().toString();
-				Float limit= Float.parseFloat(s_limit);
-				String fd = from_date.getText().toString();
-				String ud = until_date.getText().toString();
-				int n;
-				if (notify.isChecked())
-					n = 1;
-				else
-					n = 0;
-				
-				// Create a new map of values, where column names are the keys
-				ContentValues values = new ContentValues();
-				values.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
-				values.put(FeedBudget.SPEND_LIMIT, limit);
-				values.put(FeedBudget.START_DATE, fd);
-				values.put(FeedBudget.END_DATE, ud);
-				values.put(FeedBudget.NOTIFICATION, n);
-				//values.put(FeedBudget.USER, 0);
-				
-				db.insert(FeedBudget.TABLE_NAME, "null", values);
+				} catch (NumberFormatException e) {
+					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+					errorDialog.show(getFragmentManager(), "errorDialog");
+				}
 			}
 			else {
-				/*spend_limit.setHint(R.string.spend_limit);
-				from_date.setHint(R.string.from_date);
-				until_date.setHint(R.string.until_date);*/
 				spend_limit.getText().clear();
 				from_date.getText().clear();
 				until_date.getText().clear();
