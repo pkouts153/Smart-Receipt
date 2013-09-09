@@ -14,7 +14,7 @@ public class InputErrorDialogFragment extends DialogFragment {
         builder.setMessage(R.string.input_error)
                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // FIRE ZE MISSILES!
+                       
                    }
                });
         // Create the AlertDialog object and return it

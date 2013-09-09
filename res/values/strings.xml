@@ -25,6 +25,8 @@
     <string name="heading_activity_budget">Select your preferences</string>
     <string name="title_activity_add_family">Unite the family</string>
     <string name="heading_add_family_member">Add a family member</string>
+    <string name="title_activity_save">Save your receipts</string>
+    <string name="heading_save">Fill the fields</string>
     
     <string name="category_prompt">Type of expenses</string>
     <string-array name="categories_array">
@@ -53,5 +55,11 @@
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="save">Save</string>
+    <string name="scan">Scan</string>
     <string name="input_error">There is an error in your input! Please lookup the hints in the fields.</string>
+
+    <string name="product_name">Product name</string>
+    <string name="purchase_date">Date</string>
+    <string name="price">Price</string>
 </resources>

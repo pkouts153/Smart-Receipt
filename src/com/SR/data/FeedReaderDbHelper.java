@@ -2,6 +2,7 @@ package com.SR.data;
 
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
+import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderContract.FeedUser;
 
 import android.content.ContentValues;
@@ -36,6 +37,14 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 			FeedBudget.NOTIFICATION + " INTEGER" + "," +
 			FeedBudget.USER + " INTEGER" + " )";
 	
+	private static final String SQL_CREATE_PRODUCT =
+			"CREATE TABLE IF NOT EXISTS " + FeedProduct.TABLE_NAME + " (" +
+			FeedProduct._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+			FeedProduct.PRODUCT_CATEGORY + " TEXT" + "," +
+			FeedProduct.NAME + " TEXT" + "," +
+			FeedProduct.PRICE + " REAL" + "," +
+			FeedProduct.PURCHASE_DATE + " TEXT" + " )";
+	
 	private static final String SQL_ADD_CATEGORIES =
 			 "INSERT INTO '" + FeedCategory.TABLE_NAME + "'" +
 		     " SELECT NULL AS '" + FeedCategory._ID + "', '" + "Food" + "' AS '" + FeedCategory.NAME + "'" +
@@ -56,13 +65,17 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_CREATE_CATEGORIES);
 		db.execSQL(SQL_CREATE_USER);
 		db.execSQL(SQL_CREATE_BUDGET);
+		db.execSQL(SQL_CREATE_PRODUCT);
 		db.execSQL(SQL_ADD_CATEGORIES);
 		db.execSQL(SQL_ADD_USER);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+		/*switch (oldVersion) {
+		case 1:
+			db.execSQL(SQL_CREATE_PRODUCT);
+		}*/
 	}
 
 }

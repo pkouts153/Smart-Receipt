@@ -29,5 +29,14 @@ public final class FeedReaderContract {
         public static final String END_DATE = "end_date";
         public static final String NOTIFICATION = "notification";
         public static final String USER = "user";
-    }    
+    }
+    
+    /* Inner class that defines the table contents */
+    public static abstract class FeedProduct implements BaseColumns {
+        public static final String TABLE_NAME = "product";
+        public static final String PRODUCT_CATEGORY = "product_category";
+        public static final String NAME = "name";
+        public static final String PRICE = "price";
+        public static final String PURCHASE_DATE = "purchase_date";
+    } 
 }
