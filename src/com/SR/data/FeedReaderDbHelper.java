@@ -102,13 +102,44 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 
 	private static final String SQL_ADD_USER1 =
 	    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
-        " SELECT NULL AS '" + FeedUser._ID + "', '" + "Vag" + "' AS '" + FeedUser.USERNAME + "', '" + "Vag" + "' AS '" + FeedUser.PASSWORD + "', '" + "Vag" + "' AS '" + FeedUser.EMAIL + "'";
+        " SELECT NULL AS '" + FeedUser._ID + "', '" + 
+			    "Vag" + "' AS '" + FeedUser.USERNAME + "', '" + 
+		        "Vag" + "' AS '" + FeedUser.PASSWORD + "', '" + 
+			    "Vag" + "' AS '" + FeedUser.EMAIL + "'";
 	
 	private static final String SQL_ADD_USER2 =
-		    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
-	        " SELECT NULL AS '" + FeedUser._ID + "', '" + "Panos" + "' AS '" + FeedUser.USERNAME + "', '" + "Panos" + "' AS '" + FeedUser.PASSWORD + "', '" + "Panos" + "' AS '" + FeedUser.EMAIL + "'";
-			
+	    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
+        " SELECT NULL AS '" + FeedUser._ID + "', '" + 
+			    "Panos" + "' AS '" + FeedUser.USERNAME + "', '" + 
+		        "Panos" + "' AS '" + FeedUser.PASSWORD + "', '" + 
+			    "Panos" + "' AS '" + FeedUser.EMAIL + "'";
+		
+	private static final String SQL_ADD_STORE =
+	    "INSERT INTO '" + FeedStore.TABLE_NAME + "'" +
+        " SELECT NULL AS '" + FeedStore._ID + "', '" + 
+			    "Nike" + "' AS '" + FeedStore.NAME + "', '" + 
+		        "Syntagma" + "' AS '" + FeedStore.ADDRESS + "', '" + 
+			    "1" + "' AS '" + FeedStore.VAT_NUMBER + "'";
+		
+	private static final String SQL_ADD_OFFER =
+	    "INSERT INTO '" + FeedOffer.TABLE_NAME + "'" +
+        " SELECT NULL AS '" + FeedOffer._ID + "', '" + 
+			    "Total 90" + "' AS '" + FeedOffer.PRODUCT_NAME + "', '" + 
+		        "Clothes" + "' AS '" + FeedOffer.CATEGORY + "', '" + 
+			    "100" + "' AS '" + FeedOffer.PRICE + "', '" + 
+		        "90" + "' AS '" + FeedOffer.DISCOUNT + "', '" + 
+			    "2/10/2013" + "' AS '" + FeedOffer.UNTIL_DATE + "', '" + 
+		        1 + "' AS '" + FeedOffer.STORE + "'";
+		
+	private static final String SQL_ADD_FAMILY =
+	    "INSERT INTO '" + FeedFamily.TABLE_NAME + "'" +
+        " SELECT NULL AS '" + FeedFamily._ID + "', '" + 
+	    		1 + "' AS '" + FeedFamily.MEMBER1 + "', '" + 
+	    		2 + "' AS '" + FeedFamily.MEMBER2 + "', '" + 
+	    		"Love" + "' AS '" + FeedFamily.DESCRIPTION + "'";
+		
 
+	
     public FeedReaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -125,6 +156,9 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		
 		db.execSQL(SQL_ADD_CATEGORIES);
 		db.execSQL(SQL_ADD_USER1);
+		db.execSQL(SQL_ADD_STORE);
+		db.execSQL(SQL_ADD_OFFER);
+		db.execSQL(SQL_ADD_FAMILY);
 	}
 
 	@Override
