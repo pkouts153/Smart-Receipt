@@ -31,6 +31,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     	String date = day + "/" + month + "/" + year;
     	a.setText(date);
+    	this.dismiss();
     }
 
     public void setView(View v) {

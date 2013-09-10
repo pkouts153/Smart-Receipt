@@ -41,16 +41,21 @@ public final class R {
         public static final int search=0x7f020007;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a000c;
-        public static final int button1=0x7f0a000b;
+        public static final int action_settings=0x7f0a0011;
+        public static final int add=0x7f0a000f;
         public static final int category_spinner=0x7f0a0000;
-        public static final int editText2=0x7f0a0008;
-        public static final int editText3=0x7f0a0009;
-        public static final int editText4=0x7f0a000a;
         public static final int family_spinner=0x7f0a0005;
         public static final int from_date=0x7f0a0002;
+        public static final int no_family_members_add=0x7f0a0010;
         public static final int notify=0x7f0a0006;
+        public static final int price=0x7f0a000a;
+        public static final int product_name=0x7f0a0009;
+        public static final int purchase_date=0x7f0a000b;
+        public static final int reset=0x7f0a0008;
+        public static final int reset_button=0x7f0a000e;
         public static final int same_on=0x7f0a0004;
+        public static final int save_button=0x7f0a000c;
+        public static final int scan_button=0x7f0a000d;
         public static final int spend_limit=0x7f0a0001;
         public static final int submit=0x7f0a0007;
         public static final int until_date=0x7f0a0003;
@@ -58,22 +63,28 @@ public final class R {
     public static final class layout {
         public static final int activity_budget=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int addfamilymember=0x7f030002;
+        public static final int activity_save=0x7f030002;
+        public static final int addfamilymember=0x7f030003;
     }
     public static final class menu {
         public static final int budget=0x7f090000;
-        public static final int main=0x7f090001;
+        public static final int family=0x7f090001;
+        public static final int main=0x7f090002;
+        public static final int save=0x7f090003;
     }
     public static final class string {
         public static final int action_settings=0x7f050001;
-        public static final int add=0x7f05001d;
+        public static final int add=0x7f05001f;
         public static final int app_name=0x7f050000;
-        public static final int category_prompt=0x7f050015;
-        public static final int family_prompt=0x7f05001b;
-        public static final int from_date=0x7f050017;
+        public static final int category_prompt=0x7f050017;
+        public static final int delete=0x7f050026;
+        public static final int family_prompt=0x7f05001d;
+        public static final int from_date=0x7f050019;
         public static final int heading=0x7f050002;
         public static final int heading_activity_budget=0x7f050012;
         public static final int heading_add_family_member=0x7f050014;
+        public static final int heading_save=0x7f050016;
+        public static final int input_error=0x7f050024;
         public static final int link1=0x7f050003;
         public static final int link2=0x7f050006;
         public static final int link3=0x7f050007;
@@ -81,10 +92,19 @@ public final class R {
         public static final int link5=0x7f05000c;
         public static final int link6=0x7f05000e;
         public static final int link7=0x7f050010;
-        public static final int notify=0x7f05001a;
-        public static final int same_on=0x7f050019;
-        public static final int spend_limit=0x7f050016;
-        public static final int submit=0x7f05001c;
+        public static final int no_family_members_add=0x7f050027;
+        public static final int notify=0x7f05001c;
+        public static final int ok=0x7f050021;
+        public static final int price=0x7f05002a;
+        public static final int product_name=0x7f050028;
+        public static final int purchase_date=0x7f050029;
+        public static final int reset=0x7f050020;
+        public static final int same_on=0x7f05001b;
+        public static final int save=0x7f050022;
+        public static final int scan=0x7f050023;
+        public static final int spend_limit=0x7f050018;
+        public static final int submit=0x7f05001e;
+        public static final int success=0x7f050025;
         public static final int text1=0x7f050004;
         public static final int text2=0x7f050005;
         public static final int text3=0x7f050008;
@@ -94,7 +114,8 @@ public final class R {
         public static final int text7=0x7f05000f;
         public static final int title_activity_add_family=0x7f050013;
         public static final int title_activity_budget=0x7f050011;
-        public static final int until_date=0x7f050018;
+        public static final int title_activity_save=0x7f050015;
+        public static final int until_date=0x7f05001a;
     }
     public static final class style {
         /** 

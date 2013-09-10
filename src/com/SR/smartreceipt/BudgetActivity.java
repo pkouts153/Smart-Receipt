@@ -5,6 +5,7 @@ import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.view.Menu;
@@ -36,14 +37,12 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
     Spinner family_spinner;
     CheckBox notify;
     Button submit;
-    Button cancel;
+    Button reset;
     
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
     
     DatePickerFragment dateFragment = new DatePickerFragment();
-    
-    String dateClicked;
     
 	@SuppressLint("NewApi")
 	@Override
@@ -66,8 +65,8 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
         submit = (Button)findViewById(R.id.submit);
         submit.setOnClickListener(this);
         
-        cancel = (Button)findViewById(R.id.cancel);
-        cancel.setOnClickListener(this);
+        reset = (Button)findViewById(R.id.reset);
+        reset.setOnClickListener(this);
         
 		mDbHelper = new FeedReaderDbHelper(this);
 		
@@ -104,6 +103,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 			adapter.add(category_name);
 		}
 		c.close();
+		mDbHelper.close();
 
 		//configure family spinner
 		Spinner family_spinner = (Spinner) findViewById(R.id.family_spinner);
@@ -164,10 +164,6 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		if (v instanceof Button) {
 			if (submit.getId() == ((Button)v).getId()) {
 				try{
-					mDbHelper = new FeedReaderDbHelper(this);
-			    	
-					// Gets the data repository in write mode
-					db = mDbHelper.getWritableDatabase();
 					
 					String cat_spinner = category_spinner.getSelectedItem().toString();
 					
@@ -188,6 +184,10 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
+						mDbHelper = new FeedReaderDbHelper(this);
+				    	
+						// Gets the data repository in write mode
+						db = mDbHelper.getWritableDatabase();
 						
 						// Create a new map of values, where column names are the keys
 						ContentValues values = new ContentValues();
@@ -199,6 +199,12 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 						//values.put(FeedBudget.USER, 0);
 						
 						db.insert(FeedBudget.TABLE_NAME, "null", values);
+						
+						mDbHelper.close();
+						
+						SuccessDialogFragment successDialog = new SuccessDialogFragment();
+						successDialog.show(getFragmentManager(), "successDialog");
+						timerDelayRemoveDialog(1500, successDialog);
 					}
 				
 				} catch (NumberFormatException e) {
@@ -212,7 +218,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 				until_date.getText().clear();
 				if (notify.isChecked()) {
 					notify.setChecked(false);
-			     }
+			    }
 			}
 				
 		}
@@ -223,4 +229,28 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 
 	}
 
+	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){
+	    new Handler().postDelayed(new Runnable() {
+	        public void run() {                
+	            d.dismiss();         
+	        }
+	    }, time); 
+	}
+	
+
+	@Override
+	protected void onStop() {
+	    super.onStop();
+	    
+	    if (mDbHelper != null)
+	    	mDbHelper.close();
+	}
+	
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    
+	    if (mDbHelper != null)
+	    	mDbHelper.close();
+	}
 }

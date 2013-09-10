@@ -4,23 +4,24 @@ import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
+import com.SR.processes.BudgetNotificationIntentService;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 public class SaveActivity extends Activity implements OnClickListener {
 	
@@ -29,6 +30,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 	EditText price;
 	EditText purchase_date;
     Button save;
+    Button reset;
     Button scan;
     
     FeedReaderDbHelper mDbHelper;
@@ -43,6 +45,13 @@ public class SaveActivity extends Activity implements OnClickListener {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
+		category_spinner = (Spinner) findViewById(R.id.category_spinner);
+		//family_spinner.setOnItemSelectedListener(this);
+		
+		ArrayAdapter<CharSequence> category_adapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
+		category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		category_spinner.setAdapter(category_adapter);
+		
 		product_name = (EditText)findViewById(R.id.product_name);
 		price = (EditText)findViewById(R.id.price);
 		
@@ -51,45 +60,12 @@ public class SaveActivity extends Activity implements OnClickListener {
         
 		save = (Button)findViewById(R.id.save_button);
 		save.setOnClickListener(this);
+		
+		reset = (Button)findViewById(R.id.reset_button);
+		reset.setOnClickListener(this);
         
 		scan = (Button)findViewById(R.id.scan_button);
 		scan.setOnClickListener(this);
-		
-		mDbHelper = new FeedReaderDbHelper(this);
-		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-
-		// Specifies which columns are needed from the database
-		String[] projection = {
-			FeedCategory.NAME
-		    };
-		
-		Cursor c = db.query(
-			FeedCategory.TABLE_NAME,  				  // The table to query
-		    projection,                               // The columns to return
-		    null,                                	  // The columns for the WHERE clause
-		    null,                            		  // The values for the WHERE clause
-		    null,                                     // don't group the rows
-		    null,                                     // don't filter by row groups
-		    null                                 	  // The sort order
-		    );
-		
-		c.moveToFirst();
-		String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
-		
-		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		adapter.add(category_name);
-		category_spinner = (Spinner) findViewById(R.id.category_spinner);
-		category_spinner.setAdapter(adapter);
-		
-		while (!c.isLast ()) {
-			c.moveToNext ();
-			category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
-			adapter.add(category_name);
-		}
-		c.close();
 	}
 	
 	/**
@@ -114,11 +90,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 		if (v instanceof Button) {
 			if (save.getId() == ((Button)v).getId()) {
 				try{
-					mDbHelper = new FeedReaderDbHelper(this);
-			    	
-					// Gets the data repository in write mode
-					db = mDbHelper.getWritableDatabase();
-					
+
 					String cat_spinner = category_spinner.getSelectedItem().toString();
 					
 					String p_name = product_name.getText().toString();
@@ -128,11 +100,15 @@ public class SaveActivity extends Activity implements OnClickListener {
 					
 					String pd = purchase_date.getText().toString();
 					
-					if ((p_name.equals("")) || (pd.equals(""))) {
+					if ((p_name.equals("")) || (pd.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
+						mDbHelper = new FeedReaderDbHelper(this);
+				    	
+						// Gets the data repository in write mode
+						db = mDbHelper.getWritableDatabase();
 						
 						// Create a new map of values, where column names are the keys
 						ContentValues values = new ContentValues();
@@ -142,6 +118,15 @@ public class SaveActivity extends Activity implements OnClickListener {
 						values.put(FeedProduct.PURCHASE_DATE, pd);
 						
 						db.insert(FeedProduct.TABLE_NAME, "null", values);
+						
+						mDbHelper.close();
+						
+						SuccessDialogFragment successDialog = new SuccessDialogFragment();
+						successDialog.show(getFragmentManager(), "successDialog");
+						timerDelayRemoveDialog(1500, successDialog);
+						
+					    Intent serviceIntent = new Intent(this, BudgetNotificationIntentService.class);
+					    startService(serviceIntent);
 					}
 				
 				} catch (NumberFormatException e) {
@@ -149,10 +134,14 @@ public class SaveActivity extends Activity implements OnClickListener {
 					errorDialog.show(getFragmentManager(), "errorDialog");
 				}
 			}
-			else {
+			else if (reset.getId() == ((Button)v).getId()){
 				product_name.getText().clear();
 				price.getText().clear();
 				purchase_date.getText().clear();
+			}
+			else {
+				Intent intent = new Intent(this, MainActivity.class);
+				startActivity(intent);
 			}
 		}
 		else {
@@ -160,5 +149,30 @@ public class SaveActivity extends Activity implements OnClickListener {
 	    	dateFragment.show(getFragmentManager(), "datePicker");
 		}
 
+	}
+	
+	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){
+	    new Handler().postDelayed(new Runnable() {
+	        public void run() {                
+	            d.dismiss();         
+	        }
+	    }, time); 
+	}
+	
+
+	@Override
+	protected void onStop() {
+	    super.onStop();
+	    
+	    if (mDbHelper != null)
+	    	mDbHelper.close();
+	}
+	
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    
+	    if (mDbHelper != null)
+	    	mDbHelper.close();
 	}
 }

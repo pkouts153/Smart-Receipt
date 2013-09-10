@@ -32,7 +32,7 @@ public class AddFamilyMemberActivity extends Activity{
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
-		cancel = (Button)findViewById(R.id.cancel);
+		//cancel = (Button)findViewById(R.id.cancel);
         cancel.setOnClickListener((OnClickListener) this);
         add =(Button)findViewById(R.id.add);
         add.setOnClickListener((OnClickListener) this);

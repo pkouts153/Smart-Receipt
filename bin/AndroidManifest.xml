@@ -39,6 +39,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
+        
+        <activity
+            android:name="com.SR.smartreceipt.SaveActivity"
+            android:label="@string/title_activity_save"
+            android:parentActivityName="com.SR.smartreceipt.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.MainActivity" />
+        </activity>
+        
+        <service 
+            android:enabled="true" 
+            android:name="com.SR.processes.NotificationIntentService" 
+            android:label="Android Hotel simple Intent service 2000" 
+            android:exported="true" />
     </application>
 
 </manifest>

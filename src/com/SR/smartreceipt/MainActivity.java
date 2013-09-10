@@ -62,5 +62,4 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, BudgetActivity.class);
 		startActivity(intent);
 	}
-
 }
