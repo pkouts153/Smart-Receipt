@@ -10,18 +10,19 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 @SuppressLint("NewApi")
 public class BudgetNotificationIntentService extends IntentService {
-
-	public BudgetNotificationIntentService(String name) {
-		super(name);
+	
+	public BudgetNotificationIntentService() {
+		super("BudgetNotificationIntentService");
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void onHandleIntent(Intent arg0) {
-		
+
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.save)
@@ -34,21 +35,25 @@ public class BudgetNotificationIntentService extends IntentService {
 		// started Activity.
 		// This ensures that navigating backward from the Activity leads out of
 		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		//TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(BudgetActivity.class);
+		/*stackBuilder.addParentStack(BudgetActivity.class);
 		// Adds the Intent that starts the Activity to the top of the stack
 		stackBuilder.addNextIntent(arg0);
 		PendingIntent resultPendingIntent =
 		        stackBuilder.getPendingIntent(
 		            0,
 		            PendingIntent.FLAG_UPDATE_CURRENT
-		        );
-		mBuilder.setContentIntent(resultPendingIntent);
+		        );*/
+		PendingIntent pendingIntent
+		  = PendingIntent.getActivity(getBaseContext(),
+		    0, arg0,
+		    Intent.FLAG_ACTIVITY_NEW_TASK);
+		mBuilder.setContentIntent(pendingIntent);
 		NotificationManager mNotificationManager =
 		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// mId allows you to update the notification later on.
 		mNotificationManager.notify(1, mBuilder.build());
 	}
-
+	
 }

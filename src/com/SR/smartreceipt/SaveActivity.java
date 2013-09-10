@@ -2,15 +2,12 @@ package com.SR.smartreceipt;
 
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
-import com.SR.data.FeedReaderContract.FeedBudget;
-import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.processes.BudgetNotificationIntentService;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -124,9 +121,10 @@ public class SaveActivity extends Activity implements OnClickListener {
 						SuccessDialogFragment successDialog = new SuccessDialogFragment();
 						successDialog.show(getFragmentManager(), "successDialog");
 						timerDelayRemoveDialog(1500, successDialog);
-						
-					    Intent serviceIntent = new Intent(this, BudgetNotificationIntentService.class);
-					    startService(serviceIntent);
+					
+					    Intent serviceIntent = new Intent(SaveActivity.this, BudgetNotificationIntentService.class);
+					    SaveActivity.this.startService(serviceIntent);
+					    //startService(serviceIntent);
 					}
 				
 				} catch (NumberFormatException e) {
@@ -175,4 +173,21 @@ public class SaveActivity extends Activity implements OnClickListener {
 	    if (mDbHelper != null)
 	    	mDbHelper.close();
 	}
+	
+	/*public class ResponseReceiver extends BroadcastReceiver {
+		   public static final String ACTION_RESP =
+		      "com.mamlambo.intent.action.MESSAGE_PROCESSED";
+		   @Override
+		    public void onReceive(Context context, Intent intent) {
+				NotificationManager mNotificationManager =
+					    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					// mId allows you to update the notification later on.
+					mNotificationManager.notify(1, mBuilder.build());
+		    }
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			
+		}
+		}*/
 }

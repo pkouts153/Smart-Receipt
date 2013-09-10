@@ -51,9 +51,10 @@
         
         <service 
             android:enabled="true" 
-            android:name="com.SR.processes.NotificationIntentService" 
+            android:name="com.SR.processes.BudgetNotificationIntentService" 
             android:label="Android Hotel simple Intent service 2000" 
             android:exported="true" />
+
     </application>
 
 </manifest>
