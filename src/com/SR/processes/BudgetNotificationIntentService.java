@@ -2,6 +2,7 @@ package com.SR.processes;
 
 import com.SR.smartreceipt.BudgetActivity;
 import com.SR.smartreceipt.R;
+
 import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -23,6 +24,13 @@ public class BudgetNotificationIntentService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent arg0) {
 
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.save)

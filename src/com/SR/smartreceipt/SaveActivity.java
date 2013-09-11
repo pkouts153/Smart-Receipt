@@ -1,5 +1,7 @@
 package com.SR.smartreceipt;
 
+import java.util.ArrayList;
+
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.processes.BudgetNotificationIntentService;
@@ -25,6 +27,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 	Spinner category_spinner;
 	EditText product_name;
 	EditText price;
+	Button add;
 	EditText purchase_date;
     Button save;
     Button reset;
@@ -34,6 +37,8 @@ public class SaveActivity extends Activity implements OnClickListener {
     SQLiteDatabase db;
     
     DatePickerFragment dateFragment = new DatePickerFragment();
+    
+    ArrayList<String> product_list = new ArrayList<String>();
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,9 @@ public class SaveActivity extends Activity implements OnClickListener {
 		
 		product_name = (EditText)findViewById(R.id.product_name);
 		price = (EditText)findViewById(R.id.price);
+		
+		add = (Button)findViewById(R.id.add_button);
+		add.setOnClickListener(this);
 		
 		purchase_date = (EditText)findViewById(R.id.purchase_date);
 		purchase_date.setOnClickListener(this);
@@ -124,7 +132,6 @@ public class SaveActivity extends Activity implements OnClickListener {
 					
 					    Intent serviceIntent = new Intent(SaveActivity.this, BudgetNotificationIntentService.class);
 					    SaveActivity.this.startService(serviceIntent);
-					    //startService(serviceIntent);
 					}
 				
 				} catch (NumberFormatException e) {
@@ -136,6 +143,24 @@ public class SaveActivity extends Activity implements OnClickListener {
 				product_name.getText().clear();
 				price.getText().clear();
 				purchase_date.getText().clear();
+			}
+			else if (add.getId() == ((Button)v).getId()){
+				String cat_spinner = category_spinner.getSelectedItem().toString();
+				
+				String p_name = product_name.getText().toString();
+				
+				String p_price = price.getText().toString();
+				
+				if ((p_name.equals("")) || (p_price.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
+					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+					errorDialog.show(getFragmentManager(), "Dialog");
+				}
+				else {
+					product_list.add(cat_spinner);
+					product_list.add(p_name);
+					product_list.add(p_price);
+				}
+				
 			}
 			else {
 				Intent intent = new Intent(this, MainActivity.class);
@@ -173,21 +198,5 @@ public class SaveActivity extends Activity implements OnClickListener {
 	    if (mDbHelper != null)
 	    	mDbHelper.close();
 	}
-	
-	/*public class ResponseReceiver extends BroadcastReceiver {
-		   public static final String ACTION_RESP =
-		      "com.mamlambo.intent.action.MESSAGE_PROCESSED";
-		   @Override
-		    public void onReceive(Context context, Intent intent) {
-				NotificationManager mNotificationManager =
-					    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					// mId allows you to update the notification later on.
-					mNotificationManager.notify(1, mBuilder.build());
-		    }
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			
-		}
-		}*/
+
 }
