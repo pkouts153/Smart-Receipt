@@ -6,15 +6,20 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 
 public class SuccessDialogFragment extends DialogFragment {
+	String message;
 	
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.success);
+        builder.setMessage(message);
         
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+    
+    public void setMessage (String m){
+    	message = m;
     }
 
 }

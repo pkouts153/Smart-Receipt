@@ -2,6 +2,7 @@ package com.SR.smartreceipt;
 
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
+import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
@@ -202,7 +203,10 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 						
 						mDbHelper.close();
 						
+						clearFields();
+						
 						SuccessDialogFragment successDialog = new SuccessDialogFragment();
+						successDialog.setMessage(this.getString(R.string.success));
 						successDialog.show(getFragmentManager(), "successDialog");
 						timerDelayRemoveDialog(1500, successDialog);
 					}
@@ -213,12 +217,7 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 				}
 			}
 			else {
-				spend_limit.getText().clear();
-				from_date.getText().clear();
-				until_date.getText().clear();
-				if (notify.isChecked()) {
-					notify.setChecked(false);
-			    }
+				clearFields();
 			}
 				
 		}
@@ -228,7 +227,22 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 		}
 
 	}
-
+	
+	public void clearFields() {
+		category_spinner.setSelection(0);
+		spend_limit.getText().clear();
+		from_date.getText().clear();
+		until_date.getText().clear();
+		/*if (same_on.isChecked()) {
+			same_on.setChecked(false);
+	    }*/
+		//family_spinner.setSelection(0);
+		if (notify.isChecked()) {
+			notify.setChecked(false);
+	    }
+		
+	}
+	
 	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){
 	    new Handler().postDelayed(new Runnable() {
 	        public void run() {                
