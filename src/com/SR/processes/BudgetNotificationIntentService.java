@@ -1,17 +1,14 @@
 package com.SR.processes;
 
-import com.SR.smartreceipt.BudgetActivity;
 import com.SR.smartreceipt.R;
 
 import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 @SuppressLint("NewApi")
 public class BudgetNotificationIntentService extends IntentService {

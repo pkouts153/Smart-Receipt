@@ -4,7 +4,7 @@ import android.provider.BaseColumns;
 
 public final class FeedReaderContract {
 	
-    public void FeedReaderContract() {}
+    public FeedReaderContract() {}
 
     /* Inner class that defines the table contents */
     public static abstract class FeedCategory implements BaseColumns {

@@ -1,20 +1,17 @@
 package com.SR.smartreceipt;
 
+import com.SR.data.Category;
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
-import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -28,7 +25,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
-public class BudgetActivity extends Activity implements OnItemSelectedListener,  OnClickListener {
+public class BudgetActivity extends Activity implements OnClickListener {
 
 	Spinner category_spinner;
 	EditText spend_limit;
@@ -69,25 +66,9 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
         reset = (Button)findViewById(R.id.reset);
         reset.setOnClickListener(this);
         
-		mDbHelper = new FeedReaderDbHelper(this);
-		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-
-		// Specifies which columns are needed from the database
-		String[] projection = {
-			FeedCategory.NAME
-		    };
-		
-		Cursor c = db.query(
-			FeedCategory.TABLE_NAME,  				  // The table to query
-		    projection,                               // The columns to return
-		    null,                                	  // The columns for the WHERE clause
-		    null,                            		  // The values for the WHERE clause
-		    null,                                     // don't group the rows
-		    null,                                     // don't filter by row groups
-		    null                                 	  // The sort order
-		    );
+        
+        Category category = new Category(this);
+		Cursor c = category.getCategories();
 		
 		c.moveToFirst();
 		String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
@@ -104,26 +85,15 @@ public class BudgetActivity extends Activity implements OnItemSelectedListener, 
 			adapter.add(category_name);
 		}
 		c.close();
-		mDbHelper.close();
+		category.getFeedReaderDbHelper().close();
 
 		//configure family spinner
 		Spinner family_spinner = (Spinner) findViewById(R.id.family_spinner);
-		family_spinner.setOnItemSelectedListener(this);
 		
 		ArrayAdapter<CharSequence> family_adapter = ArrayAdapter.createFromResource(this, R.array.family_array, android.R.layout.simple_spinner_item);
 		family_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		family_spinner.setAdapter(family_adapter);
 	}
-	
-	
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        parent.getItemAtPosition(pos);
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
     
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
