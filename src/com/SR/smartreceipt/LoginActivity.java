@@ -1,16 +1,26 @@
 package com.SR.smartreceipt;
 
+import com.SR.data.User;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class LoginActivity extends Activity implements OnClickListener {
+
+	EditText email;
+	EditText password;
+	Button login;
+    Button reset;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +28,16 @@ public class LoginActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_login);
 		// Show the Up button in the action bar.
 		setupActionBar();
+
+		email = (EditText)findViewById(R.id.email);
+		password = (EditText)findViewById(R.id.password);
+
+		login = (Button)findViewById(R.id.login_button);
+		login.setOnClickListener(this);
+
+		reset = (Button)findViewById(R.id.reset_button);
+		reset.setOnClickListener(this);
+
 	}
 
 	/**
@@ -29,7 +49,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -56,8 +76,40 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		
+
+		if (login.getId() == ((Button)v).getId()) {
+
+			String mail = email.getText().toString();
+			String pass = password.getText().toString();
+			
+			if (!(mail.equals("") || pass.equals(""))) {
+				User user = new User(this);
+	
+				if (user.userLogin(mail, pass)) {
+					Intent intent = new Intent(this, MainActivity.class);
+					startActivity(intent);
+				}
+				else {
+					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+					errorDialog.setMessage(this.getString(R.string.no_user));
+					errorDialog.show(getFragmentManager(), "Dialog");
+				}
+	
+				user.getUserFeedReaderDbHelper().close();
+			}
+			else {
+				InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+				errorDialog.setMessage(this.getString(R.string.no_input));
+				errorDialog.show(getFragmentManager(), "errorDialog");
+			}
+		}
+		else {
+			clearFields();
+		}
 	}
 
+	public void clearFields() {
+		email.getText().clear();
+		password.getText().clear();
+	}
 }

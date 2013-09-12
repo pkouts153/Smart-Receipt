@@ -138,8 +138,9 @@ public class SaveActivity extends Activity implements OnClickListener {
 	
 					if ((product_list.size()==0 && (VAT.equals("") || p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt)))) 
 							|| (product_list.size()!=0 && (VAT.equals("") || pd.equals("")))) {
-								
+							
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+						errorDialog.setMessage(this.getString(R.string.no_input));
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
@@ -202,6 +203,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 					if ((p_name.equals("")) || (p_price.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
 						
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+						errorDialog.setMessage(this.getString(R.string.no_input));
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
@@ -224,6 +226,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 			} catch (NumberFormatException e) {
 				
 				InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+				errorDialog.setMessage(this.getString(R.string.input_error));
 				errorDialog.show(getFragmentManager(), "errorDialog");
 			}
 		}

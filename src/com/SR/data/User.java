@@ -20,8 +20,8 @@ public class User {
     
     Context context;
     
-	public User() {
-		// TODO Auto-generated constructor stub
+	public User(Context c) {
+		context = c;
 	}
 	
     public Cursor getUsers(){
@@ -56,17 +56,34 @@ public class User {
     	return mDbHelper;
     }
     
-    public boolean userFound(String email){
+    public boolean userLogin(String email, String password){
     	
     	boolean found = false;
     	c = getUsers();
     	
     	c.moveToFirst();
+    	
     	while (!c.isLast ()){
-    		if (email.equals(c.getInt(c.getColumnIndexOrThrow(FeedUser.EMAIL))))
+    		if (password.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD))) && email.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL)))) {
     			found = true;
+    			USER_ID = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
+    		}
     		c.moveToNext ();
     	}
+    	
+		if (password.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD))) && email.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL)))) {
+			found = true;
+			USER_ID = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
+		}
+		
     	return found;
+    }
+    
+    public void userLogout() {
+    	USER_ID = 0;
+    }
+    
+    public FeedReaderDbHelper getUserFeedReaderDbHelper(){
+    	return mDbHelper;
     }
 }

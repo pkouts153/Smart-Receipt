@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "SmartReceipt.db";
 	
     
@@ -154,6 +154,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		
 		db.execSQL(SQL_ADD_CATEGORIES);
 		db.execSQL(SQL_ADD_USER1);
+		db.execSQL(SQL_ADD_USER2);
 		db.execSQL(SQL_ADD_STORE);
 		db.execSQL(SQL_ADD_OFFER);
 		db.execSQL(SQL_ADD_FAMILY);
@@ -161,10 +162,10 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		switch (oldVersion) {
+		/*switch (oldVersion) {
 		case 1:
 			db.execSQL(SQL_ADD_USER2);
-		}
+		}*/
 	}
 
 }

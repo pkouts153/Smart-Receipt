@@ -45,7 +45,7 @@ public class Category {
 		return c;
     }
     
-    public FeedReaderDbHelper getFeedReaderDbHelper(){
+    public FeedReaderDbHelper getCatFeedReaderDbHelper(){
     	return mDbHelper;
     }
 }

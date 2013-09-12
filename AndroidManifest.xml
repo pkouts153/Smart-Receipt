@@ -13,14 +13,24 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
-            android:name="com.SR.smartreceipt.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.SR.smartreceipt.LoginActivity"
+            android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="com.SR.smartreceipt.MainActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="com.SR.smartreceipt.LoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.LoginActivity" />
         </activity>
         <activity
             android:name="com.SR.smartreceipt.BudgetActivity"
@@ -30,7 +40,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
-        
         <activity
             android:name="com.SR.smartreceipt.AddFamilyMemberActivity"
             android:label="@string/title_activity_add_family"
@@ -39,7 +48,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
-        
         <activity
             android:name="com.SR.smartreceipt.SaveActivity"
             android:label="@string/title_activity_save"
@@ -48,12 +56,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
-        
-        <service 
-            android:enabled="true" 
-            android:name="com.SR.processes.BudgetNotificationIntentService" 
-            android:label="BudgetNotificationIntentService" 
-            android:exported="true" />
+
+        <service
+            android:name="com.SR.processes.BudgetNotificationIntentService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="BudgetNotificationIntentService" />
 
     </application>
 

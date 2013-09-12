@@ -85,7 +85,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 			adapter.add(category_name);
 		}
 		c.close();
-		category.getFeedReaderDbHelper().close();
+		category.getCatFeedReaderDbHelper().close();
 
 		//configure family spinner
 		Spinner family_spinner = (Spinner) findViewById(R.id.family_spinner);
@@ -152,6 +152,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 					
 					if ((fd.equals("")) || (ud.equals(""))) {
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+						errorDialog.setMessage(this.getString(R.string.no_input));
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
@@ -183,6 +184,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 				
 				} catch (NumberFormatException e) {
 					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+					errorDialog.setMessage(this.getString(R.string.input_error));
 					errorDialog.show(getFragmentManager(), "errorDialog");
 				}
 			}
