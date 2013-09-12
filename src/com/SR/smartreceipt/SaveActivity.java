@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 	TextView number_of_products;
 	Button add;
 	EditText purchase_date;
+	EditText store_VAT;
     Button save;
     Button reset;
     Button scan;
@@ -47,6 +49,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 	String p_price;
 	Float p;
 	String pd;
+	String VAT;
 	int products = 0;
 	
 	@Override
@@ -73,6 +76,8 @@ public class SaveActivity extends Activity implements OnClickListener {
 		
 		purchase_date = (EditText)findViewById(R.id.purchase_date);
 		purchase_date.setOnClickListener(this);
+		
+		store_VAT = (EditText)findViewById(R.id.store);
         
 		save = (Button)findViewById(R.id.save_button);
 		save.setOnClickListener(this);
@@ -110,18 +115,19 @@ public class SaveActivity extends Activity implements OnClickListener {
 					cat_spinner = category_spinner.getSelectedItem().toString();
 					p_name = product_name.getText().toString();
 					p_price = price.getText().toString();
-					p = Float.parseFloat(p_price);
 					pd = purchase_date.getText().toString();
+					VAT = store_VAT.getText().toString();
 	
-					if ((product_list.size()==0 && (p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt)))) 
-							|| (product_list.size()!=0 && pd.equals(""))) {
+					if ((product_list.size()==0 && (VAT.equals("") || p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt)))) 
+							|| (product_list.size()!=0 && (VAT.equals("") || pd.equals("")))) {
 								
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
-						addToArrayList();
-					
+						if (!(VAT.equals("") || p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt))))
+							addToArrayList();
+						
 						mDbHelper = new FeedReaderDbHelper(this);
 				    	
 						// Gets the data repository in write mode
@@ -137,6 +143,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 							p = Float.parseFloat(product_list.get(i+2));
 							values.put(FeedProduct.PRICE, p);
 							values.put(FeedProduct.PURCHASE_DATE, pd);
+							values.put(FeedProduct.STORE, VAT);
 							
 							db.insert(FeedProduct.TABLE_NAME, "null", values);
 						}
@@ -145,6 +152,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 						
 						clearFields();
 						purchase_date.getText().clear();
+						store_VAT.getText().clear();
 						
 						product_list.clear();
 						product_list.trimToSize();
@@ -164,6 +172,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 				else if (reset.getId() == ((Button)v).getId()){
 					clearFields();
 					purchase_date.getText().clear();
+					store_VAT.getText().clear();
 				}
 				else if (add.getId() == ((Button)v).getId()){
 					
@@ -173,6 +182,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 					p = Float.parseFloat(p_price);
 					
 					if ((p_name.equals("")) || (p_price.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
+						
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
@@ -194,6 +204,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 				}
 			
 			} catch (NumberFormatException e) {
+				
 				InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 				errorDialog.show(getFragmentManager(), "errorDialog");
 			}

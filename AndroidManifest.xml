@@ -52,7 +52,7 @@
         <service 
             android:enabled="true" 
             android:name="com.SR.processes.BudgetNotificationIntentService" 
-            android:label="Android Hotel simple Intent service 2000" 
+            android:label="BudgetNotificationIntentService" 
             android:exported="true" />
 
     </application>
