@@ -27,8 +27,11 @@
     <string name="heading_add_family_member">Add a family member</string>
     <string name="title_activity_save">Save your receipts</string>
     <string name="heading_save">Fill the fields</string>
+    <string name="title_activity_login">Login</string>
+    
     
     <string name="category_prompt">Expenses category</string>
+
     <string-array name="categories_array">
         <item>Expenses category</item>
         <item>Food</item>
@@ -36,13 +39,14 @@
         <item>Clothes</item>
         <item>All</item>
     </string-array>
-    
+
     <string name="spend_limit">How much money do you want to spend?</string>
     <string name="from_date">From date YYYY-MM-DD</string>
     <string name="until_date">Until date YYYY-MM-DD</string>
     <string name="same_on">Same on</string>
     <string name="notify">Notify me</string>
     <string name="family_prompt">Family member</string>
+
     <string-array name="family_array">
         <item>Family member</item>
         <item>Dad</item>
@@ -50,7 +54,7 @@
         <item>Sister</item>
         <item>All</item>
     </string-array>
-    
+
     <string name="submit">Submit</string>
     <string name="add">Add</string>
     <string name="add_product">Add product</string>
@@ -62,12 +66,17 @@
     <string name="success">Your data has been saved successfully!</string>
     <string name="added">Your product has been added successfully!</string>
     <string name="added_products">Products added:</string>
-
     <string name="delete">Delete</string>
     <string name="no_family_members_add">Curently you dont have any family members in your list please add more.</string>
-    
     <string name="product_name">Product name</string>
     <string name="purchase_date">Date</string>
     <string name="price">Price</string>
     <string name="store">Store</string>
+    
+    <string name="email">Email: user@example.com</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+    
+    
+
 </resources>

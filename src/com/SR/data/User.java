@@ -33,7 +33,10 @@ public class User {
     	
 		// Specifies which columns are needed from the database
 		String[] projection = {
-			FeedUser.USERNAME
+			FeedUser._ID,
+			FeedUser.USERNAME,
+			FeedUser.PASSWORD,
+			FeedUser.EMAIL
 		    };
 		
 		c = db.query(
@@ -51,5 +54,19 @@ public class User {
     
     public FeedReaderDbHelper getFeedReaderDbHelper(){
     	return mDbHelper;
+    }
+    
+    public boolean userFound(String email){
+    	
+    	boolean found = false;
+    	c = getUsers();
+    	
+    	c.moveToFirst();
+    	while (!c.isLast ()){
+    		if (email.equals(c.getInt(c.getColumnIndexOrThrow(FeedUser.EMAIL))))
+    			found = true;
+    		c.moveToNext ();
+    	}
+    	return found;
     }
 }

@@ -8,10 +8,8 @@ import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderContract.FeedStore;
 import com.SR.data.FeedReaderContract.FeedUser;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
