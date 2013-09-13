@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
+import com.SR.data.Product;
+import com.SR.data.User;
 import com.SR.processes.BudgetNotificationIntentService;
 
 import android.annotation.TargetApi;
@@ -61,7 +63,6 @@ public class SaveActivity extends Activity implements OnClickListener {
 		setupActionBar();
 		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
-		//family_spinner.setOnItemSelectedListener(this);
 		
 		ArrayAdapter<CharSequence> category_adapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
 		category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -136,38 +137,20 @@ public class SaveActivity extends Activity implements OnClickListener {
 					pd = purchase_date.getText().toString();
 					VAT = store_VAT.getText().toString();
 	
-					if ((product_list.size()==0 && (VAT.equals("") || p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt)))) 
-							|| (product_list.size()!=0 && (VAT.equals("") || pd.equals("")))) {
+					if ((product_list.size()==0 && (p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt)))) 
+							|| (product_list.size()!=0 && (pd.equals("")))) {
 							
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 						errorDialog.setMessage(this.getString(R.string.no_input));
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
-						if (!(VAT.equals("") || p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt))))
+						if (!(p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt))))
 							addToArrayList();
 						
-						mDbHelper = new FeedReaderDbHelper(this);
-				    	
-						// Gets the data repository in write mode
-						db = mDbHelper.getWritableDatabase();
-						
-						// Create a new map of values, where column names are the keys
-						ContentValues values = new ContentValues();
-					
-						for (int i = 0; i<product_list.size(); i += 3) {
-							
-							values.put(FeedProduct.PRODUCT_CATEGORY, product_list.get(i));
-							values.put(FeedProduct.NAME, product_list.get(i+1));
-							p = Float.parseFloat(product_list.get(i+2));
-							values.put(FeedProduct.PRICE, p);
-							values.put(FeedProduct.PURCHASE_DATE, pd);
-							values.put(FeedProduct.STORE, VAT);
-							
-							db.insert(FeedProduct.TABLE_NAME, "null", values);
-						}
-						
-						mDbHelper.close();
+						Product product = new Product(this);
+						product.saveProduct(product_list, pd, VAT);
+						product.getProductFeedReaderDbHelper().close();
 						
 						clearFields();
 						purchase_date.getText().clear();

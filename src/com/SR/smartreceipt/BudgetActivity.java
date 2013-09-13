@@ -1,8 +1,12 @@
 package com.SR.smartreceipt;
 
+import com.SR.data.Budget;
 import com.SR.data.Category;
+import com.SR.data.FeedReaderContract.FeedUser;
+import com.SR.data.User;
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
+import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
@@ -73,22 +77,45 @@ public class BudgetActivity extends Activity implements OnClickListener {
 		c.moveToFirst();
 		String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 		
-		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		adapter.add(category_name);
+		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
+		cat_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		cat_adapter.add(category_name);
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
-		category_spinner.setAdapter(adapter);
+		category_spinner.setAdapter(cat_adapter);
 		
 		while (!c.isLast ()) {
 			c.moveToNext ();
 			category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
-			adapter.add(category_name);
+			cat_adapter.add(category_name);
 		}
 		c.close();
 		category.getCatFeedReaderDbHelper().close();
-
+		
+		
+        /*User user = new User(this);
+		Cursor c2 = user.getFamilyMembers();
+		
+		c2.moveToFirst();
+		String family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
+		
+		ArrayAdapter <CharSequence> fam_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
+		fam_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		fam_adapter.add(category_name);
+		family_spinner = (Spinner) findViewById(R.id.family_spinner);
+		family_spinner.setAdapter(fam_adapter);
+		
+		while (!c2.isLast ()) {
+			c2.moveToNext ();
+			family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
+			fam_adapter.add(category_name);
+		}
+		c2.close();
+		user.getUserFeedReaderDbHelper().close();*/
+		
+		
+		
 		//configure family spinner
-		Spinner family_spinner = (Spinner) findViewById(R.id.family_spinner);
+		family_spinner = (Spinner) findViewById(R.id.family_spinner);
 		
 		ArrayAdapter<CharSequence> family_adapter = ArrayAdapter.createFromResource(this, R.array.family_array, android.R.layout.simple_spinner_item);
 		family_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -156,21 +183,54 @@ public class BudgetActivity extends Activity implements OnClickListener {
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
-						mDbHelper = new FeedReaderDbHelper(this);
+						//mDbHelper = new FeedReaderDbHelper(this);
 				    	
 						// Gets the data repository in write mode
-						db = mDbHelper.getWritableDatabase();
+						//db = mDbHelper.getWritableDatabase();
 						
 						// Create a new map of values, where column names are the keys
-						ContentValues values = new ContentValues();
+						/*ContentValues values = new ContentValues();
 						values.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
 						values.put(FeedBudget.SPEND_LIMIT, limit);
 						values.put(FeedBudget.START_DATE, fd);
 						values.put(FeedBudget.END_DATE, ud);
 						values.put(FeedBudget.NOTIFICATION, n);
-						//values.put(FeedBudget.USER, 0);
+						values.put(FeedBudget.USER, User.USER_ID);*/
 						
-						db.insert(FeedBudget.TABLE_NAME, "null", values);
+						if (same_on.isChecked()) {
+							String fam_spinner = family_spinner.getSelectedItem().toString();
+							
+							User user = new User(this);
+							int id = user.getId(fam_spinner);
+							
+							if (id!=0) {
+								//values.put(FeedBudget.FAMILY_USER, id);
+								//db.insert(FeedBudget.TABLE_NAME, "null", values);
+								
+								Budget budget = new Budget(this);
+								budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, id);
+								budget.saveBudget(cat_spinner, limit, fd, ud, n, id, 0);
+								/*ContentValues values1 = new ContentValues();
+								values1.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
+								values1.put(FeedBudget.SPEND_LIMIT, limit);
+								values1.put(FeedBudget.START_DATE, fd);
+								values1.put(FeedBudget.END_DATE, ud);
+								values1.put(FeedBudget.NOTIFICATION, n);
+								values1.put(FeedBudget.USER, id);
+								
+								db.insert(FeedBudget.TABLE_NAME, "null", values1);
+								values1.clear();*/
+							}
+							
+							user.getUserFeedReaderDbHelper().close();
+						}
+						else {
+							Budget budget = new Budget(this);
+							budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, 0);
+							//db.insert(FeedBudget.TABLE_NAME, "null", values);
+						}
+						
+						//values.clear();
 						
 						mDbHelper.close();
 						
@@ -205,10 +265,10 @@ public class BudgetActivity extends Activity implements OnClickListener {
 		spend_limit.getText().clear();
 		from_date.getText().clear();
 		until_date.getText().clear();
-		/*if (same_on.isChecked()) {
+		if (same_on.isChecked()) {
 			same_on.setChecked(false);
-	    }*/
-		//family_spinner.setSelection(0);
+	    }
+		family_spinner.setSelection(0);
 		if (notify.isChecked()) {
 			notify.setChecked(false);
 	    }

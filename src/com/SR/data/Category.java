@@ -8,7 +8,7 @@ import com.SR.data.FeedReaderContract.FeedCategory;
 
 public class Category {
 	
-	String NAME;
+	//String NAME;
 
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;

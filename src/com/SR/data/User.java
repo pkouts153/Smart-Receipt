@@ -10,9 +10,9 @@ public class User {
 
 	public static int USER_ID;
 	
-	String USERNAME;
+	/*String USERNAME;
     String PASSWORD;
-    String EMAIL;
+    String EMAIL;*/
     
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
@@ -52,10 +52,36 @@ public class User {
 		return c;
     }
     
-    public FeedReaderDbHelper getFeedReaderDbHelper(){
-    	return mDbHelper;
-    }
     
+    public Cursor getFamilyMembers(String user){
+    	
+    	mDbHelper = new FeedReaderDbHelper(context);
+		
+		// Gets the data repository in write mode
+		db = mDbHelper.getWritableDatabase();
+    	
+		// Specifies which columns are needed from the database
+		String[] projection = {
+			FeedUser._ID,
+			FeedUser.USERNAME,
+			FeedUser.PASSWORD,
+			FeedUser.EMAIL
+		    };
+		
+		c = db.query(
+			FeedUser.TABLE_NAME,  				  // The table to query
+		    projection,                               // The columns to return
+		    null,                                	  // The columns for the WHERE clause
+		    null,                            		  // The values for the WHERE clause
+		    null,                                     // don't group the rows
+		    null,                                     // don't filter by row groups
+		    null                                 	  // The sort order
+		    );
+		
+		return c;
+    }  
+    
+
     public boolean userLogin(String email, String password){
     	
     	boolean found = false;
@@ -79,6 +105,28 @@ public class User {
     	return found;
     }
     
+    public int getId(String user){
+    	
+    	int id = 0;
+    	c = getUsers();
+    	
+    	c.moveToFirst();
+    	
+    	while (!c.isLast ()){
+    		if (user.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.USERNAME)))) {
+    			id = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
+    		}
+    		c.moveToNext ();
+    	}
+    	
+		if (user.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.USERNAME)))) {
+			id = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
+		}
+		
+    	return id;
+    }
+
+    
     public void userLogout() {
     	USER_ID = 0;
     }
@@ -86,4 +134,5 @@ public class User {
     public FeedReaderDbHelper getUserFeedReaderDbHelper(){
     	return mDbHelper;
     }
+    
 }

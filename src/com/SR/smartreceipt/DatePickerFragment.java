@@ -29,7 +29,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
 
-    	String date = day + "/" + month + "/" + year;
+    	String date = day + "/" + (month + 1) + "/" + year;
     	a.setText(date);
     	this.dismiss();
     }
