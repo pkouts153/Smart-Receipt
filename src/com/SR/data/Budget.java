@@ -34,18 +34,18 @@ public class Budget {
 		// Gets the data repository in write mode
 		db = mDbHelper.getWritableDatabase();
     	
-		ContentValues values1 = new ContentValues();
-		values1.put(FeedBudget.EXPENSE_CATEGORY, category);
-		values1.put(FeedBudget.SPEND_LIMIT, limit);
-		values1.put(FeedBudget.START_DATE, from_date);
-		values1.put(FeedBudget.END_DATE, until_date);
-		values1.put(FeedBudget.NOTIFICATION, n);
-		values1.put(FeedBudget.USER, user_id);
+		ContentValues values = new ContentValues();
+		values.put(FeedBudget.EXPENSE_CATEGORY, category);
+		values.put(FeedBudget.SPEND_LIMIT, limit);
+		values.put(FeedBudget.START_DATE, from_date);
+		values.put(FeedBudget.END_DATE, until_date);
+		values.put(FeedBudget.NOTIFICATION, n);
+		values.put(FeedBudget.USER, user_id);
 		if (family_id != 0)
-			values1.put(FeedBudget.FAMILY_USER, family_id);
+			values.put(FeedBudget.FAMILY_USER, family_id);
 		
-		db.insert(FeedBudget.TABLE_NAME, "null", values1);
-		values1.clear();
+		db.insert(FeedBudget.TABLE_NAME, "null", values);
+		values.clear();
     }
     
     

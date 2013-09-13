@@ -183,19 +183,8 @@ public class BudgetActivity extends Activity implements OnClickListener {
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
-						//mDbHelper = new FeedReaderDbHelper(this);
-				    	
-						// Gets the data repository in write mode
-						//db = mDbHelper.getWritableDatabase();
 						
-						// Create a new map of values, where column names are the keys
-						/*ContentValues values = new ContentValues();
-						values.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
-						values.put(FeedBudget.SPEND_LIMIT, limit);
-						values.put(FeedBudget.START_DATE, fd);
-						values.put(FeedBudget.END_DATE, ud);
-						values.put(FeedBudget.NOTIFICATION, n);
-						values.put(FeedBudget.USER, User.USER_ID);*/
+						Budget budget = new Budget(this);
 						
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
@@ -204,35 +193,18 @@ public class BudgetActivity extends Activity implements OnClickListener {
 							int id = user.getId(fam_spinner);
 							
 							if (id!=0) {
-								//values.put(FeedBudget.FAMILY_USER, id);
-								//db.insert(FeedBudget.TABLE_NAME, "null", values);
 								
-								Budget budget = new Budget(this);
 								budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, id);
 								budget.saveBudget(cat_spinner, limit, fd, ud, n, id, 0);
-								/*ContentValues values1 = new ContentValues();
-								values1.put(FeedBudget.EXPENSE_CATEGORY, cat_spinner);
-								values1.put(FeedBudget.SPEND_LIMIT, limit);
-								values1.put(FeedBudget.START_DATE, fd);
-								values1.put(FeedBudget.END_DATE, ud);
-								values1.put(FeedBudget.NOTIFICATION, n);
-								values1.put(FeedBudget.USER, id);
-								
-								db.insert(FeedBudget.TABLE_NAME, "null", values1);
-								values1.clear();*/
 							}
 							
 							user.getUserFeedReaderDbHelper().close();
 						}
 						else {
-							Budget budget = new Budget(this);
 							budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, 0);
-							//db.insert(FeedBudget.TABLE_NAME, "null", values);
 						}
 						
-						//values.clear();
-						
-						mDbHelper.close();
+						budget.getBudgetFeedReaderDbHelper().close();
 						
 						clearFields();
 						
