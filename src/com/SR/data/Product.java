@@ -28,36 +28,6 @@ public class Product {
 		context = c;
 	}
 	
-    public Cursor getProducts(){
-    	
-    	mDbHelper = new FeedReaderDbHelper(context);
-		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-    	
-		// Specifies which columns are needed from the database
-		String[] projection = {
-			FeedProduct._ID,
-			FeedProduct.PRODUCT_CATEGORY,
-			FeedProduct.NAME,
-			FeedProduct.PRICE,
-			FeedProduct.PURCHASE_DATE,
-			FeedProduct.STORE,
-			FeedProduct.USER
-		    };
-		
-		c = db.query(
-			FeedProduct.TABLE_NAME,  				  // The table to query
-		    projection,                               // The columns to return
-		    null,                                	  // The columns for the WHERE clause
-		    null,                            		  // The values for the WHERE clause
-		    null,                                     // don't group the rows
-		    null,                                     // don't filter by row groups
-		    null                                 	  // The sort order
-		    );
-		
-		return c;
-    }
     
     public void saveProduct(ArrayList<String> products_list, String date, String VAT){
 		mDbHelper = new FeedReaderDbHelper(context);

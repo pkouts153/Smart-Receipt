@@ -4,9 +4,7 @@ import com.SR.data.Budget;
 import com.SR.data.Category;
 import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.User;
-import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
-import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
@@ -24,8 +22,8 @@ import android.widget.Spinner;
 import android.support.v4.app.NavUtils;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
@@ -74,52 +72,64 @@ public class BudgetActivity extends Activity implements OnClickListener {
         Category category = new Category(this);
 		Cursor c = category.getCategories();
 		
-		c.moveToFirst();
-		String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
-		
 		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
 		cat_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		cat_adapter.add(category_name);
+		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
 		category_spinner.setAdapter(cat_adapter);
-		
-		while (!c.isLast ()) {
-			c.moveToNext ();
-			category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			
+        try{
+        	
+			c.moveToFirst();
+			String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			
 			cat_adapter.add(category_name);
-		}
-		c.close();
-		category.getCatFeedReaderDbHelper().close();
-		
-		
-        /*User user = new User(this);
-		Cursor c2 = user.getFamilyMembers();
-		
-		c2.moveToFirst();
-		String family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
-		
-		ArrayAdapter <CharSequence> fam_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
+			
+			while (!c.isLast ()) {
+				c.moveToNext ();
+				category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+				cat_adapter.add(category_name);
+			}
+			c.close();
+			category.getCatFeedReaderDbHelper().close();
+			
+        } catch (CursorIndexOutOfBoundsException e){
+        	c.close();
+			category.getCatFeedReaderDbHelper().close();
+        }
+        
+        
+        
+        
+        ArrayAdapter <CharSequence> fam_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
 		fam_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		fam_adapter.add(category_name);
+		
 		family_spinner = (Spinner) findViewById(R.id.family_spinner);
 		family_spinner.setAdapter(fam_adapter);
 		
-		while (!c2.isLast ()) {
-			c2.moveToNext ();
-			family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
-			fam_adapter.add(category_name);
-		}
-		c2.close();
-		user.getUserFeedReaderDbHelper().close();*/
+		User user = new User(this);
+		Cursor c2 = user.getFamilyMembers(User.USER_ID);
 		
-		
-		
-		//configure family spinner
-		family_spinner = (Spinner) findViewById(R.id.family_spinner);
-		
-		ArrayAdapter<CharSequence> family_adapter = ArrayAdapter.createFromResource(this, R.array.family_array, android.R.layout.simple_spinner_item);
-		family_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		family_spinner.setAdapter(family_adapter);
+        try{
+	        
+			c2.moveToFirst();
+			String family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
+
+			fam_adapter.add(family_member);
+
+			while (!c2.isLast ()) {
+				c2.moveToNext ();
+				family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
+				fam_adapter.add(family_member);
+			}
+			c2.close();
+			user.getUserFeedReaderDbHelper().close();
+			
+		} catch (CursorIndexOutOfBoundsException e){
+			fam_adapter.add("No family");
+			c2.close();
+			user.getUserFeedReaderDbHelper().close();
+	    }
 	}
     
 	/**

@@ -2,15 +2,12 @@ package com.SR.smartreceipt;
 
 import java.util.ArrayList;
 
-import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.Product;
-import com.SR.data.User;
 import com.SR.processes.BudgetNotificationIntentService;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
