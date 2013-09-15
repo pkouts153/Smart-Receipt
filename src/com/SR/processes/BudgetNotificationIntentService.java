@@ -1,5 +1,6 @@
 package com.SR.processes;
 
+import com.SR.data.Budget;
 import com.SR.smartreceipt.R;
 
 import android.annotation.SuppressLint;
@@ -19,46 +20,52 @@ public class BudgetNotificationIntentService extends IntentService {
 	}
 
 	@Override
-	protected void onHandleIntent(Intent arg0) {
+	protected void onHandleIntent(Intent intent) {
 
-		try {
+		boolean budgetSurpassed = false;
+		
+		Budget budget = new Budget(this);
+		budgetSurpassed = budget.isBudgetSurpassed();
+		/*try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.save)
-		        .setContentTitle("My notification")
-		        .setContentText("Hello World!");
-		// Creates an explicit intent for an Activity in your app
-		//Intent resultIntent = new Intent(this, BudgetActivity.class);
-
-		// The stack builder object will contain an artificial back stack for the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		//TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		/*stackBuilder.addParentStack(BudgetActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(arg0);
-		PendingIntent resultPendingIntent =
-		        stackBuilder.getPendingIntent(
-		            0,
-		            PendingIntent.FLAG_UPDATE_CURRENT
-		        );*/
-		PendingIntent pendingIntent
-		  = PendingIntent.getActivity(getBaseContext(),
-		    0, arg0,
-		    Intent.FLAG_ACTIVITY_NEW_TASK);
-		mBuilder.setContentIntent(pendingIntent);
-		NotificationManager mNotificationManager =
-		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		mNotificationManager.notify(1, mBuilder.build());
+		if (budgetSurpassed) {
+			NotificationCompat.Builder mBuilder =
+			        new NotificationCompat.Builder(this)
+			        .setSmallIcon(R.drawable.budget)
+			        .setContentTitle("Budget Control")
+			        .setContentText("You have surpassed your prefered budget!");
+			// Creates an explicit intent for an Activity in your app
+			//Intent resultIntent = new Intent(this, BudgetActivity.class);
+	
+			// The stack builder object will contain an artificial back stack for the
+			// started Activity.
+			// This ensures that navigating backward from the Activity leads out of
+			// your application to the Home screen.
+			//TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+			// Adds the back stack for the Intent (but not the Intent itself)
+			/*stackBuilder.addParentStack(BudgetActivity.class);
+			// Adds the Intent that starts the Activity to the top of the stack
+			stackBuilder.addNextIntent(arg0);
+			PendingIntent resultPendingIntent =
+			        stackBuilder.getPendingIntent(
+			            0,
+			            PendingIntent.FLAG_UPDATE_CURRENT
+			        );*/
+			PendingIntent pendingIntent
+			  = PendingIntent.getActivity(getBaseContext(),
+			    0, intent,
+			    Intent.FLAG_ACTIVITY_NEW_TASK);
+			mBuilder.setContentIntent(pendingIntent);
+			NotificationManager mNotificationManager =
+			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// mId allows you to update the notification later on.
+			mNotificationManager.notify(1, mBuilder.build());
+		}
 	}
 	
 }

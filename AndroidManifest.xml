@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <application
         android:allowBackup="true"
@@ -15,8 +15,8 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name="com.SR.smartreceipt.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:name="com.SR.smartreceipt.MainActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,13 +25,14 @@
         </activity>
         
         <activity
-            android:name="com.SR.smartreceipt.MainActivity"
-            android:label="@string/app_name"
-            android:parentActivityName="com.SR.smartreceipt.LoginActivity" >
+            android:name="com.SR.smartreceipt.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName="com.SR.smartreceipt.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.SR.smartreceipt.LoginActivity" />
+                android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
+         
         <activity
             android:name="com.SR.smartreceipt.BudgetActivity"
             android:label="@string/title_activity_budget"

@@ -52,6 +52,8 @@ public class BudgetActivity extends Activity implements OnClickListener {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
+		//set up ui components
+		
 		spend_limit = (EditText)findViewById(R.id.spend_limit);
 		from_date = (EditText)findViewById(R.id.from_date);
 		from_date.setOnClickListener(this);
@@ -68,6 +70,8 @@ public class BudgetActivity extends Activity implements OnClickListener {
         reset = (Button)findViewById(R.id.reset);
         reset.setOnClickListener(this);
         
+        
+        //set up category spinner
         
         Category category = new Category(this);
 		Cursor c = category.getCategories();
@@ -99,7 +103,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
         }
         
         
-        
+        //set up family spinner
         
         ArrayAdapter <CharSequence> fam_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
 		fam_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -174,10 +178,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 				try{
 					
 					String cat_spinner = category_spinner.getSelectedItem().toString();
-					
 					String s_limit = spend_limit.getText().toString();
-					Float limit= Float.parseFloat(s_limit);
-					
 					String fd = from_date.getText().toString();
 					String ud = until_date.getText().toString();
 					
@@ -187,12 +188,14 @@ public class BudgetActivity extends Activity implements OnClickListener {
 					else
 						n = 0;
 					
-					if ((fd.equals("")) || (ud.equals(""))) {
+					if (/*an den exei epile3ei kathgoria ||*/(s_limit.equals("")) || (fd.equals("")) || (ud.equals(""))) {
 						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 						errorDialog.setMessage(this.getString(R.string.no_input));
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
+						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
+						Float limit= Float.parseFloat(s_limit);
 						
 						Budget budget = new Budget(this);
 						

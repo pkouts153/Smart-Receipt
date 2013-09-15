@@ -1,5 +1,8 @@
 package com.SR.smartreceipt;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.SR.data.User;
 
 import android.os.Bundle;
@@ -32,8 +35,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 		reset.setOnClickListener(this);
 
 	}
-
-
+	
 	@Override
 	public void onClick(View v) {
 
@@ -43,19 +45,27 @@ public class LoginActivity extends Activity implements OnClickListener {
 			String pass = password.getText().toString();
 			
 			if (!(mail.equals("") || pass.equals(""))) {
-				User user = new User(this);
-	
-				if (user.userLogin(mail, pass)) {
-					Intent intent = new Intent(this, MainActivity.class);
-					startActivity(intent);
-				}
+				//if (isEmailValid(mail)) {
+					
+					User user = new User(this);
+					
+					if (user.userLogin(mail, pass)) {
+						Intent intent = new Intent(this, MainActivity.class);
+						startActivity(intent);
+					}
+					else {
+						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+						errorDialog.setMessage(this.getString(R.string.no_user));
+						errorDialog.show(getFragmentManager(), "Dialog");
+					}
+		
+					user.getUserFeedReaderDbHelper().close();
+				/*}
 				else {
 					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-					errorDialog.setMessage(this.getString(R.string.no_user));
-					errorDialog.show(getFragmentManager(), "Dialog");
-				}
-	
-				user.getUserFeedReaderDbHelper().close();
+					errorDialog.setMessage(this.getString(R.string.input_error));
+					errorDialog.show(getFragmentManager(), "errorDialog");
+				}*/
 			}
 			else {
 				InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
@@ -67,7 +77,29 @@ public class LoginActivity extends Activity implements OnClickListener {
 			clearFields();
 		}
 	}
+	
+	
+	/**
+	 * method is used for checking valid email id format.
+	 * 
+	 * @param email
+	 * @return boolean true for valid false for invalid
+	 */
+	public static boolean isEmailValid(String email) {
+	    boolean isValid = false;
 
+	    String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+	    CharSequence inputStr = email;
+
+	    Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+	    Matcher matcher = pattern.matcher(inputStr);
+	    if (matcher.matches()) {
+	        isValid = true;
+	    }
+	    return isValid;
+	}
+	
+	
 	public void clearFields() {
 		email.getText().clear();
 		password.getText().clear();

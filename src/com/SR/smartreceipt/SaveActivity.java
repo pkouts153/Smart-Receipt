@@ -178,7 +178,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 					cat_spinner = category_spinner.getSelectedItem().toString();
 					p_name = product_name.getText().toString();
 					p_price = price.getText().toString();
-					p = Float.parseFloat(p_price);
+					
 					
 					if ((p_name.equals("")) || (p_price.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
 						
@@ -187,6 +187,9 @@ public class SaveActivity extends Activity implements OnClickListener {
 						errorDialog.show(getFragmentManager(), "Dialog");
 					}
 					else {
+						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
+						p = Float.parseFloat(p_price);
+						
 						addToArrayList();
 						clearFields();
 						products++;

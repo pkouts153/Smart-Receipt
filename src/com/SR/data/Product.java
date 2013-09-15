@@ -7,7 +7,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.SR.data.FeedReaderContract.FeedFamily;
+import com.SR.data.FeedReaderContract.FeedOffer;
 import com.SR.data.FeedReaderContract.FeedProduct;
+import com.SR.data.FeedReaderContract.FeedUser;
 
 public class Product {
 
@@ -28,7 +31,31 @@ public class Product {
 		context = c;
 	}
 	
-    
+	/*public Cursor getProducts(int id){
+    	
+    	mDbHelper = new FeedReaderDbHelper(context);
+		
+		// Gets the data repository in write mode
+		db = mDbHelper.getWritableDatabase();
+    	
+		String query = "SELECT DISTINCT " + FeedUser.USERNAME +
+				   	   " FROM " + FeedUser.TABLE_NAME +
+				       " WHERE " + FeedUser._ID + "=(SELECT DISTINCT " + FeedFamily.MEMBER2 +
+				   									" FROM " + FeedFamily.TABLE_NAME +
+				   									" WHERE " + FeedFamily.MEMBER1 + "=" + user +
+				   									" UNION ALL " +
+				   									"SELECT DISTINCT " + FeedFamily.MEMBER1 +
+				   									" FROM " + FeedFamily.TABLE_NAME +
+				   									" WHERE " + FeedFamily.MEMBER2 + "=" + user + ")";
+	
+		c = db.rawQuery(query, null);
+	
+		
+		return c;
+		
+	}*/
+	
+	
     public void saveProduct(ArrayList<String> products_list, String date, String VAT){
 		mDbHelper = new FeedReaderDbHelper(context);
 		

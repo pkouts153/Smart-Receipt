@@ -1,5 +1,7 @@
 package com.SR.smartreceipt;
 
+import com.SR.data.User;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +13,14 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		
+		if (User.USER_ID != 0) {
+			setContentView(R.layout.activity_main);
+		}
+		else {
+			Intent intent = new Intent(this, LoginActivity.class);
+			startActivity(intent);
+		}
 	}
 	
 	@Override
