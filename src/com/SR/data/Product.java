@@ -7,10 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.SR.data.FeedReaderContract.FeedFamily;
-import com.SR.data.FeedReaderContract.FeedOffer;
 import com.SR.data.FeedReaderContract.FeedProduct;
-import com.SR.data.FeedReaderContract.FeedUser;
 
 public class Product {
 

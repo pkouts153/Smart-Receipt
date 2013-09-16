@@ -1,8 +1,5 @@
 package com.SR.data;
 
-import java.util.Calendar;
-import java.util.StringTokenizer;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedProduct;
-import com.SR.data.FeedReaderContract.FeedUser;
 
 public class Budget {
 
@@ -24,7 +20,8 @@ public class Budget {
     
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
-    Cursor c;
+    Cursor c1;
+    Cursor c2;
     
     Context context;
     
@@ -32,6 +29,40 @@ public class Budget {
 		context = c;
 	}
 	
+    public Cursor getBudget(int user_id){
+    	
+    	mDbHelper = new FeedReaderDbHelper(context);
+		
+		// Gets the data repository in write mode
+		db = mDbHelper.getWritableDatabase();
+    	
+		// Specifies which columns are needed from the database
+		String[] projection = {
+			FeedBudget._ID,
+			FeedBudget.EXPENSE_CATEGORY,
+			FeedBudget.SPEND_LIMIT,
+			FeedBudget.START_DATE,
+			FeedBudget.END_DATE,
+			FeedBudget.NOTIFICATION,
+			FeedBudget.USER,
+			FeedBudget.FAMILY_USER,
+		    };
+		
+		String where = "" + FeedBudget.USER + "=" + user_id;
+		
+		c1 = db.query(
+			FeedBudget.TABLE_NAME,  				  // The table to query
+		    projection,                               // The columns to return
+		    where,                                	  // The columns for the WHERE clause
+		    null,                            		  // The values for the WHERE clause
+		    null,                                     // don't group the rows
+		    null,                                     // don't filter by row groups
+		    null                                 	  // The sort order
+		    );
+		
+		return c1;
+    }
+    
     public void saveBudget(String category, Float limit, String from_date, String until_date, int n, int user_id, int family_id){
     	
     	mDbHelper = new FeedReaderDbHelper(context);
@@ -56,49 +87,39 @@ public class Budget {
     public boolean isBudgetSurpassed() {
     	boolean surpassed = false;
     	
-    	mDbHelper = new FeedReaderDbHelper(context);
-		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-    	
-		String query = "SELECT SUM(" + FeedProduct.PRICE + ") as sum" + //", " + FeedBudget.START_DATE + ", " + FeedBudget.END_DATE +
-				   	   " FROM " + FeedProduct.TABLE_NAME +// ", " + FeedBudget.TABLE_NAME +
-					   " WHERE " + FeedProduct.USER + "=" + User.USER_ID + " AND " + 
-					   	   "" + " AND " +
-						   
-						   "sum>(SELECT " + FeedBudget.SPEND_LIMIT + 
+		/*String query = "SELECT " + FeedProduct.USER + ", SUM(" + FeedProduct.PRICE + ") as sum" + ", " + FeedBudget.START_DATE + ", " + FeedBudget.END_DATE +
+				   	   " FROM " + FeedProduct.TABLE_NAME + ", " + FeedBudget.TABLE_NAME +
+					   " WHERE " + FeedProduct.USER + "=" + User.USER_ID + " AND " + FeedBudget.USER + "=" + User.USER_ID +
+					   " AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + FeedBudget.START_DATE + "') AND Date('" + FeedBudget.END_DATE + "')" +
+					   " GROUP BY " + FeedProduct.USER + 
+					   " HAVING sum>(SELECT " + FeedBudget.SPEND_LIMIT + 
 								 " FROM " + FeedBudget.TABLE_NAME +
-								 " WHERE " + FeedBudget.USER + "=" + User.USER_ID + ")"; 
-	
-
-		c = db.rawQuery(query, null);
+								 " WHERE " + FeedBudget.USER + "=" + User.USER_ID + ")";*/
 		
-		/*Calendar calendar = Calendar.getInstance();
-        int c_year = calendar.get(Calendar.YEAR);
-        int c_month = calendar.get(Calendar.MONTH);
-        int c_day = calendar.get(Calendar.DAY_OF_MONTH);
+		c2 = getBudget(User.USER_ID);
+		c2.moveToFirst();
 		
-        String start_date = c.getString(c.getColumnIndexOrThrow(FeedBudget.START_DATE));
+		String productQuery = "SELECT SUM(" + FeedProduct.PRICE + ") AS sum" + 
+						   	   " FROM " + FeedProduct.TABLE_NAME +
+							   " WHERE " + FeedProduct.USER + "=" + User.USER_ID +
+						   	   		" AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.START_DATE)) + "')" +
+						   													" AND Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.END_DATE)) + "')";
+			
+		c1 = db.rawQuery(productQuery, null);
         
-        StringTokenizer tokens = new StringTokenizer(start_date, "/");
-        int s_day = Integer.parseInt(tokens.nextToken());
-        int s_month = Integer.parseInt(tokens.nextToken());
-        int s_year = Integer.parseInt(tokens.nextToken());
-        
-        String end_date = c.getString(c.getColumnIndexOrThrow(FeedBudget.END_DATE));
-        
-        StringTokenizer tokens1 = new StringTokenizer(end_date, "/");
-        int e_day = Integer.parseInt(tokens.nextToken());
-        int e_month = Integer.parseInt(tokens.nextToken());
-        int e_year = Integer.parseInt(tokens.nextToken());*/
-        
-        
-		if (c.moveToFirst()){ //&&  && 
-			//c.getFloat(c.getColumnIndexOrThrow("sum")) > c.getFloat(c.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))) {
-		    
+        c1.moveToFirst();
+        c2.moveToFirst();
+		
+        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))){// && (p_day>=s_day && p_day<=e_day) && (p_month>=s_month && p_month<=e_month) && (p_year>=s_year && p_year<=e_year)) {
+			
 			surpassed = true;
 		}
 
+		c1.close();
+		c2.close();
+		
+		getBudgetFeedReaderDbHelper().close();
+		
     	return surpassed;
     }
     

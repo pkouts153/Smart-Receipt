@@ -112,6 +112,21 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		        "Panos" + "' AS '" + FeedUser.PASSWORD + "', '" + 
 			    "Panos" + "' AS '" + FeedUser.EMAIL + "'";
 		
+	private static final String SQL_ADD_PRODUCTS =
+		    "INSERT INTO '" + FeedProduct.TABLE_NAME + "'" +
+		    " SELECT NULL AS '" + FeedProduct._ID + "', '" + "Food" + "' AS '" + FeedProduct.PRODUCT_CATEGORY + "', '" + "Coffee" + "' AS '" + FeedProduct.NAME + "', '" +
+		    			"3" + "' AS '" + FeedProduct.PRICE + "', '" + "2013-09-16" + "' AS '" + FeedProduct.PURCHASE_DATE + "', '" + 
+		    			"1" + "' AS '" + FeedProduct.STORE + "', '" + "1" + "' AS '" + FeedProduct.USER + "'" +
+			" UNION SELECT NULL, '" + "Food" + "', '" + "Tost" + "', '" + "2" + "', '" + "2013-09-16" + "', '" + "1" + "', '" + "1" + "'" +
+			" UNION SELECT NULL, '" + "Food" + "', '" + "Tost" + "', '" + "2" + "', '" + "2013-09-16" + "', '" + "1" + "', '" + "2" + "'";
+	
+	private static final String SQL_ADD_BUDGET =
+		    "INSERT INTO '" + FeedBudget.TABLE_NAME + "'" +
+		    " SELECT NULL AS '" + FeedBudget._ID + "', '" + "Food" + "' AS '" + FeedBudget.EXPENSE_CATEGORY + "', '" + "8" + "' AS '" + FeedBudget.SPEND_LIMIT + "', '" + 
+		    			"2013-09-10" + "' AS '" + FeedBudget.START_DATE + "', '" + "2013-09-20" + "' AS '" + FeedBudget.END_DATE + "', '" + 
+		    			"1" + "' AS '" + FeedBudget.NOTIFICATION + "', '" + "1" + "' AS '" + FeedBudget.USER + "', '" + "null" + "' AS '" + FeedBudget.FAMILY_USER + "'" +
+			" UNION SELECT NULL, '" + "Food" + "', '" + "6" + "', '" + "2013-09-10" + "', '" + "2013-09-20" + "', '" + "1" + "', '" + "2" + "', '" + "null" + "'";
+	
 	private static final String SQL_ADD_STORE =
 	    "INSERT INTO '" + FeedStore.TABLE_NAME + "'" +
         " SELECT NULL AS '" + FeedStore._ID + "', '" + 
@@ -158,13 +173,16 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_ADD_STORE);
 		db.execSQL(SQL_ADD_OFFER);
 		db.execSQL(SQL_ADD_FAMILY);
+		db.execSQL(SQL_ADD_PRODUCTS);
+		db.execSQL(SQL_ADD_BUDGET);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		/*switch (oldVersion) {
 		case 1:
-			db.execSQL(SQL_ADD_USER2);
+			db.execSQL(SQL_ADD_PRODUCTS);
+			db.execSQL(SQL_ADD_BUDGET);
 		}*/
 	}
 

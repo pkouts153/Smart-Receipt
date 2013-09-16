@@ -16,7 +16,6 @@ public class BudgetNotificationIntentService extends IntentService {
 	
 	public BudgetNotificationIntentService() {
 		super("BudgetNotificationIntentService");
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -26,14 +25,9 @@ public class BudgetNotificationIntentService extends IntentService {
 		
 		Budget budget = new Budget(this);
 		budgetSurpassed = budget.isBudgetSurpassed();
-		/*try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		
 		if (budgetSurpassed) {
+			
 			NotificationCompat.Builder mBuilder =
 			        new NotificationCompat.Builder(this)
 			        .setSmallIcon(R.drawable.budget)
@@ -65,6 +59,7 @@ public class BudgetNotificationIntentService extends IntentService {
 			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			// mId allows you to update the notification later on.
 			mNotificationManager.notify(1, mBuilder.build());
+			
 		}
 	}
 	

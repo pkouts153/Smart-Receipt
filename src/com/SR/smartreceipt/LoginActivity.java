@@ -19,7 +19,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 	EditText password;
 	Button login;
     Button reset;
-
+    
+    User user;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,7 +49,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			if (!(mail.equals("") || pass.equals(""))) {
 				//if (isEmailValid(mail)) {
 					
-					User user = new User(this);
+					user = new User(this);
 					
 					if (user.userLogin(mail, pass)) {
 						Intent intent = new Intent(this, MainActivity.class);
@@ -104,4 +106,21 @@ public class LoginActivity extends Activity implements OnClickListener {
 		email.getText().clear();
 		password.getText().clear();
 	}
+	
+	
+	/*@Override
+	protected void onStop() {
+	    super.onStop();
+	    
+	    if (user.getUserFeedReaderDbHelper() != null)
+	    	user.getUserFeedReaderDbHelper().close();
+	}
+	
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    
+	    if (user.getUserFeedReaderDbHelper() != null)
+	    	user.getUserFeedReaderDbHelper().close();
+	}*/
 }

@@ -2,14 +2,12 @@ package com.SR.smartreceipt;
 
 import java.util.ArrayList;
 
-import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.Product;
 import com.SR.processes.BudgetNotificationIntentService;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,12 +35,11 @@ public class SaveActivity extends Activity implements OnClickListener {
     Button reset;
     Button scan;
     
-    FeedReaderDbHelper mDbHelper;
-    SQLiteDatabase db;
-    
     DatePickerFragment dateFragment = new DatePickerFragment();
     
     ArrayList<String> product_list = new ArrayList<String>();
+    
+    Product product;
     
     String cat_spinner;
 	String p_name;
@@ -145,8 +142,9 @@ public class SaveActivity extends Activity implements OnClickListener {
 						if (!(p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt))))
 							addToArrayList();
 						
-						Product product = new Product(this);
+						product = new Product(this);
 						product.saveProduct(product_list, pd, VAT);
+						
 						product.getProductFeedReaderDbHelper().close();
 						
 						clearFields();
@@ -246,16 +244,16 @@ public class SaveActivity extends Activity implements OnClickListener {
 	    product_list.clear();
 		product_list.trimToSize();
 		
-	    if (mDbHelper != null)
-	    	mDbHelper.close();
+	    /*if (product.getProductFeedReaderDbHelper() != null)
+	    	product.getProductFeedReaderDbHelper().close();*/
 	}
 	
 	@Override
 	protected void onPause() {
 	    super.onPause();
 	    
-	    if (mDbHelper != null)
-	    	mDbHelper.close();
+	    /*if (product.getProductFeedReaderDbHelper() != null)
+	    	product.getProductFeedReaderDbHelper().close();*/
 	}
 
 }

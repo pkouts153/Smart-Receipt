@@ -5,7 +5,6 @@ import com.SR.data.Category;
 import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.User;
 import com.SR.data.FeedReaderContract.FeedCategory;
-import com.SR.data.FeedReaderDbHelper;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +23,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
 public class BudgetActivity extends Activity implements OnClickListener {
@@ -39,8 +37,9 @@ public class BudgetActivity extends Activity implements OnClickListener {
     Button submit;
     Button reset;
     
-    FeedReaderDbHelper mDbHelper;
-    SQLiteDatabase db;
+    Category category;
+    Budget budget;
+    User user;
     
     DatePickerFragment dateFragment = new DatePickerFragment();
     
@@ -73,7 +72,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
         
         //set up category spinner
         
-        Category category = new Category(this);
+        category = new Category(this);
 		Cursor c = category.getCategories();
 		
 		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
@@ -197,7 +196,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
 						Float limit= Float.parseFloat(s_limit);
 						
-						Budget budget = new Budget(this);
+						budget = new Budget(this);
 						
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
@@ -269,19 +268,31 @@ public class BudgetActivity extends Activity implements OnClickListener {
 	}
 	
 
-	@Override
+	/*@Override
 	protected void onStop() {
 	    super.onStop();
 	    
-	    if (mDbHelper != null)
-	    	mDbHelper.close();
+	    if (budget.getBudgetFeedReaderDbHelper() != null)
+	    	budget.getBudgetFeedReaderDbHelper().close();
+	    
+	    if (user.getUserFeedReaderDbHelper() != null)
+	    	user.getUserFeedReaderDbHelper().close();
+	    
+	    if (category.getCatFeedReaderDbHelper() != null)
+	    	category.getCatFeedReaderDbHelper().close();
 	}
 	
 	@Override
 	protected void onPause() {
 	    super.onPause();
 	    
-	    if (mDbHelper != null)
-	    	mDbHelper.close();
-	}
+	    if (budget.getBudgetFeedReaderDbHelper() != null)
+	    	budget.getBudgetFeedReaderDbHelper().close();
+	    
+	    if (user.getUserFeedReaderDbHelper() != null)
+	    	user.getUserFeedReaderDbHelper().close();
+	    
+	    if (category.getCatFeedReaderDbHelper() != null)
+	    	category.getCatFeedReaderDbHelper().close();
+	}*/
 }
