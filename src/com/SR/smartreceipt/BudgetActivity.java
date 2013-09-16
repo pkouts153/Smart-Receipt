@@ -110,7 +110,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 		family_spinner = (Spinner) findViewById(R.id.family_spinner);
 		family_spinner.setAdapter(fam_adapter);
 		
-		User user = new User(this);
+		user = new User(this);
 		Cursor c2 = user.getFamilyMembers(User.USER_ID);
 		
         try{
@@ -126,12 +126,12 @@ public class BudgetActivity extends Activity implements OnClickListener {
 				fam_adapter.add(family_member);
 			}
 			c2.close();
-			user.getUserFeedReaderDbHelper().close();
+			//user.getUserFeedReaderDbHelper().close();
 			
 		} catch (CursorIndexOutOfBoundsException e){
 			fam_adapter.add("No family");
 			c2.close();
-			user.getUserFeedReaderDbHelper().close();
+			//user.getUserFeedReaderDbHelper().close();
 	    }
 	}
     
@@ -201,7 +201,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
 							
-							User user = new User(this);
+							//User user = new User(this);
 							int id = user.getId(fam_spinner);
 							
 							if (id!=0) {
@@ -210,13 +210,15 @@ public class BudgetActivity extends Activity implements OnClickListener {
 								budget.saveBudget(cat_spinner, limit, fd, ud, n, id, 0);
 							}
 							
-							user.getUserFeedReaderDbHelper().close();
+							//user.getUserFeedReaderDbHelper().close();
 						}
 						else {
 							budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, 0);
 						}
 						
 						budget.getBudgetFeedReaderDbHelper().close();
+						
+						user.getUserFeedReaderDbHelper().close();
 						
 						clearFields();
 						
@@ -268,7 +270,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 	}
 	
 
-	/*@Override
+	@Override
 	protected void onStop() {
 	    super.onStop();
 	    
@@ -294,5 +296,5 @@ public class BudgetActivity extends Activity implements OnClickListener {
 	    
 	    if (category.getCatFeedReaderDbHelper() != null)
 	    	category.getCatFeedReaderDbHelper().close();
-	}*/
+	}
 }
