@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class SearchActivity extends FragmentActivity {
 
@@ -143,9 +144,11 @@ public class SearchActivity extends FragmentActivity {
 		
 		//Search selection input
 		
+		Float total_cost;
 		String product;
 		String category;
-		Float p_cost;
+		Float mn_cost;
+		Float mx_cost;
 		String start_date;
 		String end_date;
 		String store;
@@ -156,7 +159,8 @@ public class SearchActivity extends FragmentActivity {
 		
 		EditText product_name;
 		Spinner category_spinner;
-		EditText cost;
+		EditText min_cost;
+		EditText max_cost;
 		EditText search_start_date;
 		EditText search_end_date;
 		EditText search_store;
@@ -169,29 +173,35 @@ public class SearchActivity extends FragmentActivity {
 		
 		DatePickerFragment dateFragment;
 		
-		//Search results fragment components
-		/*View rootView = null;
-		EditText keyword;
-		Spinner category_spinner;
-		EditText cost;
-		EditText search_date;
-		EditText search_store;
-		Spinner family_spinner;
-		Spinner group_by_spinner;
-		Button submit;
-		Button reset;
+		SearchHandler searchHandler;
 		
-		User user;*/
+		Cursor c;
+		
+		ViewGroup container;
+		LayoutInflater inflater;
+		
+		//Search results fragment components
+		
+		TextView result_cost;
+		TextView result_name;
+		TextView result_category;
+		TextView result_price;
+		TextView result_date;
+		TextView result_store;
+		TextView result_user;
+		Button diagrams;
 		
 		public SearchSectionFragment() {
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+		public View onCreateView(LayoutInflater infl, ViewGroup cont,
 				Bundle savedInstanceState) {
-
-			//If the screen the user sees is the search selection screen
 			
+			container = cont;
+			inflater = infl;
+			
+			//If the screen the user sees is the search selection screen
 			if (getArguments().getInt(ARG_SECTION_NUMBER)==1) {
 				rootView = inflater.inflate(R.layout.fragment_search_selection, container, false);
 				
@@ -199,7 +209,8 @@ public class SearchActivity extends FragmentActivity {
 				
 				product_name = (EditText)rootView.findViewById(R.id.product_name);
 				
-				cost = (EditText)rootView.findViewById(R.id.cost);
+				min_cost = (EditText)rootView.findViewById(R.id.min_cost);
+				max_cost = (EditText)rootView.findViewById(R.id.max_cost);
 				
 				search_start_date = (EditText)rootView.findViewById(R.id.search_start_date);
 				search_start_date.setOnClickListener(this);
@@ -272,10 +283,21 @@ public class SearchActivity extends FragmentActivity {
 			else if (getArguments().getInt(ARG_SECTION_NUMBER)==2) {
 				rootView = inflater.inflate(R.layout.fragment_search_results, container, false);
 				
-				SearchHandler searchHandler = new SearchHandler(this.getActivity());
-				searchHandler.getSearchResults(product, category, p_cost, start_date, end_date, store, family, group_by);
 				
-				searchHandler.getSearchFeedReaderDbHelper().close();
+				if (c!=null){
+					result_cost = (TextView)rootView.findViewById(R.id.search_store);
+					result_name = (TextView)rootView.findViewById(R.id.search_store);
+					result_category = (TextView)rootView.findViewById(R.id.search_store);
+					result_price = (TextView)rootView.findViewById(R.id.search_store);
+					result_date = (TextView)rootView.findViewById(R.id.search_store);
+					result_store = (TextView)rootView.findViewById(R.id.search_store);
+					result_user = (TextView)rootView.findViewById(R.id.search_store);
+					diagrams = (Button)rootView.findViewById(R.id.reset);;
+					diagrams.setOnClickListener(this);
+				}
+				else {
+					
+				}
 			}
 			//If the screen the user sees is the search diagrams screen
 			else {
@@ -293,14 +315,13 @@ public class SearchActivity extends FragmentActivity {
 				try {
 					if (submit.getId() == ((Button)v).getId()) {
 
-						if (product_name.getText().toString().equals("") && cost.getText().toString().equals("") && search_store.getText().toString().equals("") && 
-						search_start_date.getText().toString().equals("") && search_end_date.getText().toString().equals("") && 
-						category_spinner.getSelectedItem().toString().equals(this.getString(R.string.category_prompt)) &&
-						family_spinner.getSelectedItem().toString().equals(this.getString(R.string.family_prompt))) {
-					
-							InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-							errorDialog.setMessage(this.getString(R.string.no_input));
-							errorDialog.show(getFragmentManager(), "Dialog");
+						if (product_name.getText().toString().equals("") && search_store.getText().toString().equals("") && 
+							min_cost.getText().toString().equals("") && max_cost.getText().toString().equals("") &&
+							search_start_date.getText().toString().equals("") && search_end_date.getText().toString().equals("") && 
+							category_spinner.getSelectedItem().toString().equals(this.getString(R.string.category_prompt)) &&
+							family_spinner.getSelectedItem().toString().equals(this.getString(R.string.family_prompt))) {
+						
+							displayError(this.getString(R.string.no_input));
 						}
 						else {
 							if (!(product_name.getText().toString().equals("")))
@@ -309,9 +330,14 @@ public class SearchActivity extends FragmentActivity {
 							if (!(category_spinner.getSelectedItem().toString().equals(this.getString(R.string.category_prompt))))
 								category = category_spinner.getSelectedItem().toString();
 							
-							if (!(cost.getText().toString().equals(""))) {
-								String product_cost =  cost.getText().toString();
-								p_cost = Float.parseFloat(product_cost);
+							if (!(min_cost.getText().toString().equals(""))) {
+								String product_min_cost =  min_cost.getText().toString();
+								mn_cost = Float.parseFloat(product_min_cost);
+							}
+							
+							if (!(max_cost.getText().toString().equals(""))) {
+								String product_max_cost =  max_cost.getText().toString();
+								mx_cost = Float.parseFloat(product_max_cost);
 							}
 							
 							if (!(search_start_date.getText().toString().equals("")))
@@ -329,17 +355,23 @@ public class SearchActivity extends FragmentActivity {
 							if (!(group_by_spinner.getSelectedItem().toString().equals(this.getString(R.string.group_by_prompt))))
 								group_by = group_by_spinner.getSelectedItem().toString();
 							
+							searchHandler = new SearchHandler(this.getActivity());
+							c = searchHandler.getSearchResults(product, category, mn_cost, mx_cost, start_date, end_date, store, family, group_by);
 							
+							searchHandler.getSearchFeedReaderDbHelper().close();
+							
+							rootView = inflater.inflate(R.layout.fragment_search_results, container, false);
 						}
 					}
 					else if (reset.getId() == ((Button)v).getId()){
 						clearFields();
 					}
+					else {
+						rootView = inflater.inflate(R.layout.fragment_search_diagrams, container, false);
+					}
 				} catch (NumberFormatException e) {
 					
-					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-					errorDialog.setMessage(this.getString(R.string.input_error));
-					errorDialog.show(getFragmentManager(), "errorDialog");
+					displayError(this.getString(R.string.input_error));
 				}
 			}
 			else {
@@ -350,12 +382,19 @@ public class SearchActivity extends FragmentActivity {
 			
 		}
 		
+		public void displayError(String message) {
+			InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+			errorDialog.setMessage(message);
+			errorDialog.show(getFragmentManager(), "errorDialog");
+		}
+		
 		public void clearFields() {
 			category_spinner.setSelection(0);
 			family_spinner.setSelection(0);
 			group_by_spinner.setSelection(0);
 			product_name.getText().clear();
-			cost.getText().clear();
+			min_cost.getText().clear();
+			max_cost.getText().clear();
 			search_start_date.getText().clear();
 			search_end_date.getText().clear();
 			search_store.getText().clear();

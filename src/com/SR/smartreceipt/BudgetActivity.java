@@ -117,7 +117,6 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		Cursor c2 = user.getFamilyMembers(User.USER_ID);
 		
         try{
-	        
 			c2.moveToFirst();
 			String family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
 

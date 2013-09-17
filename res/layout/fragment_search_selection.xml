@@ -27,15 +27,33 @@
 	    android:paddingTop="@dimen/activity_vertical_margin"
 	    android:prompt="@string/category_prompt" />
     
-    <EditText
-        android:id="@+id/cost"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/cost"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" />
     
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    tools:context=".SearchActivity$SelectionSectionFragment"
+	    android:orientation="horizontal" >
+	    
+	    <EditText
+	        android:id="@+id/min_cost"
+	        android:layout_width="136dp"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/min_cost"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:paddingTop="@dimen/activity_vertical_margin" />
+	
+	    <EditText
+	        android:id="@+id/max_cost"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="0.17"
+	        android:hint="@string/max_cost"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:paddingTop="@dimen/activity_vertical_margin" />
+	  
+	</LinearLayout>
 
    	<LinearLayout
 	    android:layout_width="match_parent"
@@ -45,9 +63,8 @@
 	    
 	    <EditText
 	        android:id="@+id/search_start_date"
-	        android:layout_width="wrap_content"
+	        android:layout_width="136dp"
 	        android:layout_height="wrap_content"
-	        android:layout_weight="0.17"
 	        android:clickable="true"
 	        android:focusableInTouchMode="false"
 	        android:hint="@string/search_start_date"
@@ -59,7 +76,7 @@
 	        android:id="@+id/search_end_date"
 	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
+	        android:layout_weight="0.17"
 	        android:hint="@string/search_end_date"
 	        android:paddingLeft="@dimen/activity_horizontal_margin"
 	        android:paddingRight="@dimen/activity_horizontal_margin"
@@ -78,23 +95,32 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin" />
     
-    <Spinner
-        android:id="@+id/family_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:prompt="@string/family_prompt"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" />
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    tools:context=".SearchActivity$SelectionSectionFragment"
+	    android:orientation="horizontal" >
+	    
+	    <Spinner
+	        android:id="@+id/family_spinner"
+	        android:layout_width="136dp"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:paddingTop="@dimen/activity_vertical_margin"
+	        android:prompt="@string/family_prompt" />
+	    
+	    <Spinner
+	        android:id="@+id/group_by_spinner"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="0.17"
+	        android:prompt="@string/group_by_prompt"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:paddingTop="@dimen/activity_vertical_margin" />
     
-    <Spinner
-        android:id="@+id/group_by_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:prompt="@string/group_by_prompt"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" />
+    </LinearLayout>
     
     <RelativeLayout
         android:layout_width="match_parent"

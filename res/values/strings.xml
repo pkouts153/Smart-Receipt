@@ -88,7 +88,8 @@
     <!-- Strings of activity_search -->
 
     <string name="product">Keyword-Product name</string>
-    <string name="cost">Product cost</string>
+    <string name="min_cost">Product min cost</string>
+    <string name="max_cost">Product max cost</string>
     <string name="search_start_date">Start date</string>
     <string name="search_end_date">End date</string>
     <string name="search_store">Store VAT number</string>
