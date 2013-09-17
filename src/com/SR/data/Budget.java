@@ -102,6 +102,7 @@ public class Budget {
 		String productQuery = "SELECT SUM(" + FeedProduct.PRICE + ") AS sum" + 
 						   	   " FROM " + FeedProduct.TABLE_NAME +
 							   " WHERE " + FeedProduct.USER + "=" + User.USER_ID +
+							   		" AND " + FeedProduct.PRODUCT_CATEGORY + "='" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY)) + "'" +
 						   	   		" AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.START_DATE)) + "')" +
 						   													" AND Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.END_DATE)) + "')";
 			
@@ -110,7 +111,7 @@ public class Budget {
         c1.moveToFirst();
         c2.moveToFirst();
 		
-        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))){// && (p_day>=s_day && p_day<=e_day) && (p_month>=s_month && p_month<=e_month) && (p_year>=s_year && p_year<=e_year)) {
+        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))){
 			
 			surpassed = true;
 		}

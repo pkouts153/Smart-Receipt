@@ -6,11 +6,11 @@ import com.SR.data.Product;
 import com.SR.processes.BudgetNotificationIntentService;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class SaveActivity extends Activity implements OnClickListener {
+public class SaveActivity extends FragmentActivity implements OnClickListener {
 	
 	Spinner category_spinner;
 	EditText product_name;
@@ -134,9 +134,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 					if ((product_list.size()==0 && (p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt)))) 
 							|| (product_list.size()!=0 && (pd.equals("")))) {
 							
-						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-						errorDialog.setMessage(this.getString(R.string.no_input));
-						errorDialog.show(getFragmentManager(), "Dialog");
+						displayError(this.getString(R.string.no_input));
 					}
 					else {
 						if (!(p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt))))
@@ -159,7 +157,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 						
 						SuccessDialogFragment successDialog = new SuccessDialogFragment();
 						successDialog.setMessage(this.getString(R.string.success));
-						successDialog.show(getFragmentManager(), "successDialog");
+						successDialog.show(getSupportFragmentManager(), "successDialog");
 						timerDelayRemoveDialog(1500, successDialog);
 					
 					    Intent serviceIntent = new Intent(SaveActivity.this, BudgetNotificationIntentService.class);
@@ -180,9 +178,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 					
 					if ((p_name.equals("")) || (p_price.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
 						
-						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-						errorDialog.setMessage(this.getString(R.string.no_input));
-						errorDialog.show(getFragmentManager(), "Dialog");
+						displayError(this.getString(R.string.no_input));
 					}
 					else {
 						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
@@ -193,10 +189,7 @@ public class SaveActivity extends Activity implements OnClickListener {
 						products++;
 						number_of_products.setText(""+products+"");
 						
-						SuccessDialogFragment successDialog = new SuccessDialogFragment();
-						successDialog.setMessage(this.getString(R.string.added));
-						successDialog.show(getFragmentManager(), "addedDialog");
-						timerDelayRemoveDialog(1500, successDialog);
+						displaySuccess(this.getString(R.string.added));
 					}
 				}
 				else {
@@ -206,14 +199,12 @@ public class SaveActivity extends Activity implements OnClickListener {
 			
 			} catch (NumberFormatException e) {
 				
-				InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-				errorDialog.setMessage(this.getString(R.string.input_error));
-				errorDialog.show(getFragmentManager(), "errorDialog");
+				displayError(this.getString(R.string.input_error));
 			}
 		}
 		else {
 			dateFragment.setView(v);
-	    	dateFragment.show(getFragmentManager(), "datePicker");
+	    	dateFragment.show(getSupportFragmentManager(), "datePicker");
 		}
 	}
 	
@@ -227,6 +218,19 @@ public class SaveActivity extends Activity implements OnClickListener {
 		product_list.add(cat_spinner);
 		product_list.add(p_name);
 		product_list.add(p_price);
+	}
+	
+	public void displayError(String message) {
+		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+		errorDialog.setMessage(message);
+		errorDialog.show(getSupportFragmentManager(), "errorDialog");
+	}
+	
+	public void displaySuccess(String message) {
+		SuccessDialogFragment successDialog = new SuccessDialogFragment();
+		successDialog.setMessage(message);
+		successDialog.show(getSupportFragmentManager(), "successDialog");
+		timerDelayRemoveDialog(1500, successDialog);
 	}
 	
 	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){

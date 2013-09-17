@@ -8,7 +8,6 @@ import com.SR.data.FeedReaderContract.FeedCategory;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -25,7 +25,7 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.os.Build;
 
-public class BudgetActivity extends Activity implements OnClickListener {
+public class BudgetActivity extends FragmentActivity implements OnClickListener {
 
 	Spinner category_spinner;
 	EditText spend_limit;
@@ -75,12 +75,13 @@ public class BudgetActivity extends Activity implements OnClickListener {
         category = new Category(this);
 		Cursor c = category.getCategories();
 		
-		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
-		cat_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
+		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
 		category_spinner.setAdapter(cat_adapter);
-			
+		cat_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		cat_adapter.add(this.getString(R.string.category_prompt));
+		
         try{
         	
 			c.moveToFirst();
@@ -109,6 +110,8 @@ public class BudgetActivity extends Activity implements OnClickListener {
 		
 		family_spinner = (Spinner) findViewById(R.id.family_spinner);
 		family_spinner.setAdapter(fam_adapter);
+		
+		fam_adapter.add(this.getString(R.string.family_prompt));
 		
 		user = new User(this);
 		Cursor c2 = user.getFamilyMembers(User.USER_ID);
@@ -187,10 +190,8 @@ public class BudgetActivity extends Activity implements OnClickListener {
 					else
 						n = 0;
 					
-					if (/*an den exei epile3ei kathgoria ||*/(s_limit.equals("")) || (fd.equals("")) || (ud.equals(""))) {
-						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-						errorDialog.setMessage(this.getString(R.string.no_input));
-						errorDialog.show(getFragmentManager(), "Dialog");
+					if (cat_spinner.equals(this.getString(R.string.category_prompt)) || s_limit.equals("") || fd.equals("") || ud.equals("")) {
+						displayError(this.getString(R.string.no_input));
 					}
 					else {
 						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
@@ -201,16 +202,22 @@ public class BudgetActivity extends Activity implements OnClickListener {
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
 							
-							//User user = new User(this);
-							int id = user.getId(fam_spinner);
-							
-							if (id!=0) {
-								
-								budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, id);
-								budget.saveBudget(cat_spinner, limit, fd, ud, n, id, 0);
+							if (fam_spinner.equals(this.getString(R.string.family_prompt))) {
+								displayError(this.getString(R.string.input_error));
 							}
-							
-							//user.getUserFeedReaderDbHelper().close();
+							else {
+								//User user = new User(this);
+								
+								int id = user.getId(fam_spinner);
+								
+								if (id!=0) {
+									
+									budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, id);
+									budget.saveBudget(cat_spinner, limit, fd, ud, n, id, 0);
+								}
+								
+								//user.getUserFeedReaderDbHelper().close();
+							}
 						}
 						else {
 							budget.saveBudget(cat_spinner, limit, fd, ud, n, User.USER_ID, 0);
@@ -222,16 +229,11 @@ public class BudgetActivity extends Activity implements OnClickListener {
 						
 						clearFields();
 						
-						SuccessDialogFragment successDialog = new SuccessDialogFragment();
-						successDialog.setMessage(this.getString(R.string.success));
-						successDialog.show(getFragmentManager(), "successDialog");
-						timerDelayRemoveDialog(1500, successDialog);
+						displaySuccess(this.getString(R.string.success));
 					}
 				
 				} catch (NumberFormatException e) {
-					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-					errorDialog.setMessage(this.getString(R.string.input_error));
-					errorDialog.show(getFragmentManager(), "errorDialog");
+					displayError(this.getString(R.string.input_error));
 				}
 			}
 			else {
@@ -241,9 +243,22 @@ public class BudgetActivity extends Activity implements OnClickListener {
 		}
 		else {
 			dateFragment.setView(v);
-	    	dateFragment.show(getFragmentManager(), "datePicker");
+	    	dateFragment.show(getSupportFragmentManager(), "datePicker");
 		}
 
+	}
+	
+	public void displayError(String message) {
+		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+		errorDialog.setMessage(message);
+		errorDialog.show(getSupportFragmentManager(), "errorDialog");
+	}
+	
+	public void displaySuccess(String message) {
+		SuccessDialogFragment successDialog = new SuccessDialogFragment();
+		successDialog.setMessage(message);
+		successDialog.show(getSupportFragmentManager(), "successDialog");
+		timerDelayRemoveDialog(1500, successDialog);
 	}
 	
 	public void clearFields() {
@@ -270,7 +285,7 @@ public class BudgetActivity extends Activity implements OnClickListener {
 	}
 	
 
-	@Override
+	/*@Override
 	protected void onStop() {
 	    super.onStop();
 	    
@@ -296,5 +311,5 @@ public class BudgetActivity extends Activity implements OnClickListener {
 	    
 	    if (category.getCatFeedReaderDbHelper() != null)
 	    	category.getCatFeedReaderDbHelper().close();
-	}
+	}*/
 }

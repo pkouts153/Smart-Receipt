@@ -6,14 +6,14 @@ import java.util.regex.Pattern;
 import com.SR.data.User;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class LoginActivity extends Activity implements OnClickListener {
+public class LoginActivity extends FragmentActivity implements OnClickListener {
 
 	EditText email;
 	EditText password;
@@ -56,9 +56,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 						startActivity(intent);
 					}
 					else {
-						InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-						errorDialog.setMessage(this.getString(R.string.no_user));
-						errorDialog.show(getFragmentManager(), "Dialog");
+						displayError(this.getString(R.string.no_user));
 					}
 		
 					user.getUserFeedReaderDbHelper().close();
@@ -70,9 +68,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 				}*/
 			}
 			else {
-				InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-				errorDialog.setMessage(this.getString(R.string.no_input));
-				errorDialog.show(getFragmentManager(), "errorDialog");
+				displayError(this.getString(R.string.no_input));
 			}
 		}
 		else {
@@ -101,6 +97,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 	    return isValid;
 	}
 	
+	public void displayError(String message) {
+		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
+		errorDialog.setMessage(message);
+		errorDialog.show(getSupportFragmentManager(), "errorDialog");
+	}
 	
 	public void clearFields() {
 		email.getText().clear();

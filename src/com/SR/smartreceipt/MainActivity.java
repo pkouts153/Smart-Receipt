@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Search link */
 	public void goToSearch(View view) {
-		Intent intent = new Intent(this, BudgetActivity.class);
+		Intent intent = new Intent(this, SearchActivity.class);
 		startActivity(intent);
 	}
 	
