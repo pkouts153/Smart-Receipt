@@ -31,51 +31,51 @@ public class SearchHandler {
 		String query = "SELECT *, SUM(" + FeedProduct.PRICE + ") as sum " +
 					   "FROM " + FeedProduct.TABLE_NAME;
 		
-		if (product!=null) 
-			query = query + " WHERE " + FeedProduct.NAME + "=" + product;
+		if (!(product.equals(""))) 
+			query = query + " WHERE " + FeedProduct.NAME + "='" + product + "'";
 		
-		if (category!=null) {
-			if (product!=null)
+		if (!(category.equals(""))) {
+			if (!(product.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
-			query = query + FeedProduct.PRODUCT_CATEGORY + "=" + category;
+			query = query + FeedProduct.PRODUCT_CATEGORY + "='" + category + "'";
 		}
 		
-		if (min_cost!=0){
-			if (product!=null || category!=null)
+		if (min_cost!=0.1){
+			if (!(product.equals("")) || !(category.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
 			query = query + FeedProduct.PRICE + ">=" + min_cost;
 		}
 		
-		if (max_cost!=0){
-			if (product!=null || category!=null || min_cost!=0)
+		if (max_cost!=0.1){
+			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1)
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
 			query = query + FeedProduct.PRICE + "<=" + max_cost;
 		}
 		
-		if (start_date!=null) {
-			if (product!=null || category!=null || min_cost!=0 || max_cost!=0)
+		if (!(start_date.equals(""))) {
+			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1)
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
 			query = query + FeedProduct.PURCHASE_DATE + ">=Date('" + start_date + "')";
 		}
 		
-		if (end_date!=null) {
-			if (product!=null || category!=null || min_cost!=0 || max_cost!=0 || start_date!=null)
+		if (!(end_date.equals(""))) {
+			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1 || !(start_date.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
 			query = query + FeedProduct.PURCHASE_DATE + "<=Date('" + end_date + "')";
 		}
 		
-		if (store!=null) {
-			if (product!=null || category!=null || min_cost!=0 || max_cost!=0 || start_date!=null || end_date!=null)
+		if (!(store.equals(""))) {
+			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1 || !(start_date.equals("")) || !(end_date.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
@@ -84,8 +84,8 @@ public class SearchHandler {
 													" WHERE " + FeedStore.VAT_NUMBER + "='" + store + "')";
 		}
 		
-		if (family!=null) {
-			if (product!=null || category!=null || min_cost!=0 || max_cost!=0 || start_date!=null || end_date!=null || store!=null)
+		if (!(family.equals(""))) {
+			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1 || !(start_date.equals("")) || !(end_date.equals("")) || !(store.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
@@ -94,13 +94,13 @@ public class SearchHandler {
 												  " WHERE "  + FeedUser.USERNAME + "='" + family + "')";
 		}
 		
-		if (group_by!=null) {
+		if (!(group_by.equals(""))) {
 			if (group_by.equals("Category"))
-				query = query + " GROUP BY product_category";
+				query = query + " GROUP BY " + FeedProduct.PRODUCT_CATEGORY;
 			else if (group_by.equals("Store"))
-				query = query + " GROUP BY store";
+				query = query + " GROUP BY " + FeedProduct.STORE;
 			else
-				query = query + " GROUP BY user";
+				query = query + " GROUP BY " + FeedProduct.USER;
 		}
 		
 		c = db.rawQuery(query, null);

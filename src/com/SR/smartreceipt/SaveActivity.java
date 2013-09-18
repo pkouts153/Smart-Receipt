@@ -2,11 +2,15 @@ package com.SR.smartreceipt;
 
 import java.util.ArrayList;
 
+import com.SR.data.Category;
 import com.SR.data.Product;
+import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.processes.BudgetNotificationIntentService;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +44,7 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
     ArrayList<String> product_list = new ArrayList<String>();
     
     Product product;
+    Category category;
     
     String cat_spinner;
 	String p_name;
@@ -56,12 +61,40 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
+		//set up category spinner
+		
+        category = new Category(this);
+		Cursor c = category.getCategories();
+		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
+		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
+		category_spinner.setAdapter(cat_adapter);
+		cat_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		cat_adapter.add(this.getString(R.string.category_prompt));
 		
-		ArrayAdapter<CharSequence> category_adapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
-		category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		category_spinner.setAdapter(category_adapter);
+        try{
+        	
+			c.moveToFirst();
+			String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			
+			cat_adapter.add(category_name);
+			
+			while (!c.isLast ()) {
+				c.moveToNext ();
+				category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+				cat_adapter.add(category_name);
+			}
+			c.close();
+			category.getCatFeedReaderDbHelper().close();
+			
+        } catch (CursorIndexOutOfBoundsException e){
+        	c.close();
+			category.getCatFeedReaderDbHelper().close();
+        }
 		
+        //set up other ui components
+        
 		product_name = (EditText)findViewById(R.id.product_name);
 		price = (EditText)findViewById(R.id.price);
 		number_of_products = (TextView)findViewById(R.id.number_of_products);

@@ -6,7 +6,7 @@
     <string name="heading">The easy way to:</string>
 
     <!-- Title and heading strings -->
-    
+
     <string name="title_activity_budget">Control your budget</string>
     <string name="heading_activity_budget">Select your preferences</string>
     <string name="title_activity_add_family">Unite the family</string>
@@ -14,12 +14,14 @@
     <string name="title_activity_save">Save your receipts</string>
     <string name="heading_save">Fill in the fields</string>
     <string name="title_activity_login">Login</string>
-    <string name="title_search_selection">Search selection</string>
-    <string name="heading_search_selection">Fill in the fields</string>
+    <string name="title_activity_search">Search your transactions</string>
+    <string name="heading_search_selection">Search selection</string>
+    <string name="title_activity_search_results">Search your transactions</string>
+    <string name="heading_search_results">Search results</string>
+    <string name="title_activity_search_diagrams">Search diagrams</string>
+    <string name="heading_search_diagrams">Search diagrams</string>
     <string name="title_search_results">Search results</string>
-    <string name="heading_search_results">Fill in the fields</string>
     <string name="title_search_diagrams">Search diagrams</string>
-    <string name="heading_search_diagrams">Fill in the fields</string>
 
     <!-- colors -->
 
@@ -50,26 +52,7 @@
     <string name="same_on">Same on</string>
     <string name="notify">Notify me</string>
     <string name="category_prompt">Expenses category</string>
-
-    <string-array name="categories_array">
-        <item>Expenses category</item>
-        <item>Food</item>
-        <item>Entertainment</item>
-        <item>Clothes</item>
-        <item>All</item>
-    </string-array>
-
     <string name="family_prompt">Family member</string>
-
-    <string-array name="family_array">
-        <item>Family member</item>
-        <item>Panos</item>
-        <item>Vag</item>
-        <item>Dad</item>
-        <item>Mom</item>
-        <item>Sister</item>
-        <item>All</item>
-    </string-array>
 
     <!-- Strings of activity_save -->
 
@@ -94,14 +77,14 @@
     <string name="search_end_date">End date</string>
     <string name="search_store">Store VAT number</string>
     <string name="group_by_prompt">Group by</string>
-    
+
     <string-array name="group_by_array">
         <item>Group by</item>
         <item>Category</item>
         <item>Store</item>
         <item>Family member</item>
     </string-array>
-    
+
     <!-- Button strings -->
 
     <string name="submit">Submit</string>
@@ -111,6 +94,7 @@
     <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="scan">Scan</string>
+    <string name="diagrams">Diagrams</string>
     <string name="delete">Delete</string>
 
     <!-- Pop up message strings -->
@@ -121,6 +105,8 @@
     <string name="no_family_members_add">Curently you dont have any family members in your list. Please add more!</string>
     <string name="success">Your data has been saved successfully!</string>
     <string name="added">Your product has been added successfully!</string>
-    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
 
 </resources>

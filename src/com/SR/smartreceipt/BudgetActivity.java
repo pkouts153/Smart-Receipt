@@ -233,6 +233,9 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 				
 				} catch (NumberFormatException e) {
 					displayError(this.getString(R.string.input_error));
+					
+				} catch (NullPointerException e) {
+					displayError(this.getString(R.string.input_error));
 				}
 			}
 			else {
