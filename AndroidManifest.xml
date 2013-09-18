@@ -69,6 +69,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
+        
+        <activity
+            android:name="com.SR.smartreceipt.SearchResultsActivity"
+            android:label="@string/title_activity_search"
+            android:parentActivityName="com.SR.smartreceipt.SearchActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

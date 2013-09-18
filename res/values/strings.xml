@@ -14,12 +14,14 @@
     <string name="title_activity_save">Save your receipts</string>
     <string name="heading_save">Fill in the fields</string>
     <string name="title_activity_login">Login</string>
+    
     <string name="title_activity_search">Search your transactions</string>
     <string name="heading_search_selection">Search selection</string>
-    <string name="title_activity_search_results">Search your transactions</string>
+
     <string name="heading_search_results">Search results</string>
-    <string name="title_activity_search_diagrams">Search diagrams</string>
+
     <string name="heading_search_diagrams">Search diagrams</string>
+    
     <string name="title_search_results">Search results</string>
     <string name="title_search_diagrams">Search diagrams</string>
 
@@ -105,8 +107,12 @@
     <string name="no_family_members_add">Curently you dont have any family members in your list. Please add more!</string>
     <string name="success">Your data has been saved successfully!</string>
     <string name="added">Your product has been added successfully!</string>
+    
+    
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
+    
+    <string name="no_results">There are no results for these data!</string>
 
 </resources>

@@ -7,6 +7,7 @@ import com.SR.data.FeedReaderContract.FeedUser;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class SearchHandler {
 	
@@ -20,7 +21,7 @@ public class SearchHandler {
 		context = c;
 	}
 
-	public Cursor getSearchResults(String product, String category, Float min_cost, Float max_cost, String start_date, String end_date, 
+	public Cursor getSearchResults(String product, String category, String min_cost, String max_cost, String start_date, String end_date, 
 									String store, String family, String group_by){
 		
 		mDbHelper = new FeedReaderDbHelper(context);
@@ -28,10 +29,10 @@ public class SearchHandler {
 		// Gets the data repository in write mode
 		db = mDbHelper.getWritableDatabase();
 		
-		String query = "SELECT *, SUM(" + FeedProduct.PRICE + ") as sum " +
+		String query = "SELECT * " +
 					   "FROM " + FeedProduct.TABLE_NAME;
 		
-		if (!(product.equals(""))) 
+		if (!(product.equals("")))
 			query = query + " WHERE " + FeedProduct.NAME + "='" + product + "'";
 		
 		if (!(category.equals(""))) {
@@ -42,7 +43,7 @@ public class SearchHandler {
 			query = query + FeedProduct.PRODUCT_CATEGORY + "='" + category + "'";
 		}
 		
-		if (min_cost!=0.1){
+		if (!(min_cost.equals(""))){
 			if (!(product.equals("")) || !(category.equals("")))
 				query = query + " AND ";
 			else
@@ -50,8 +51,8 @@ public class SearchHandler {
 			query = query + FeedProduct.PRICE + ">=" + min_cost;
 		}
 		
-		if (max_cost!=0.1){
-			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1)
+		if (!(max_cost.equals(""))){
+			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
@@ -59,7 +60,7 @@ public class SearchHandler {
 		}
 		
 		if (!(start_date.equals(""))) {
-			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1)
+			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
@@ -67,7 +68,7 @@ public class SearchHandler {
 		}
 		
 		if (!(end_date.equals(""))) {
-			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1 || !(start_date.equals("")))
+			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")) || !(start_date.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
@@ -75,7 +76,7 @@ public class SearchHandler {
 		}
 		
 		if (!(store.equals(""))) {
-			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1 || !(start_date.equals("")) || !(end_date.equals("")))
+			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")) || !(start_date.equals("")) || !(end_date.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
@@ -85,7 +86,7 @@ public class SearchHandler {
 		}
 		
 		if (!(family.equals(""))) {
-			if (!(product.equals("")) || !(category.equals("")) || min_cost!=0.1 || max_cost!=0.1 || !(start_date.equals("")) || !(end_date.equals("")) || !(store.equals("")))
+			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")) || !(start_date.equals("")) || !(end_date.equals("")) || !(store.equals("")))
 				query = query + " AND ";
 			else
 				query = query + " WHERE ";
@@ -102,7 +103,7 @@ public class SearchHandler {
 			else
 				query = query + " GROUP BY " + FeedProduct.USER;
 		}
-		
+		Log.w("", query);
 		c = db.rawQuery(query, null);
 		
 		return c;
