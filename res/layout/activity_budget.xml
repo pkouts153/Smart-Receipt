@@ -3,128 +3,116 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".BudgetActivity" >
 
-   <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="40dp"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="45dp"
+        android:paddingTop="@dimen/drawable_horizontal_margin"
+        android:background="#59B6E5"
         android:text="@string/heading_activity_budget"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#000000" />
-
-    <Spinner
-        android:id="@+id/category_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-	    android:paddingLeft="@dimen/activity_horizontal_margin"
-	    android:paddingRight="@dimen/activity_horizontal_margin"
-	    android:paddingTop="@dimen/activity_vertical_margin"
-	    android:prompt="@string/category_prompt" />
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#fff" />
     
-    <EditText
-        android:id="@+id/spend_limit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-	    android:paddingLeft="@dimen/activity_horizontal_margin"
-	    android:paddingRight="@dimen/activity_horizontal_margin"
-	    android:paddingTop="@dimen/activity_vertical_margin"
-        android:hint="@string/spend_limit" />
-    
-    <EditText
-        android:id="@+id/from_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/from_date"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" 
-        android:focusableInTouchMode="false"
-        android:clickable="true" />
-
-    <EditText
-        android:id="@+id/until_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/until_date"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:focusableInTouchMode="false"
-        android:clickable="true" />
-
 	<LinearLayout
 	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    tools:context=".BudgetActivity"
-	    android:paddingTop="@dimen/activity_vertical_margin" >
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin">
 	    
-	    <CheckBox
-	        android:id="@+id/same_on"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	    	android:paddingRight="@dimen/activity_horizontal_margin"
-	        android:text="@string/same_on" />
-	
 	    <Spinner
-	        android:id="@+id/family_spinner"
-	        android:layout_width="0dp"
+	        android:id="@+id/category_spinner"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:prompt="@string/family_prompt" />
-	  
-	</LinearLayout>
-   
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-	    android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".BudgetActivity" >
+		    android:paddingLeft="@dimen/activity_horizontal_margin"
+		    android:paddingRight="@dimen/activity_horizontal_margin"
+		    android:paddingTop="@dimen/activity_vertical_margin"
+		    android:prompt="@string/category_prompt" />
 	    
-	    <CheckBox
-	        android:id="@+id/notify"
-	        android:layout_width="wrap_content"
+	    <EditText
+	        android:id="@+id/spend_limit"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:text="@string/notify" />
-    
-    </LinearLayout>
-    
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="143dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".BudgetActivity" >
-
-	    <Button
-	        android:id="@+id/submit"
-	        android:layout_width="wrap_content"
+		    android:paddingLeft="@dimen/activity_horizontal_margin"
+		    android:paddingRight="@dimen/activity_horizontal_margin"
+		    android:paddingTop="@dimen/activity_vertical_margin"
+	        android:hint="@string/spend_limit" />
+	    
+	    <EditText
+	        android:id="@+id/from_date"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_alignParentTop="true"
-	        android:layout_marginTop="16dp"
-	        android:text="@string/submit" />
-
-	    <Button
-	        android:id="@+id/reset"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignBaseline="@+id/submit"
-	        android:layout_alignBottom="@+id/submit"
-	        android:layout_toLeftOf="@+id/submit"
-	        android:text="@string/reset" />
-
-    </RelativeLayout>
-
+	        android:hint="@string/from_date"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:paddingTop="@dimen/activity_vertical_margin" 
+	        android:focusableInTouchMode="false"
+	        android:clickable="true" />
 	
+	    <EditText
+	        android:id="@+id/until_date"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/until_date"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:paddingTop="@dimen/activity_vertical_margin"
+	        android:focusableInTouchMode="false"
+	        android:clickable="true" />
+	
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    tools:context=".BudgetActivity"
+		    android:paddingTop="@dimen/activity_vertical_margin" >
+		    
+		    <CheckBox
+		        android:id="@+id/same_on"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		    	android:paddingRight="@dimen/activity_horizontal_margin"
+		        android:text="@string/same_on" />
+		
+		    <Spinner
+		        android:id="@+id/family_spinner"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:prompt="@string/family_prompt" />
+		  
+		</LinearLayout>
+	    
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="143dp"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:paddingTop="@dimen/activity_vertical_margin"
+	        tools:context=".BudgetActivity" >
+	
+		    <Button
+		        android:id="@+id/submit"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignParentTop="true"
+		        android:layout_marginTop="16dp"
+		        android:text="@string/submit" />
+	
+		    <Button
+		        android:id="@+id/reset"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/submit"
+		        android:layout_alignBottom="@+id/submit"
+		        android:layout_toLeftOf="@+id/submit"
+		        android:text="@string/reset" />
+	
+	    </RelativeLayout>
+
+	</LinearLayout>
 </LinearLayout>

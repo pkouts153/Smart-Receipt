@@ -27,7 +27,6 @@ public final class FeedReaderContract {
         public static final String SPEND_LIMIT = "spend_limit";
         public static final String START_DATE = "start_date";
         public static final String END_DATE = "end_date";
-        public static final String NOTIFICATION = "notification";
         public static final String USER = "user";
         public static final String FAMILY_USER = "family_user";
     }

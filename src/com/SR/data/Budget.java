@@ -43,7 +43,6 @@ public class Budget {
 			FeedBudget.SPEND_LIMIT,
 			FeedBudget.START_DATE,
 			FeedBudget.END_DATE,
-			FeedBudget.NOTIFICATION,
 			FeedBudget.USER,
 			FeedBudget.FAMILY_USER,
 		    };
@@ -63,7 +62,7 @@ public class Budget {
 		return c1;
     }
     
-    public void saveBudget(String category, Float limit, String from_date, String until_date, int n, int user_id, int family_id){
+    public void saveBudget(String category, Float limit, String from_date, String until_date, int user_id, int family_id){
     	
     	mDbHelper = new FeedReaderDbHelper(context);
 		
@@ -75,7 +74,6 @@ public class Budget {
 		values.put(FeedBudget.SPEND_LIMIT, limit);
 		values.put(FeedBudget.START_DATE, from_date);
 		values.put(FeedBudget.END_DATE, until_date);
-		values.put(FeedBudget.NOTIFICATION, n);
 		values.put(FeedBudget.USER, user_id);
 		if (family_id != 0)
 			values.put(FeedBudget.FAMILY_USER, family_id);

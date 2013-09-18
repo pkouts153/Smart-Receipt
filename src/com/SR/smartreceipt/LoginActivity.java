@@ -62,9 +62,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 					user.getUserFeedReaderDbHelper().close();
 				/*}
 				else {
-					InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
-					errorDialog.setMessage(this.getString(R.string.input_error));
-					errorDialog.show(getFragmentManager(), "errorDialog");
+					displayError(this.getString(R.string.not_a_mail));
 				}*/
 			}
 			else {

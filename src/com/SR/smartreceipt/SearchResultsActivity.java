@@ -67,33 +67,27 @@ public class SearchResultsActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Bundle extras = getIntent().getExtras();
 		
-		try{
+		product = extras.getString("product");
+		category = extras.getString("category");
+		
+		min_cost = extras.getString("mn_cost");
+		
+		max_cost = extras.getString("mx_cost");
+		
+		start_date = extras.getString("start_date");
+		end_date = extras.getString("end_date");
+		store = extras.getString("store");
+		family = extras.getString("family");
+		group_by = extras.getString("group_by");
+		
+		searchHandler = new SearchHandler(this);
+		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by);
+		
+		//searchHandler.getSearchFeedReaderDbHelper().close();
 			
-			Bundle extras = getIntent().getExtras();
-			
-			product = extras.getString("product");
-			category = extras.getString("category");
-			
-			min_cost = extras.getString("mn_cost");
-			
-			max_cost = extras.getString("mx_cost");
-			
-			start_date = extras.getString("start_date");
-			end_date = extras.getString("end_date");
-			store = extras.getString("store");
-			family = extras.getString("family");
-			group_by = extras.getString("group_by");
-			
-			searchHandler = new SearchHandler(this);
-			c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by);
-			
-			//searchHandler.getSearchFeedReaderDbHelper().close();
-			
-		} catch (NumberFormatException e) {
-			
-			displayError(this.getString(R.string.input_error));
-		}
 		
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);

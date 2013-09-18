@@ -38,7 +38,6 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedBudget.SPEND_LIMIT + " REAL," +
 		FeedBudget.START_DATE + " TEXT," +
 		FeedBudget.END_DATE + " TEXT," +
-		FeedBudget.NOTIFICATION + " INTEGER," +
 		FeedBudget.USER + " INTEGER," +
 		FeedBudget.FAMILY_USER + " INTEGER," + 
 		" FOREIGN KEY (" + FeedBudget.USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + ")," +
@@ -124,8 +123,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		    "INSERT INTO '" + FeedBudget.TABLE_NAME + "'" +
 		    " SELECT NULL AS '" + FeedBudget._ID + "', '" + "Food" + "' AS '" + FeedBudget.EXPENSE_CATEGORY + "', '" + "8" + "' AS '" + FeedBudget.SPEND_LIMIT + "', '" + 
 		    			"2013-09-10" + "' AS '" + FeedBudget.START_DATE + "', '" + "2013-09-20" + "' AS '" + FeedBudget.END_DATE + "', '" + 
-		    			"1" + "' AS '" + FeedBudget.NOTIFICATION + "', '" + "1" + "' AS '" + FeedBudget.USER + "', '" + "null" + "' AS '" + FeedBudget.FAMILY_USER + "'" +
-			" UNION SELECT NULL, '" + "Food" + "', '" + "6" + "', '" + "2013-09-10" + "', '" + "2013-09-20" + "', '" + "1" + "', '" + "2" + "', '" + "null" + "'";
+		    			"1" + "' AS '" + FeedBudget.USER + "', '" + "null" + "' AS '" + FeedBudget.FAMILY_USER + "'" +
+			" UNION SELECT NULL, '" + "Food" + "', '" + "6" + "', '" + "2013-09-10" + "', '" + "2013-09-20" + "', '" + "2" + "', '" + "null" + "'";
 	
 	private static final String SQL_ADD_STORE =
 	    "INSERT INTO '" + FeedStore.TABLE_NAME + "'" +

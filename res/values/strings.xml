@@ -12,7 +12,7 @@
     <string name="title_activity_add_family">Unite the family</string>
     <string name="heading_add_family_member">Add a family member</string>
     <string name="title_activity_save">Save your receipts</string>
-    <string name="heading_save">Fill in the fields</string>
+    <string name="heading_activity_save">Fill in the fields</string>
     <string name="title_activity_login">Login</string>
     
     <string name="title_activity_search">Search your transactions</string>
@@ -52,7 +52,6 @@
     <string name="from_date">From date</string>
     <string name="until_date">Until date</string>
     <string name="same_on">Same on</string>
-    <string name="notify">Notify me</string>
     <string name="category_prompt">Expenses category</string>
     <string name="family_prompt">Family member</string>
 
@@ -101,10 +100,13 @@
 
     <!-- Pop up message strings -->
 
-    <string name="input_error">There is an error in your input! Please lookup the hints in the fields.</string>
+    <string name="not_a_price">There is an error in your input! Price must be a number.</string>
+    <string name="not_a_number">There is an error in your input! Your spend limit must be a number.</string>
+    <string name="not_a_mail">There is an error in your input! Your email format is not valid.</string>
+    <string name="no_family">There is an error in your input! No family member was selected. If you don\'t want any please uncheck "same on".</string>
     <string name="no_user">No user was found with these data!</string>
     <string name="no_input">You haven\'t filled all the required fields!</string>
-    <string name="no_family_members_add">Curently you dont have any family members in your list. Please add more!</string>
+    <string name="no_family_members_add">Currently you don\'t have any family members in your list. Please add more!</string>
     <string name="success">Your data has been saved successfully!</string>
     <string name="added">Your product has been added successfully!</string>
     

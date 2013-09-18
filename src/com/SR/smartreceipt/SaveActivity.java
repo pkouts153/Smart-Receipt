@@ -232,7 +232,7 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 			
 			} catch (NumberFormatException e) {
 				
-				displayError(this.getString(R.string.input_error));
+				displayError(this.getString(R.string.not_a_price));
 			}
 		}
 		else {
