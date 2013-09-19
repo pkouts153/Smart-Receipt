@@ -29,8 +29,9 @@ public class SearchHandler {
 		// Gets the data repository in write mode
 		db = mDbHelper.getWritableDatabase();
 		
-		String query = "SELECT * " +
-					   "FROM " + FeedProduct.TABLE_NAME;
+		String query = "SELECT " + FeedProduct.TABLE_NAME + "." + FeedProduct._ID + ", " + FeedProduct.NAME + ", " + FeedProduct.PRICE + 
+							", " + FeedProduct.PRODUCT_CATEGORY + ", " + FeedProduct.PURCHASE_DATE + ", " + FeedStore.NAME +
+					   " FROM " + FeedProduct.TABLE_NAME + ", " + FeedStore.TABLE_NAME;
 		
 		if (!(product.equals("")))
 			query = query + " WHERE " + FeedProduct.NAME + "='" + product + "'";
@@ -75,6 +76,9 @@ public class SearchHandler {
 			query = query + FeedProduct.PURCHASE_DATE + "<=Date('" + end_date + "')";
 		}
 		
+		
+		
+		
 		if (!(store.equals(""))) {
 			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")) || !(start_date.equals("")) || !(end_date.equals("")))
 				query = query + " AND ";
@@ -82,10 +86,20 @@ public class SearchHandler {
 				query = query + " WHERE ";
 			query = query + FeedProduct.STORE + "= (SELECT " + FeedStore._ID +
 													" FROM " + FeedStore.TABLE_NAME +
-													" WHERE " + FeedStore.VAT_NUMBER + "='" + store + "')";
+													" WHERE " + FeedStore.VAT_NUMBER + "='" + store + "') AND " + FeedStore.VAT_NUMBER + "=" + store;
+		}
+		else {
+			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")) || !(start_date.equals("")) || !(end_date.equals("")))
+				query = query + " AND ";
+			else
+				query = query + " WHERE ";
+			query = query + FeedProduct.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID + " OR " + FeedProduct.STORE + " is null";
 		}
 		
-		if (!(family.equals(""))) {
+		
+		
+		
+		if (!(family.equals("")) && !family.equals("All")) {
 			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")) || !(start_date.equals("")) || !(end_date.equals("")) || !(store.equals("")))
 				query = query + " AND ";
 			else
@@ -94,6 +108,19 @@ public class SearchHandler {
 												  " FROM " + FeedUser.TABLE_NAME +
 												  " WHERE "  + FeedUser.USERNAME + "='" + family + "')";
 		}
+		else if (family.equals("All")){
+			//do nothing
+		}
+		else {
+			if (!(product.equals("")) || !(category.equals("")) || !(min_cost.equals("")) || !(max_cost.equals("")) || !(start_date.equals("")) || !(end_date.equals("")) || !(store.equals("")))
+				query = query + " AND ";
+			else
+				query = query + " WHERE ";
+			query = query + FeedProduct.USER + "= " + User.USER_ID + "";
+		}
+		
+		
+		
 		
 		if (!(group_by.equals(""))) {
 			if (group_by.equals("Category"))

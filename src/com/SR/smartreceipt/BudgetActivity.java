@@ -137,6 +137,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 			c2.close();
 			//user.getUserFeedReaderDbHelper().close();
 	    }
+        family_spinner.setSelection(0);
 	}
     
 	/**
@@ -222,10 +223,10 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
 							
-							if (fam_spinner.equals(this.getString(R.string.family_prompt))) {
-								displayError(this.getString(R.string.no_family));
-							}
-							else {
+							//if (fam_spinner.equals(this.getString(R.string.family_prompt))) {
+							//	displayError(this.getString(R.string.no_family));
+							//}
+							//else {
 								//User user = new User(this);
 								
 								int id = user.getId(fam_spinner);
@@ -237,7 +238,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 								}
 								
 								//user.getUserFeedReaderDbHelper().close();
-							}
+							//}
 						}
 						else {
 							budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);

@@ -1,12 +1,12 @@
 package com.SR.smartreceipt;
 
 import com.SR.data.SearchHandler;
-import com.SR.data.FeedReaderContract.FeedProduct;
 
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,12 +58,16 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		
 		//If the screen the user sees is the search selection screen
 		if (getArguments().getInt(ARG_SECTION_NUMBER)==1) {
-			rootView = inflater.inflate(R.layout.fragment_search_results_list, container, false);
-	        
-			/*SearchResultsListFragment listFragment = new SearchResultsListFragment();
-	    	
-	        getFragmentManager().beginTransaction().add(R.id.budget_categories_fragment, listFragment).commit();*/
-
+			
+			FragmentManager fragmentManager = getFragmentManager();
+		    FragmentTransaction ft = fragmentManager.beginTransaction();
+		    
+		    SearchResultsListFragment listFragment = new SearchResultsListFragment();
+		    ft.add(R.id.pager_fragment_frame, listFragment);
+		    ft.commit();
+		    
+		    rootView = inflater.inflate(R.layout.fragment_search_results_list, container, false);
+		    		//listFragment.getView();
 		}
 		//If the screen the user sees is the search results screen
 		else if (getArguments().getInt(ARG_SECTION_NUMBER)==2) {

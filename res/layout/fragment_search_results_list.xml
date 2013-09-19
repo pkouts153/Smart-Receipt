@@ -10,16 +10,16 @@
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#59B6E5"
         android:layout_weight="1"
-        android:drawSelectorOnTop="false" >
+        android:drawSelectorOnTop="false"
+        android:clickable="true"
+    	android:longClickable="true" >
     </ListView>
     
      <TextView 
          android:id="@id/android:empty"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:background="#59B6E5"
          android:text="@string/no_results"/>
      
 </LinearLayout>

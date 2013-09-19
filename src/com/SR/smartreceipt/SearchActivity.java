@@ -126,6 +126,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		family_spinner.setAdapter(fam_adapter);
 		
 		fam_adapter.add(this.getString(R.string.family_prompt));
+		fam_adapter.add("All");
 		
 		user = new User(this);
 		Cursor c1 = user.getFamilyMembers(User.USER_ID);

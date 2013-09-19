@@ -16,5 +16,11 @@
         android:textColor="#fff"
         android:textSize="22sp"
         android:textStyle="bold" />
-	
+    
+	<FrameLayout
+	    android:id="@+id/fragment_frame"
+	    android:layout_width="fill_parent"  
+	    android:layout_height="fill_parent">
+    </FrameLayout>
+    
 </LinearLayout>

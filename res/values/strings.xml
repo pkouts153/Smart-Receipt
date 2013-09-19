@@ -31,6 +31,7 @@
     <!-- colors -->
 
     <color name="light_blue">#59B6E5</color>
+    <color name="trans">#80FFFFFF</color>
 
     <!-- Strings of activity_main -->
 

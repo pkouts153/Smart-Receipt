@@ -18,66 +18,83 @@
 	    tools:context=".MainActivity" >
 	    
 		<ImageView
+		    android:id="@+id/save"
     		android:paddingTop="43dp"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 			android:layout_width="wrap_content"
 			android:layout_height="93dp"
-			android:src="@drawable/save" >
+			android:src="@drawable/save"
+			android:clickable="true"
+			android:onClick="goToSave" >
 		</ImageView>
 		
 		<ImageView
+		    android:id="@+id/budget"
     		android:paddingTop="@dimen/main_pading_top"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/main_heights"
-			android:src="@drawable/budget" >
+			android:src="@drawable/budget"
+			android:clickable="true"
+			android:onClick="goToBudget" >
 		</ImageView>
 		
 		<ImageView
+		    android:id="@+id/search"
     		android:paddingTop="@dimen/main_pading_top"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/main_heights"
-			android:src="@drawable/search" >
+			android:src="@drawable/search"
+			android:clickable="true"
+			android:onClick="goToSearch" >
 		</ImageView>
 		
 		<ImageView
+		    android:id="@+id/offers"
     		android:paddingTop="@dimen/main_pading_top"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/main_heights"
-			android:src="@drawable/offers" >
+			android:src="@drawable/offers"
+			android:clickable="true" >
 		</ImageView>
 		
 		<ImageView
+		    android:id="@+id/family"
     		android:paddingTop="@dimen/main_pading_top"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/main_heights"
-			android:src="@drawable/family" >
+			android:src="@drawable/family"
+			android:clickable="true" >
 		</ImageView>
 		
 		<ImageView
+		    android:id="@+id/list"
     		android:paddingTop="@dimen/main_pading_top"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/main_heights"
-			android:src="@drawable/list" >
+			android:src="@drawable/list"
+			android:clickable="true" >
 		</ImageView>
 		
 		<ImageView
+		    android:id="@+id/map"
     		android:paddingTop="@dimen/main_pading_top"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/main_heights"
-			android:src="@drawable/map" >
+			android:src="@drawable/map"
+			android:clickable="true" >
 		</ImageView>
 		
     </LinearLayout>

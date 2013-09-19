@@ -3,10 +3,8 @@ package com.SR.smartreceipt;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
-import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.SearchHandler;
 import com.SR.data.User;
-import com.SR.data.FeedReaderContract.FeedCategory;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,9 +16,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
@@ -35,7 +34,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	 * intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	//SectionsPagerAdapter mSectionsPagerAdapter;
+	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -69,6 +68,10 @@ public class SearchResultsActivity extends FragmentActivity {
 	
 	static Cursor c;
 	
+	String[] columns;
+	int[] textviews;
+	SimpleCursorAdapter simpleCursorAdapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -95,14 +98,21 @@ public class SearchResultsActivity extends FragmentActivity {
 		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by);
 		
 		//searchHandler.getSearchFeedReaderDbHelper().close();
-			
+		
+		
 
-		//if (group_by.equals("")) {
+		if (group_by.equals("")) {
+		
 			setContentView(R.layout.activity_search_results_no_tabs);
-			
-			SearchResultsListFragment listFragment = new SearchResultsListFragment();
-	        //getFragmentManager().beginTransaction().add(R.id.LinearLayout1, listFragment).commit();
-		/*}
+
+		    FragmentManager fragmentManager = getSupportFragmentManager();
+		    FragmentTransaction ft = fragmentManager.beginTransaction();
+		    
+		    SearchResultsListFragment listFragment = new SearchResultsListFragment();
+		    ft.add(R.id.fragment_frame, listFragment);
+		    ft.commit();
+
+        } 
 		else{
 			tabs = 2;
 			setContentView(R.layout.activity_search_results);
@@ -115,7 +125,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			// Set up the ViewPager with the sections adapter.
 			mViewPager = (ViewPager) findViewById(R.id.pager);
 			mViewPager.setAdapter(mSectionsPagerAdapter);
-		}*/
+		}
 		
 	}
     
@@ -147,9 +157,10 @@ public class SearchResultsActivity extends FragmentActivity {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_logout:
+	        	user = new User(this);
 	        	user.userLogout();
-	        	Intent intent2 = new Intent(this, LoginActivity.class);
-	    		startActivity(intent2);
+	        	Intent intent = new Intent(this, LoginActivity.class);
+	    		startActivity(intent);
 	            return true;
 			case android.R.id.home:
 				// This ID represents the Home or Up button. In the case of this
@@ -185,7 +196,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
-	/*public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -224,6 +235,6 @@ public class SearchResultsActivity extends FragmentActivity {
 			}
 			return null;
 		}
-	}*/
+	}
 
 }

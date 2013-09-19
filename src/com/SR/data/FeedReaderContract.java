@@ -9,7 +9,7 @@ public final class FeedReaderContract {
     /* Inner class that defines the table contents */
     public static abstract class FeedCategory implements BaseColumns {
         public static final String TABLE_NAME = "category";
-        public static final String NAME = "name";
+        public static final String NAME = "category_name";
     }
     
     /* Inner class that defines the table contents */
@@ -35,7 +35,7 @@ public final class FeedReaderContract {
     public static abstract class FeedProduct implements BaseColumns {
         public static final String TABLE_NAME = "product";
         public static final String PRODUCT_CATEGORY = "product_category";
-        public static final String NAME = "name";
+        public static final String NAME = "product_name";
         public static final String PRICE = "price";
         public static final String PURCHASE_DATE = "purchase_date";
         public static final String STORE = "store";
@@ -45,9 +45,9 @@ public final class FeedReaderContract {
     /* Inner class that defines the table contents */
     public static abstract class FeedOffer implements BaseColumns {
         public static final String TABLE_NAME = "offer";
-        public static final String PRODUCT_NAME = "product_name";
+        public static final String PRODUCT_NAME = "offer_product_name";
         public static final String CATEGORY = "category";
-        public static final String PRICE = "price";
+        public static final String PRICE = "offer_price";
         public static final String DISCOUNT = "discount";
         public static final String UNTIL_DATE = "until_date";
         public static final String STORE = "store";
@@ -64,7 +64,7 @@ public final class FeedReaderContract {
     /* Inner class that defines the table contents */
     public static abstract class FeedStore implements BaseColumns {
         public static final String TABLE_NAME = "store";
-        public static final String NAME = "name";
+        public static final String NAME = "store_name";
         public static final String ADDRESS = "address";
         public static final String VAT_NUMBER = "vat_number";
         //public static final String USERNAME = "username";
