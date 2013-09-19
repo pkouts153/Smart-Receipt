@@ -1,5 +1,7 @@
 package com.SR.smartreceipt;
 
+import java.lang.reflect.Field;
+
 import com.SR.data.Budget;
 import com.SR.data.Category;
 import com.SR.data.FeedReaderContract.FeedUser;
@@ -11,6 +13,7 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +24,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.os.Build;
@@ -49,7 +53,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		setContentView(R.layout.activity_budget);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
+		getOverflowMenu();
 		//set up ui components
 		
 		spend_limit = (EditText)findViewById(R.id.spend_limit);
@@ -148,28 +152,53 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.budget, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.action_search:
+	    		Intent intent = new Intent(this, SearchActivity.class);
+	    		startActivity(intent);
+	            return true;
+	        case R.id.action_logout:
+	        	user.userLogout();
+	        	Intent intent2 = new Intent(this, LoginActivity.class);
+	    		startActivity(intent2);
+	            return true;
+			case android.R.id.home:
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+	        default:
+	        	//NavUtils.navigateUpFromSameTask(this);
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
+	
+	private void getOverflowMenu() {
 
-
+	     try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	        if(menuKeyField != null) {
+	            menuKeyField.setAccessible(true);
+	            menuKeyField.setBoolean(config, false);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	@Override
 	public void onClick(View v) {
 		if (v instanceof Button) {
