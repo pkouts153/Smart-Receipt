@@ -63,6 +63,7 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		    FragmentTransaction ft = fragmentManager.beginTransaction();
 		    
 		    SearchResultsListFragment listFragment = new SearchResultsListFragment();
+		    //listFragment.setCursorAndPosition(SearchResultsActivity.c, SearchResultsActivity.group_change_positions.get(0));
 		    ft.add(R.id.pager_fragment_frame, listFragment);
 		    ft.commit();
 		    
@@ -71,12 +72,12 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		}
 		//If the screen the user sees is the search results screen
 		else if (getArguments().getInt(ARG_SECTION_NUMBER)==2) {
-			rootView = inflater.inflate(R.layout.fragment_search_results_list, container, false);
+			rootView = inflater.inflate(R.layout.activity_budget, container, false);
 
 		}
 		//If the screen the user sees is the search diagrams screen
 		else {
-			rootView = inflater.inflate(R.layout.fragment_search_results_list, container, false);
+			rootView = inflater.inflate(R.layout.activity_save, container, false);
 			//dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
 			//dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 		}

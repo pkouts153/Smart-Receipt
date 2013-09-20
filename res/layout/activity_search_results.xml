@@ -17,9 +17,10 @@
         android:textSize="22sp"
         android:textStyle="bold" />
     
-	<RelativeLayout 
+	<LinearLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
+	    android:orientation="vertical"
 	    tools:context=".SearchResultsActivity" >
 	    
 		<android.support.v4.view.ViewPager
@@ -28,10 +29,7 @@
 		    android:id="@+id/pager"
 		    android:layout_width="match_parent"
 		    android:layout_height="28dp"
-		    android:layout_alignParentBottom="true"
-		    android:layout_alignParentTop="true"
-		    tools:context=".SearchResultsActivity"
-    		android:background="@color/trans" >
+		    tools:context=".SearchResultsActivity" >
 	
 		    <!--
 		    This title strip will display the currently visible page title, as well as the page
@@ -58,6 +56,6 @@
 
 		</FrameLayout>
 		
-	</RelativeLayout>
+	</LinearLayout>
 	
 </LinearLayout>

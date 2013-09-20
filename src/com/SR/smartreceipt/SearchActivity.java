@@ -237,7 +237,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 						category_spinner.getSelectedItem().toString().equals(this.getString(R.string.category_prompt)) &&
 						family_spinner.getSelectedItem().toString().equals(this.getString(R.string.family_prompt))) {
 					
-						displayError(this.getString(R.string.no_input));
+						displayError(this.getString(R.string.missing_input));
 					}
 					else {
 						
@@ -277,6 +277,13 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 						
 						if (!(group_by_spinner.getSelectedItem().toString().equals(this.getString(R.string.group_by_prompt)))){
 							group_by = group_by_spinner.getSelectedItem().toString();
+							
+							if (group_by.equals("Category"))
+								group_by = "product_category";
+							else if (group_by.equals("Store"))
+								group_by = "store_name";
+							else
+								group_by = "username";
 						}
 						
 						extras = new Bundle();

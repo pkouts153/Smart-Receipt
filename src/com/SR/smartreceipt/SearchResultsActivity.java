@@ -1,6 +1,7 @@
 package com.SR.smartreceipt;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import com.SR.data.SearchHandler;
@@ -20,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
@@ -67,6 +69,11 @@ public class SearchResultsActivity extends FragmentActivity {
 	static int tabs;
 	
 	static Cursor c;
+	static Cursor sums;
+	
+	static ArrayList<String> groups_names;
+	static ArrayList<String> group_cost;
+	//static ArrayList<Integer> group_change_positions;
 	
 	String[] columns;
 	int[] textviews;
@@ -83,11 +90,8 @@ public class SearchResultsActivity extends FragmentActivity {
 		
 		product = extras.getString("product");
 		category = extras.getString("category");
-		
 		min_cost = extras.getString("mn_cost");
-		
 		max_cost = extras.getString("mx_cost");
-		
 		start_date = extras.getString("start_date");
 		end_date = extras.getString("end_date");
 		store = extras.getString("store");
@@ -96,12 +100,50 @@ public class SearchResultsActivity extends FragmentActivity {
 		
 		searchHandler = new SearchHandler(this);
 		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by);
-		
+		/*sums = searchHandler.getSums();
 		//searchHandler.getSearchFeedReaderDbHelper().close();
 		
+		groups_names = new ArrayList<String>();
+		group_cost = new ArrayList<String>();
+		//group_change_positions = new ArrayList<Integer>();
 		
-
-		if (group_by.equals("")) {
+		if (!group_by.equals("")){
+			
+			c.moveToFirst();
+			
+			String group_name = c.getString(c.getColumnIndexOrThrow(group_by));
+			String group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
+			
+			groups_names.add(group_name);
+			
+			c.moveToNext();
+			
+			while (!c.isAfterLast()){
+				group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
+				if (!group_name1.equals(group_name)) {
+					group_name = c.getString(c.getColumnIndexOrThrow(group_by));
+					groups_names.add(group_name);
+					//group_change_positions.add(c.getPosition());
+				}
+				c.moveToNext();
+			}
+			
+			
+			sums.moveToFirst();
+			
+			while (!sums.isAfterLast()){
+				group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
+				sums.moveToNext();
+			}
+			
+		}
+		groups_names.trimToSize();
+		group_cost.trimToSize();
+		
+		Log.w("groups", "" + groups_names.size() + "");
+		Log.w("groups", "" + group_cost.size() + "");
+		
+		if (group_by.equals("") || groups_names.size()==0) {*/
 		
 			setContentView(R.layout.activity_search_results_no_tabs);
 
@@ -109,12 +151,14 @@ public class SearchResultsActivity extends FragmentActivity {
 		    FragmentTransaction ft = fragmentManager.beginTransaction();
 		    
 		    SearchResultsListFragment listFragment = new SearchResultsListFragment();
+		    //listFragment.setCursor(c);
 		    ft.add(R.id.fragment_frame, listFragment);
 		    ft.commit();
 
-        } 
+        /*} 
 		else{
-			tabs = 2;
+			
+			tabs = groups_names.size();
 			setContentView(R.layout.activity_search_results);
 
 			// Create the adapter that will return a fragment for each of the three
@@ -125,7 +169,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			// Set up the ViewPager with the sections adapter.
 			mViewPager = (ViewPager) findViewById(R.id.pager);
 			mViewPager.setAdapter(mSectionsPagerAdapter);
-		}
+		}*/
 		
 	}
     
@@ -191,7 +235,18 @@ public class SearchResultsActivity extends FragmentActivity {
 	        e.printStackTrace();
 	    }
 	}
-
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		searchHandler.getSearchFeedReaderDbHelper().close();
+	}
+	
+	/*private ArrayList<String> getGroupsNames() {
+		return groups_names;
+	}*/
+	
+	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
@@ -223,17 +278,22 @@ public class SearchResultsActivity extends FragmentActivity {
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
-			switch (position) {
+			/*switch (position) {
 			case 0:
 				return getString(R.string.title_activity_search).toUpperCase(l);
-			case 1:
-				return getString(R.string.title_search_results).toUpperCase(l);
-			case 2:
+			case 1:*/
+				//SearchResultsActivity searchResultsActivity= new SearchResultsActivity();
+			String title = SearchResultsActivity.groups_names.get(position).toUpperCase(l);
+			title = title + "Total Cost: " + SearchResultsActivity.group_cost.get(position).toUpperCase(l);
+			return title;
+				//return getString(R.string.title_search_results).toUpperCase(l);
+			/*case 2:
 				return getString(R.string.title_search_diagrams).toUpperCase(l);
 			case 3:
 				return getString(R.string.title_activity_search).toUpperCase(l);
 			}
-			return null;
+			
+			return null;*/
 		}
 	}
 
