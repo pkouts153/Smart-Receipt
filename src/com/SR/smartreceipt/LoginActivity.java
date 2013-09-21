@@ -56,7 +56,15 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 						startActivity(intent);
 					}
 					else {
-						displayError(this.getString(R.string.no_user));
+						/*an einai sundedemenos
+							psa3e sto server
+							
+							an uparxei
+								new RetrieveUserDataTask(this).execute();
+							alliws
+								displayError(this.getString(R.string.no_user));
+						alliws*/
+							displayError(this.getString(R.string.no_user));
 					}
 		
 					user.getUserFeedReaderDbHelper().close();

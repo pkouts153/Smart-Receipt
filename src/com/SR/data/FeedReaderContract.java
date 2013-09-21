@@ -29,6 +29,8 @@ public final class FeedReaderContract {
         public static final String END_DATE = "end_date";
         public static final String USER = "user";
         public static final String FAMILY_USER = "family_user";
+        public static final String FOR_DELETION = "for_deletion";
+        public static final String ON_SERVER = "on_server";
     }
     
     /* Inner class that defines the table contents */
@@ -40,6 +42,7 @@ public final class FeedReaderContract {
         public static final String PURCHASE_DATE = "purchase_date";
         public static final String STORE = "store";
         public static final String USER = "user";
+        public static final String ON_SERVER = "on_server";
     }
     
     /* Inner class that defines the table contents */
@@ -58,7 +61,9 @@ public final class FeedReaderContract {
         public static final String TABLE_NAME = "family";
         public static final String MEMBER1 = "member1";
         public static final String MEMBER2 = "member2";
-        public static final String DESCRIPTION = "discription";
+        public static final String CONFIRMED = "confirmed";
+        public static final String FOR_DELETION = "for_deletion";
+        public static final String ON_SERVER = "on_server";
     }
     
     /* Inner class that defines the table contents */
@@ -67,8 +72,6 @@ public final class FeedReaderContract {
         public static final String NAME = "store_name";
         public static final String ADDRESS = "address";
         public static final String VAT_NUMBER = "vat_number";
-        //public static final String USERNAME = "username";
-        //public static final String PASSWORD = "password";
     } 
 }
 

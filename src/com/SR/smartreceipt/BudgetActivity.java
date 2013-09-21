@@ -87,14 +87,12 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         try{
         	
 			c.moveToFirst();
-			String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			String category_name;// = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 			
-			cat_adapter.add(category_name);
-			
-			while (!c.isLast ()) {
-				c.moveToNext ();
+			while (!c.isAfterLast ()) {
 				category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 				cat_adapter.add(category_name);
+				c.moveToNext ();
 			}
 			c.close();
 			category.getCatFeedReaderDbHelper().close();
@@ -120,14 +118,12 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		
         try{
 			c2.moveToFirst();
-			String family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
+			String family_member;
 
-			fam_adapter.add(family_member);
-
-			while (!c2.isLast ()) {
-				c2.moveToNext ();
+			while (!c2.isAfterLast ()) {
 				family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
 				fam_adapter.add(family_member);
+				c2.moveToNext ();
 			}
 			c2.close();
 			//user.getUserFeedReaderDbHelper().close();
@@ -233,8 +229,8 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 								
 								if (id!=0) {
 									
-									budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, id);
-									budget.saveBudget(cat_spinner, limit, fd, ud, id, 0);
+									budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
+									budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID);
 								}
 								
 								//user.getUserFeedReaderDbHelper().close();

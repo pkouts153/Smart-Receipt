@@ -71,6 +71,7 @@ public class Product {
 			values.put(FeedProduct.PURCHASE_DATE, date);
 			values.put(FeedProduct.STORE, VAT);
 			values.put(FeedProduct.USER, User.USER_ID);
+			values.put(FeedProduct.ON_SERVER, 0);
 			
 			db.insert(FeedProduct.TABLE_NAME, "null", values);
 			values.clear();

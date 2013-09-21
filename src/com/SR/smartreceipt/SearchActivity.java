@@ -100,14 +100,12 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
         try{
         	
 			c.moveToFirst();
-			String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			String category_name;;
 			
-			cat_adapter.add(category_name);
-			
-			while (!c.isLast ()) {
-				c.moveToNext ();
+			while (!c.isAfterLast ()) {
 				category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 				cat_adapter.add(category_name);
+				c.moveToNext ();
 			}
 			c.close();
 			cat.getCatFeedReaderDbHelper().close();
@@ -134,14 +132,12 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
         try{
 	        
         	c1.moveToFirst();
-			String family_member = c1.getString(c1.getColumnIndexOrThrow(FeedUser.USERNAME));
+			String family_member;
 
-			fam_adapter.add(family_member);
-
-			while (!c1.isLast ()) {
-				c1.moveToNext ();
+			while (!c1.isAfterLast ()) {
 				family_member = c1.getString(c1.getColumnIndexOrThrow(FeedUser.USERNAME));
 				fam_adapter.add(family_member);
+				c1.moveToNext ();
 			}
 			c1.close();
 			user.getUserFeedReaderDbHelper().close();

@@ -66,11 +66,11 @@ public class User {
     				   " FROM " + FeedUser.TABLE_NAME +
     				   " WHERE " + FeedUser._ID + "=(SELECT DISTINCT " + FeedFamily.MEMBER2 +
     				   								" FROM " + FeedFamily.TABLE_NAME +
-    				   								" WHERE " + FeedFamily.MEMBER1 + "=" + user +
+    				   								" WHERE " + FeedFamily.MEMBER1 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1" +
     				   								" UNION ALL " +
     				   								"SELECT DISTINCT " + FeedFamily.MEMBER1 +
     				   								" FROM " + FeedFamily.TABLE_NAME +
-    				   								" WHERE " + FeedFamily.MEMBER2 + "=" + user + ")";
+    				   								" WHERE " + FeedFamily.MEMBER2 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1)";
     	
     	c = db.rawQuery(query, null);
 		
@@ -85,18 +85,13 @@ public class User {
     	
     	c.moveToFirst();
     	
-    	while (!c.isLast ()){
+    	while (!c.isAfterLast ()){
     		if (password.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD))) && email.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL)))) {
     			found = true;
     			USER_ID = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
     		}
     		c.moveToNext ();
     	}
-    	
-		if (password.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD))) && email.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL)))) {
-			found = true;
-			USER_ID = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
-		}
 		
     	return found;
     }

@@ -80,14 +80,12 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
         try{
         	
 			c.moveToFirst();
-			String category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			String category_name;
 			
-			cat_adapter.add(category_name);
-			
-			while (!c.isLast ()) {
-				c.moveToNext ();
+			while (!c.isAfterLast ()) {
 				category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
 				cat_adapter.add(category_name);
+				c.moveToNext ();
 			}
 			c.close();
 			category.getCatFeedReaderDbHelper().close();

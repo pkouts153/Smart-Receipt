@@ -77,6 +77,8 @@ public class Budget {
 		values.put(FeedBudget.USER, user_id);
 		if (family_id != 0)
 			values.put(FeedBudget.FAMILY_USER, family_id);
+		values.put(FeedBudget.FOR_DELETION, 0);
+		values.put(FeedBudget.ON_SERVER, 0);
 		
 		db.insert(FeedBudget.TABLE_NAME, "null", values);
 		values.clear();
@@ -95,6 +97,8 @@ public class Budget {
 								 " WHERE " + FeedBudget.USER + "=" + User.USER_ID + ")";*/
 		
 		c2 = getBudget(User.USER_ID);
+		
+		//This implies that users have only one budget
 		c2.moveToFirst();
 		
 		String productQuery = "SELECT SUM(" + FeedProduct.PRICE + ") AS sum" + 

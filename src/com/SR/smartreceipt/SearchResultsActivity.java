@@ -100,7 +100,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		
 		searchHandler = new SearchHandler(this);
 		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by);
-		/*sums = searchHandler.getSums();
+		sums = searchHandler.getSums();
 		//searchHandler.getSearchFeedReaderDbHelper().close();
 		
 		groups_names = new ArrayList<String>();
@@ -143,7 +143,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		Log.w("groups", "" + groups_names.size() + "");
 		Log.w("groups", "" + group_cost.size() + "");
 		
-		if (group_by.equals("") || groups_names.size()==0) {*/
+		if (group_by.equals("") || groups_names.size()==0) {
 		
 			setContentView(R.layout.activity_search_results_no_tabs);
 
@@ -155,7 +155,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		    ft.add(R.id.fragment_frame, listFragment);
 		    ft.commit();
 
-        /*} 
+        } 
 		else{
 			
 			tabs = groups_names.size();
@@ -169,7 +169,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			// Set up the ViewPager with the sections adapter.
 			mViewPager = (ViewPager) findViewById(R.id.pager);
 			mViewPager.setAdapter(mSectionsPagerAdapter);
-		}*/
+		}
 		
 	}
     
