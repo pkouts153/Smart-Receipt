@@ -23,7 +23,7 @@ public class SearchHandler {
 	}
 
 	public Cursor getSearchResults(String product, String category, String min_cost, String max_cost, String start_date, String end_date, 
-									String store, String family, String group_by){
+									String store, String family, String group_by, String group_name){
 		
 		mDbHelper = new FeedReaderDbHelper(context);
 		
@@ -104,6 +104,10 @@ public class SearchHandler {
 																     " WHERE " + FeedStore.VAT_NUMBER + "='" + store + "')";// AND " + FeedStore.VAT_NUMBER + "='" + store + "'";
 		}
 		
+		if (group_name!=null) {
+			query = query + " AND " + group_by + "='" + group_name +"'";
+		}
+		
 		if (!(group_by.equals(""))) {
 			query = query + " ORDER BY " + group_by + ", " + FeedProduct.PURCHASE_DATE + ", " + FeedProduct.NAME;
 			sum_query = sum_query + " GROUP BY " + group_by;
@@ -112,6 +116,7 @@ public class SearchHandler {
 			query = query + " ORDER BY " + FeedProduct.PURCHASE_DATE + ", " + FeedProduct.NAME + ", " + FeedProduct.PRODUCT_CATEGORY;
 		
 		
+				
 		Log.w("", query);
 		Log.w("", sum_query);
 		

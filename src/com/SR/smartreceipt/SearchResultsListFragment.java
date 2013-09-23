@@ -1,5 +1,10 @@
 package com.SR.smartreceipt;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -8,65 +13,78 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+@SuppressLint("ValidFragment")
 public class SearchResultsListFragment extends ListFragment {
 	
-	Cursor cursor;
-	//Integer position;
-	String[] columns;
-	int[] textviews;
-	SimpleCursorAdapter simpleCursorAdapter;
+	//static Cursor cursor;
+	//static Context context;
 	
-	View view;
+	static String[] columns;
+	static int[] textviews;
+	static SimpleCursorAdapter simpleCursorAdapter;
 	
 	public SearchResultsListFragment() {
 		
 	}
 	
+	/*public SearchResultsListFragment(Cursor c) {
+		cursor = c;
+	}*/
+	
+	public static SearchResultsListFragment newInstance(Cursor cursor, Context context, ViewGroup container, String group_by){
+		
+		//cursor = c;
+		//context = con;
+		
+		List<String> temp = new ArrayList<String>();
+		
+		SearchResultsListFragment listFragment = new SearchResultsListFragment();
+		
+		//if the user has selected group by for his search the group by column will not be visible in the row
+		//but only in the tab title
+		if (group_by!=null) {
+			for (int i=0; i<7; i++)
+				if (!cursor.getColumnName(i).equals(group_by))
+					temp.add(cursor.getColumnName(i));
+				//columns.setValue(cursor.getColumnName(i), i);
+			temp.toArray(columns);
+			temp.clear();
+		}
+		else
+			columns = cursor.getColumnNames();
+		
+		
+		
+		if (group_by.equals("product_category"))
+			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.purchase_date,R.id.store};
+		else if (group_by.equals("store_name"))
+			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date};
+		else
+			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date,R.id.store};
+    	
+		simpleCursorAdapter = new SimpleCursorAdapter(context, R.layout.fragment_search_results_row, cursor, columns, textviews, 0);
+        simpleCursorAdapter.bindView(container, context, cursor);
+        
+        listFragment.setListAdapter(simpleCursorAdapter);
+        
+        return listFragment;
+    }
+	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
 
-    	cursor = SearchResultsActivity.c;
-    	/*if (position==0) {
-	    	columns = cursor.getColumnNames();
-	    	textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date,R.id.store};
-	
-	    	simpleCursorAdapter = new SimpleCursorAdapter(inflater.getContext(), R.layout.fragment_search_results_row, cursor, columns, textviews, 0);
-	        simpleCursorAdapter.bindView(container, inflater.getContext(), cursor);
-	        
-	        setListAdapter(simpleCursorAdapter);
-    	}
-    	else {*/
-    		//cursor.
-    		
-    		
-	    	columns = cursor.getColumnNames();
-	    	textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date,R.id.store,R.id.username};
-	
-	    	simpleCursorAdapter = new SimpleCursorAdapter(inflater.getContext(), R.layout.fragment_search_results_row, cursor, columns, textviews, 0);
-	        simpleCursorAdapter.bindView(container, inflater.getContext(), cursor);
-	        
-	        setListAdapter(simpleCursorAdapter);
-    	//}
+    	/*columns = cursor.getColumnNames();
+    	textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date,R.id.store,R.id.username};
+
+    	simpleCursorAdapter = new SimpleCursorAdapter(inflater.getContext(), R.layout.fragment_search_results_row, cursor, columns, textviews, 0);
+        simpleCursorAdapter.bindView(container, inflater.getContext(), cursor);
         
+        setListAdapter(simpleCursorAdapter);*/
+
         // Inflate the layout for this fragment
-         
-        view = inflater.inflate(R.layout.fragment_search_results_list, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_search_results_list, container, false);
   
-        }
-    
-    /*public void setCursorAndPosition(Cursor c, Integer p){
-    	cursor = c;
-    	position = p;
-    }
-    
-    public void setCursor(Cursor c){
-    	cursor = c;
-    }*/
-    
-    public View getView(){
-    	return view;
     }
     
 }

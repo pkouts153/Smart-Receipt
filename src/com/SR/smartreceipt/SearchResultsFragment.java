@@ -1,12 +1,14 @@
 package com.SR.smartreceipt;
 
+import java.util.ArrayList;
+
 import com.SR.data.SearchHandler;
 
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,74 +26,79 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	View rootView = null;
 	
-	ViewGroup container;
-	LayoutInflater inflater;
-	
-	/*
-	//Search results fragment components
-	
-	TextView result_cost;
-	TextView result_name;
-	TextView result_category;
-	TextView result_price;
-	TextView result_date;
-	TextView result_store;
-	TextView result_user;
-	Button diagrams;*/
-	
-	//SearchResultsActivity searchResultsActivity = new SearchResultsActivity();
-	
-	Cursor cursor = SearchResultsActivity.c;
+	Cursor cursor;
 	
 	SearchHandler searchHandler;
+	
+	String product;
+	String category;
+	String min_cost;
+	String max_cost;
+	String start_date;
+	String end_date;
+	String store;
+	String family;
+	String group_by;
+	ArrayList<String> groups_names;
+	
+	Bundle args;
+	
+	SearchResultsListFragment listFragment;
 	
 	public SearchResultsFragment() {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater infl, ViewGroup cont,
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		container = cont;
-		inflater = infl;
 
+		args = getArguments();
 		
-		//If the screen the user sees is the search selection screen
-		if (getArguments().getInt(ARG_SECTION_NUMBER)==1) {
-			
-			FragmentManager fragmentManager = getFragmentManager();
-		    FragmentTransaction ft = fragmentManager.beginTransaction();
-		    
-		    SearchResultsListFragment listFragment = new SearchResultsListFragment();
-		    //listFragment.setCursorAndPosition(SearchResultsActivity.c, SearchResultsActivity.group_change_positions.get(0));
-		    ft.add(R.id.pager_fragment_frame, listFragment);
-		    ft.commit();
-		    
-		    rootView = inflater.inflate(R.layout.fragment_search_results_list, container, false);
-		    		//listFragment.getView();
-		}
-		//If the screen the user sees is the search results screen
-		else if (getArguments().getInt(ARG_SECTION_NUMBER)==2) {
-			rootView = inflater.inflate(R.layout.activity_budget, container, false);
+		//Position means the screen the user sees
+		int position = args.getInt(ARG_SECTION_NUMBER);
+		Log.w("position", "" + position + "");
+	
+	    product = args.getString("product");
+		category = args.getString("category");
+		min_cost = args.getString("mn_cost");
+		max_cost = args.getString("mx_cost");
+		start_date = args.getString("start_date");
+		end_date = args.getString("end_date");
+		store = args.getString("store");
+		family = args.getString("family");
+		group_by = args.getString("group_by");
+		groups_names = args.getStringArrayList("group_names");
+		
+		
+		searchHandler = new SearchHandler(getActivity());
+		
+		cursor = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
+					start_date, end_date, store, family, group_by, groups_names.get(position-1));
+		
+		Log.w("group name", groups_names.get(position-1));
 
-		}
-		//If the screen the user sees is the search diagrams screen
-		else {
-			rootView = inflater.inflate(R.layout.activity_save, container, false);
-			//dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
-			//dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-		}
-		
+		listFragment = SearchResultsListFragment.newInstance(cursor, getActivity(), 
+				container, group_by);
+
+	    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+	    ft.add(R.id.results_fragment, listFragment);
+	    ft.commit();
+	    
+	    rootView = inflater.inflate(R.layout.fragment_search_results, container, false);
+	    
 		return rootView;
 	}
-
-
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		groups_names.clear();
+		groups_names.trimToSize();
+		searchHandler.getSearchFeedReaderDbHelper().close();
+	}
+	
 	@Override
 	public void onClick(View v) {
 
-	}
-	
-	public void setSearchHandler(SearchHandler handler){
-		searchHandler = handler;
 	}
 }

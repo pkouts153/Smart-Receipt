@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 
 public class SearchResultsActivity extends FragmentActivity {
 
@@ -66,17 +67,13 @@ public class SearchResultsActivity extends FragmentActivity {
 	
 	SearchResultsFragment searchResultsFragment;
 	
-	static int tabs;
+	Cursor c;
+	Cursor sums;
 	
-	static Cursor c;
-	static Cursor sums;
+	ArrayList<String> group_names;
+	ArrayList<String> group_cost;
+	//ArrayList<Integer> group_change_positions;
 	
-	static ArrayList<String> groups_names;
-	static ArrayList<String> group_cost;
-	//static ArrayList<Integer> group_change_positions;
-	
-	String[] columns;
-	int[] textviews;
 	SimpleCursorAdapter simpleCursorAdapter;
 	
 	@Override
@@ -99,11 +96,11 @@ public class SearchResultsActivity extends FragmentActivity {
 		group_by = extras.getString("group_by");
 		
 		searchHandler = new SearchHandler(this);
-		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by);
+		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
 		sums = searchHandler.getSums();
 		//searchHandler.getSearchFeedReaderDbHelper().close();
 		
-		groups_names = new ArrayList<String>();
+		group_names = new ArrayList<String>();
 		group_cost = new ArrayList<String>();
 		//group_change_positions = new ArrayList<Integer>();
 		
@@ -114,7 +111,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			String group_name = c.getString(c.getColumnIndexOrThrow(group_by));
 			String group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
 			
-			groups_names.add(group_name);
+			group_names.add(group_name);
 			
 			c.moveToNext();
 			
@@ -122,12 +119,12 @@ public class SearchResultsActivity extends FragmentActivity {
 				group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
 				if (!group_name1.equals(group_name)) {
 					group_name = c.getString(c.getColumnIndexOrThrow(group_by));
-					groups_names.add(group_name);
+					group_names.add(group_name);
 					//group_change_positions.add(c.getPosition());
 				}
 				c.moveToNext();
 			}
-			
+			group_names.add("group_name");
 			
 			sums.moveToFirst();
 			
@@ -135,30 +132,30 @@ public class SearchResultsActivity extends FragmentActivity {
 				group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
 				sums.moveToNext();
 			}
-			
+			group_cost.add("" + 1 + "");
 		}
-		groups_names.trimToSize();
+		group_names.trimToSize();
 		group_cost.trimToSize();
 		
-		Log.w("groups", "" + groups_names.size() + "");
+		Log.w("groups", "" + group_names.size() + "");
 		Log.w("groups", "" + group_cost.size() + "");
 		
-		if (group_by.equals("") || groups_names.size()==0) {
+		if (group_by.equals("") || group_names.size()==0) {
 		
 			setContentView(R.layout.activity_search_results_no_tabs);
 
 		    FragmentManager fragmentManager = getSupportFragmentManager();
 		    FragmentTransaction ft = fragmentManager.beginTransaction();
 		    
-		    SearchResultsListFragment listFragment = new SearchResultsListFragment();
-		    //listFragment.setCursor(c);
+		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(c, this, 
+		    		(ViewGroup) findViewById(R.id.search_results_no_tabs), null);
+		    
 		    ft.add(R.id.fragment_frame, listFragment);
 		    ft.commit();
 
         } 
 		else{
 			
-			tabs = groups_names.size();
 			setContentView(R.layout.activity_search_results);
 
 			// Create the adapter that will return a fragment for each of the three
@@ -172,7 +169,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		}
 		
 	}
-    
+
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
@@ -221,7 +218,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-	
+    
 	private void getOverflowMenu() {
 
 	     try {
@@ -239,12 +236,12 @@ public class SearchResultsActivity extends FragmentActivity {
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
+		group_names.clear();
+		group_cost.clear();
+		group_names.trimToSize();
+		group_cost.trimToSize();
 		searchHandler.getSearchFeedReaderDbHelper().close();
 	}
-	
-	/*private ArrayList<String> getGroupsNames() {
-		return groups_names;
-	}*/
 	
 	
 	/**
@@ -265,35 +262,34 @@ public class SearchResultsActivity extends FragmentActivity {
 			Fragment fragment = new SearchResultsFragment();
 			Bundle args = new Bundle();
 			args.putInt(SearchResultsFragment.ARG_SECTION_NUMBER, position + 1);
+			args.putString("product", product);
+			args.putString("category", category);
+			args.putString("mn_cost", min_cost);
+			args.putString("mx_cost", max_cost);
+			args.putString("start_date", start_date);
+			args.putString("end_date", end_date);
+			args.putString("store", store);
+			args.putString("family", family);
+			args.putString("group_by", group_by);
+			args.putStringArrayList("group_names", group_names);
 			fragment.setArguments(args);
 			return fragment;
+			
 		}
-
+		
 		@Override
 		public int getCount() {
 			
-			return SearchResultsActivity.tabs;
+			return group_names.size();
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			Locale l = Locale.getDefault();
-			/*switch (position) {
-			case 0:
-				return getString(R.string.title_activity_search).toUpperCase(l);
-			case 1:*/
-				//SearchResultsActivity searchResultsActivity= new SearchResultsActivity();
-			String title = SearchResultsActivity.groups_names.get(position).toUpperCase(l);
-			title = title + "Total Cost: " + SearchResultsActivity.group_cost.get(position).toUpperCase(l);
-			return title;
-				//return getString(R.string.title_search_results).toUpperCase(l);
-			/*case 2:
-				return getString(R.string.title_search_diagrams).toUpperCase(l);
-			case 3:
-				return getString(R.string.title_activity_search).toUpperCase(l);
-			}
 			
-			return null;*/
+			Locale l = Locale.getDefault();
+			String title = group_names.get(position).toUpperCase(l);
+			title = title + "Total Cost: " + group_cost.get(position).toUpperCase(l);
+			return title;
 		}
 	}
 

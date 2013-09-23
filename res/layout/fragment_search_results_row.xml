@@ -69,12 +69,6 @@
 		    android:layout_height="wrap_content"
 		    android:hint="@string/added_products"
 		    android:textSize="16sp" />
-		
-		<TextView android:id="@+id/username"
-		    android:textSize="16sp"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:hint="@string/added_products"/>
 				
 	</LinearLayout>
 </LinearLayout>
