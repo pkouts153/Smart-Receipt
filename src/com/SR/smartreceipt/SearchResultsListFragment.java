@@ -15,10 +15,7 @@ import android.view.ViewGroup;
 
 @SuppressLint("ValidFragment")
 public class SearchResultsListFragment extends ListFragment {
-	
-	//static Cursor cursor;
-	//static Context context;
-	
+
 	static String[] columns;
 	static int[] textviews;
 	static SimpleCursorAdapter simpleCursorAdapter;
@@ -32,34 +29,31 @@ public class SearchResultsListFragment extends ListFragment {
 	}*/
 	
 	public static SearchResultsListFragment newInstance(Cursor cursor, Context context, ViewGroup container, String group_by){
-		
-		//cursor = c;
-		//context = con;
-		
-		List<String> temp = new ArrayList<String>();
-		
+
+		//List<String> temp = new ArrayList<String>();
 		SearchResultsListFragment listFragment = new SearchResultsListFragment();
 		
+
 		//if the user has selected group by for his search the group by column will not be visible in the row
 		//but only in the tab title
-		if (group_by!=null) {
+		/*if (group_by!=null) {
 			for (int i=0; i<7; i++)
-				if (!cursor.getColumnName(i).equals(group_by))
+				if (!cursor.getColumnName(i).equals(group_by) && !group_by.equals("username"))
 					temp.add(cursor.getColumnName(i));
 				//columns.setValue(cursor.getColumnName(i), i);
 			temp.toArray(columns);
 			temp.clear();
 		}
-		else
+		else*/
 			columns = cursor.getColumnNames();
 		
 		
 		
-		if (group_by.equals("product_category"))
+		/*if (group_by.equals("product_category"))
 			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.purchase_date,R.id.store};
 		else if (group_by.equals("store_name"))
 			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date};
-		else
+		else*/
 			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date,R.id.store};
     	
 		simpleCursorAdapter = new SimpleCursorAdapter(context, R.layout.fragment_search_results_row, cursor, columns, textviews, 0);

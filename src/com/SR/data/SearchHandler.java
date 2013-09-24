@@ -106,6 +106,7 @@ public class SearchHandler {
 		
 		if (group_name!=null) {
 			query = query + " AND " + group_by + "='" + group_name +"'";
+			sum_query = sum_query + " AND " + group_by + "='" + group_name +"'";
 		}
 		
 		if (!(group_by.equals(""))) {

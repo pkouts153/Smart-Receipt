@@ -39,6 +39,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
     Spinner family_spinner;
     Button submit;
     Button reset;
+    Button budgets;
     
     Category category;
     Budget budget;
@@ -71,6 +72,8 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         reset = (Button)findViewById(R.id.reset);
         reset.setOnClickListener(this);
         
+        budgets = (Button)findViewById(R.id.budgets);
+        budgets.setOnClickListener(this);
         
         //set up category spinner
         
@@ -255,6 +258,10 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 				} catch (NullPointerException e) {
 					displayError(this.getString(R.string.no_family));
 				}
+			}
+			else if (budgets.getId() == ((Button)v).getId()){
+				Intent intent = new Intent(this, BudgetListActivity.class);
+				startActivity(intent);
 			}
 			else {
 				clearFields();

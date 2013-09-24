@@ -4,15 +4,18 @@ import java.util.ArrayList;
 
 import com.SR.data.SearchHandler;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 /**
  * A dummy fragment representing a section of the app, but that simply
@@ -40,24 +43,27 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 	String family;
 	String group_by;
 	ArrayList<String> groups_names;
+	ArrayList<String> group_cost;
 	
 	Bundle args;
 	
 	SearchResultsListFragment listFragment;
+
+	TextView cost;
 	
 	public SearchResultsFragment() {
 	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		args = getArguments();
+	
+	/*public static SearchResultsFragment newInstance(Context context, ViewGroup container, Bundle args){
+		
+		SearchResultsFragment fragment = new SearchResultsFragment();
 		
 		//Position means the screen the user sees
 		int position = args.getInt(ARG_SECTION_NUMBER);
 		Log.w("position", "" + position + "");
-	
+		
+		group_cost = new ArrayList<String>();
+		
 	    product = args.getString("product");
 		category = args.getString("category");
 		min_cost = args.getString("mn_cost");
@@ -68,14 +74,73 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		family = args.getString("family");
 		group_by = args.getString("group_by");
 		groups_names = args.getStringArrayList("group_names");
+		group_cost = args.getStringArrayList("group_cost");
 		
+		cost = (TextView) container.findViewById(R.id.cost);
+		
+		try{
+			if (group_cost.size()!=0)
+				cost.setText(group_cost.get(position-1));
+			else
+				cost.setText("0");
+		} catch (NullPointerException e){
+			//cost.setText("0");
+		}
+			
+		
+		searchHandler = new SearchHandler(context);
+		
+		cursor = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
+					start_date, end_date, store, family, group_by, groups_names.get(position-1));
+
+		listFragment = SearchResultsListFragment.newInstance(cursor, context, 
+				container, group_by);
+
+	    /*FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+	    ft.add(R.id.results_fragment, listFragment);
+	    ft.commit();
+		return fragment;
+	}*/
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		
+		args = getArguments();
+
+		//Position means the screen the user sees
+		int position = args.getInt(ARG_SECTION_NUMBER);
+		Log.w("position", "" + position + "");
+		
+		group_cost = new ArrayList<String>();
+		
+	    product = args.getString("product");
+		category = args.getString("category");
+		min_cost = args.getString("mn_cost");
+		max_cost = args.getString("mx_cost");
+		start_date = args.getString("start_date");
+		end_date = args.getString("end_date");
+		store = args.getString("store");
+		family = args.getString("family");
+		group_by = args.getString("group_by");
+		groups_names = args.getStringArrayList("group_names");
+		group_cost = args.getStringArrayList("group_cost");
+		
+		cost = (TextView) container.findViewById(R.id.cost);
+		
+		try{
+			if (group_cost.size()!=0)
+				cost.setText(group_cost.get(0));
+			else
+				cost.setText("0");
+		} catch (NullPointerException e){
+		}
+			
 		
 		searchHandler = new SearchHandler(getActivity());
 		
 		cursor = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
 					start_date, end_date, store, family, group_by, groups_names.get(position-1));
-		
-		Log.w("group name", groups_names.get(position-1));
 
 		listFragment = SearchResultsListFragment.newInstance(cursor, getActivity(), 
 				container, group_by);

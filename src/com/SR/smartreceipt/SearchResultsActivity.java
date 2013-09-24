@@ -72,7 +72,6 @@ public class SearchResultsActivity extends FragmentActivity {
 	
 	ArrayList<String> group_names;
 	ArrayList<String> group_cost;
-	//ArrayList<Integer> group_change_positions;
 	
 	SimpleCursorAdapter simpleCursorAdapter;
 	
@@ -102,7 +101,6 @@ public class SearchResultsActivity extends FragmentActivity {
 		
 		group_names = new ArrayList<String>();
 		group_cost = new ArrayList<String>();
-		//group_change_positions = new ArrayList<Integer>();
 		
 		if (!group_by.equals("")){
 			
@@ -120,11 +118,9 @@ public class SearchResultsActivity extends FragmentActivity {
 				if (!group_name1.equals(group_name)) {
 					group_name = c.getString(c.getColumnIndexOrThrow(group_by));
 					group_names.add(group_name);
-					//group_change_positions.add(c.getPosition());
 				}
 				c.moveToNext();
 			}
-			group_names.add("group_name");
 			
 			sums.moveToFirst();
 			
@@ -132,13 +128,9 @@ public class SearchResultsActivity extends FragmentActivity {
 				group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
 				sums.moveToNext();
 			}
-			group_cost.add("" + 1 + "");
 		}
 		group_names.trimToSize();
 		group_cost.trimToSize();
-		
-		Log.w("groups", "" + group_names.size() + "");
-		Log.w("groups", "" + group_cost.size() + "");
 		
 		if (group_by.equals("") || group_names.size()==0) {
 		
@@ -165,6 +157,8 @@ public class SearchResultsActivity extends FragmentActivity {
 	
 			// Set up the ViewPager with the sections adapter.
 			mViewPager = (ViewPager) findViewById(R.id.pager);
+			//mViewPager.setCurrentItem(1);
+
 			mViewPager.setAdapter(mSectionsPagerAdapter);
 		}
 		
@@ -259,6 +253,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
+			
 			Fragment fragment = new SearchResultsFragment();
 			Bundle args = new Bundle();
 			args.putInt(SearchResultsFragment.ARG_SECTION_NUMBER, position + 1);
@@ -272,7 +267,12 @@ public class SearchResultsActivity extends FragmentActivity {
 			args.putString("family", family);
 			args.putString("group_by", group_by);
 			args.putStringArrayList("group_names", group_names);
+			args.putStringArrayList("group_cost", group_cost);
+			
+			//Fragment fragment = SearchResultsFragment.newInstance(context, (ViewGroup) findViewById(R.id.search_results), args);
+			
 			fragment.setArguments(args);
+			
 			return fragment;
 			
 		}
@@ -287,8 +287,9 @@ public class SearchResultsActivity extends FragmentActivity {
 		public CharSequence getPageTitle(int position) {
 			
 			Locale l = Locale.getDefault();
+			
 			String title = group_names.get(position).toUpperCase(l);
-			title = title + "Total Cost: " + group_cost.get(position).toUpperCase(l);
+			//title = title + "Total Cost: " + group_cost.get(position).toUpperCase(l);
 			return title;
 		}
 	}

@@ -111,6 +111,15 @@
 		        android:layout_alignBottom="@+id/submit"
 		        android:layout_toLeftOf="@+id/submit"
 		        android:text="@string/reset" />
+
+			<Button
+			    android:id="@+id/budgets"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_alignBaseline="@+id/reset"
+			    android:layout_alignBottom="@+id/reset"
+			    android:layout_alignParentLeft="true"
+			    android:text="@string/budgets" />
 	
 	    </RelativeLayout>
 
