@@ -33,6 +33,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	int[] textviews;
 	
 	Button delete;
+	Button add_budget;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +43,15 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 		setupActionBar();
 		getOverflowMenu();
 		
-		delete = (Button)findViewById(R.id.delete);
-		delete.setOnClickListener((android.view.View.OnClickListener) this);
-		
 		budget = new Budget(this);
 		
 		c = budget.getBudget(User.USER_ID);
+
+		delete = (Button)findViewById(R.id.delete);
+		delete.setOnClickListener((android.view.View.OnClickListener) this);
+		
+		add_budget = (Button)findViewById(R.id.add_budget);
+		add_budget.setOnClickListener((android.view.View.OnClickListener) this);
 		
 		columns = c.getColumnNames();
 		
@@ -118,8 +122,14 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		
+		if (add_budget.getId() == ((Button)v).getId()){
+			Intent intent = new Intent(this, BudgetActivity.class);
+			intent.putExtra("Activity", "Budget");
+			startActivity(intent);
+		}
+		else {
+			
+		}
 	}
 
 }

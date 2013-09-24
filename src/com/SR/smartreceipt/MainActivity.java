@@ -2,6 +2,7 @@ package com.SR.smartreceipt;
 
 import java.lang.reflect.Field;
 
+import com.SR.data.Budget;
 import com.SR.data.User;
 
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -102,8 +104,18 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Budget link */
 	public void goToBudget(View view) {
-		Intent intent = new Intent(this, BudgetActivity.class);
-		startActivity(intent);
+		
+		Budget budget = new Budget(this);
+		Cursor c = budget.getBudget(User.USER_ID);
+		if (c!=null && c.getCount()>0){
+			Intent intent = new Intent(this, BudgetListActivity.class);
+			startActivity(intent);
+		}
+		else{
+			Intent intent = new Intent(this, BudgetActivity.class);
+			intent.putExtra("Activity", "Main");
+			startActivity(intent);
+		}
 	}
 	
 	/** Called when the user clicks the Search link */

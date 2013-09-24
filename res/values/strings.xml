@@ -103,7 +103,7 @@
     <string name="scan">Scan</string>
     <string name="diagrams">Diagrams</string>
     <string name="delete">Delete</string>
-    <string name="budgets">Budgets</string>
+    <string name="add_budget">Add budget</string>
 
     <!-- Pop up message strings -->
 

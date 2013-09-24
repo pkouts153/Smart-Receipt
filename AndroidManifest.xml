@@ -31,12 +31,20 @@
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
         <activity
-            android:name="com.SR.smartreceipt.BudgetActivity"
+            android:name="com.SR.smartreceipt.BudgetListActivity"
             android:label="@string/title_activity_budget"
             android:parentActivityName="com.SR.smartreceipt.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.SR.smartreceipt.BudgetActivity"
+            android:label="@string/title_activity_budget"
+            android:parentActivityName="com.SR.smartreceipt.BudgetListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.BudgetListActivity" />
         </activity>
         <activity
             android:name="com.SR.smartreceipt.AddFamilyMemberActivity"
@@ -77,14 +85,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.SearchActivity" />
         </activity>
-        <activity
-            android:name="com.SR.smartreceipt.BudgetListActivity"
-            android:label="@string/title_activity_budget"
-            android:parentActivityName="com.SR.smartreceipt.BudgetActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.SR.smartreceipt.BudgetActivity" />
-        </activity>
+        
     </application>
 
 </manifest>

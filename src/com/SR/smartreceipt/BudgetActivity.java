@@ -39,7 +39,6 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
     Spinner family_spinner;
     Button submit;
     Button reset;
-    Button budgets;
     
     Category category;
     Budget budget;
@@ -47,14 +46,21 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
     
     DatePickerFragment dateFragment = new DatePickerFragment();
     
+    String parent_activity;
+    
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_budget);
 		// Show the Up button in the action bar.
+		
+		Intent intent = getIntent();
+        parent_activity = intent.getStringExtra("Activity");
+        
 		setupActionBar();
 		getOverflowMenu();
+		
 		//set up ui components
 		
 		spend_limit = (EditText)findViewById(R.id.spend_limit);
@@ -72,9 +78,6 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         reset = (Button)findViewById(R.id.reset);
         reset.setOnClickListener(this);
         
-        budgets = (Button)findViewById(R.id.budgets);
-        budgets.setOnClickListener(this);
-        
         //set up category spinner
         
         category = new Category(this);
@@ -90,7 +93,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         try{
         	
 			c.moveToFirst();
-			String category_name;// = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			String category_name;
 			
 			while (!c.isAfterLast ()) {
 				category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
@@ -177,10 +180,14 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 				//
 				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 				//
-				NavUtils.navigateUpFromSameTask(this);
+				Intent upIntent;
+				if (parent_activity.equals("Main"))
+					upIntent = new Intent(this, MainActivity.class);
+				else
+					upIntent = new Intent(this, BudgetListActivity.class);
+				NavUtils.navigateUpTo(this, upIntent);
 				return true;
 	        default:
-	        	//NavUtils.navigateUpFromSameTask(this);
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
@@ -258,10 +265,6 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 				} catch (NullPointerException e) {
 					displayError(this.getString(R.string.no_family));
 				}
-			}
-			else if (budgets.getId() == ((Button)v).getId()){
-				Intent intent = new Intent(this, BudgetListActivity.class);
-				startActivity(intent);
 			}
 			else {
 				clearFields();

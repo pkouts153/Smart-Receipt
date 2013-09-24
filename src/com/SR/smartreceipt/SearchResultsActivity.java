@@ -254,6 +254,16 @@ public class SearchResultsActivity extends FragmentActivity {
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 			
+			/*You can use the Bundle from the Intent:
+
+			Bundle extras = myIntent.getExtras();
+			extras.put*(info);
+			
+			Or an entire bundle:
+			
+			myIntent.putExtras(myBundle);
+			Is this what you're looking for?*/
+			
 			Fragment fragment = new SearchResultsFragment();
 			Bundle args = new Bundle();
 			args.putInt(SearchResultsFragment.ARG_SECTION_NUMBER, position + 1);

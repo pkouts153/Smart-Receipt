@@ -117,7 +117,14 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 			    "Panos" + "' AS '" + FeedUser.USERNAME + "', '" + 
 		        "Panos" + "' AS '" + FeedUser.PASSWORD + "', '" + 
 			    "Panos" + "' AS '" + FeedUser.EMAIL + "'";
-		
+	
+	private static final String SQL_ADD_USER3 =
+		    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
+	        " SELECT NULL AS '" + FeedUser._ID + "', '" + 
+				    "Giannis" + "' AS '" + FeedUser.USERNAME + "', '" + 
+			        "Giannis" + "' AS '" + FeedUser.PASSWORD + "', '" + 
+				    "Giannis" + "' AS '" + FeedUser.EMAIL + "'";
+	
 	private static final String SQL_ADD_PRODUCTS =
 		    "INSERT INTO '" + FeedProduct.TABLE_NAME + "'" +
 		    " SELECT NULL AS '" + FeedProduct._ID + "', 'Food' AS '" + FeedProduct.PRODUCT_CATEGORY + "', 'Coffee' AS '" + FeedProduct.NAME + 
@@ -181,6 +188,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_ADD_CATEGORIES);
 		db.execSQL(SQL_ADD_USER1);
 		db.execSQL(SQL_ADD_USER2);
+		db.execSQL(SQL_ADD_USER3);
 		db.execSQL(SQL_ADD_STORE);
 		db.execSQL(SQL_ADD_OFFER);
 		db.execSQL(SQL_ADD_FAMILY);
@@ -192,8 +200,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		/*switch (oldVersion) {
 		case 1:
-			db.execSQL(SQL_ADD_PRODUCTS);
-			db.execSQL(SQL_ADD_BUDGET);
+			db.execSQL(SQL_ADD_USER3);
 		}*/
 	}
 
