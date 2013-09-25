@@ -73,6 +73,8 @@ public class SearchResultsActivity extends FragmentActivity {
 	ArrayList<String> group_names;
 	ArrayList<String> group_cost;
 	
+	Bundle extras;
+	
 	SimpleCursorAdapter simpleCursorAdapter;
 	
 	@Override
@@ -82,7 +84,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		setupActionBar();
 		getOverflowMenu();
 		
-		Bundle extras = getIntent().getExtras();
+		extras = getIntent().getExtras();
 		
 		product = extras.getString("product");
 		category = extras.getString("category");
@@ -167,7 +169,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
-		errorDialog.show(getSupportFragmentManager(), "errorDialog");
+		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
 	/**
@@ -251,18 +253,8 @@ public class SearchResultsActivity extends FragmentActivity {
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
-			// Return a DummySectionFragment (defined as a static inner class
+			// Return a SearchResultsFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			
-			/*You can use the Bundle from the Intent:
-
-			Bundle extras = myIntent.getExtras();
-			extras.put*(info);
-			
-			Or an entire bundle:
-			
-			myIntent.putExtras(myBundle);
-			Is this what you're looking for?*/
 			
 			Fragment fragment = new SearchResultsFragment();
 			Bundle args = new Bundle();
@@ -278,6 +270,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			args.putString("group_by", group_by);
 			args.putStringArrayList("group_names", group_names);
 			args.putStringArrayList("group_cost", group_cost);
+			
 			
 			//Fragment fragment = SearchResultsFragment.newInstance(context, (ViewGroup) findViewById(R.id.search_results), args);
 			

@@ -84,6 +84,17 @@ public class Budget {
 		values.clear();
     }
     
+    public boolean deleteBudget(int id){
+    	
+    	mDbHelper = new FeedReaderDbHelper(context);
+		
+		// Gets the data repository in write mode
+		db = mDbHelper.getWritableDatabase();
+		
+		return db.delete(FeedBudget.TABLE_NAME, FeedBudget._ID + "=" + id, null) > 0;
+		
+    }
+    
     public boolean isBudgetSurpassed() {
     	boolean surpassed = false;
     	

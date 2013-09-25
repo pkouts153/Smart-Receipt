@@ -317,7 +317,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
-		errorDialog.show(getSupportFragmentManager(), "errorDialog");
+		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
 	public void clearFields() {

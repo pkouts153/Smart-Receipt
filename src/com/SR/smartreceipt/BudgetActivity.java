@@ -10,6 +10,7 @@ import com.SR.data.FeedReaderContract.FeedCategory;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +45,9 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
     Budget budget;
     User user;
     
+    Cursor cat;
+    Cursor fam;
+    
     DatePickerFragment dateFragment = new DatePickerFragment();
     
     String parent_activity;
@@ -60,6 +64,9 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         
 		setupActionBar();
 		getOverflowMenu();
+		
+		if (intent.getStringExtra("Success")!=null)
+			displaySuccess(this.getString(R.string.delete_success));
 		
 		//set up ui components
 		
@@ -81,7 +88,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         //set up category spinner
         
         category = new Category(this);
-		Cursor c = category.getCategories();
+		cat = category.getCategories();
 		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
 		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
@@ -92,19 +99,19 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		
         try{
         	
-			c.moveToFirst();
+        	cat.moveToFirst();
 			String category_name;
 			
-			while (!c.isAfterLast ()) {
-				category_name = c.getString(c.getColumnIndexOrThrow(FeedCategory.NAME));
+			while (!cat.isAfterLast ()) {
+				category_name = cat.getString(cat.getColumnIndexOrThrow(FeedCategory.NAME));
 				cat_adapter.add(category_name);
-				c.moveToNext ();
+				cat.moveToNext ();
 			}
-			c.close();
+			cat.close();
 			category.getCatFeedReaderDbHelper().close();
 			
         } catch (CursorIndexOutOfBoundsException e){
-        	c.close();
+        	cat.close();
 			category.getCatFeedReaderDbHelper().close();
         }
         
@@ -118,25 +125,27 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		family_spinner.setAdapter(fam_adapter);
 		
 		fam_adapter.add(this.getString(R.string.family_prompt));
+		fam_adapter.add("All");
 		
 		user = new User(this);
-		Cursor c2 = user.getFamilyMembers(User.USER_ID);
+		fam = user.getFamilyMembers(User.USER_ID);
 		
         try{
-			c2.moveToFirst();
+        	fam.moveToFirst();
 			String family_member;
 
-			while (!c2.isAfterLast ()) {
-				family_member = c2.getString(c2.getColumnIndexOrThrow(FeedUser.USERNAME));
+			while (!fam.isAfterLast ()) {
+				Log.w("", fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME)));
+				family_member = fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME));
 				fam_adapter.add(family_member);
-				c2.moveToNext ();
+				fam.moveToNext ();
 			}
-			c2.close();
+			//fam.close();
 			//user.getUserFeedReaderDbHelper().close();
 			
 		} catch (CursorIndexOutOfBoundsException e){
 			fam_adapter.add("No family");
-			c2.close();
+			//fam.close();
 			//user.getUserFeedReaderDbHelper().close();
 	    }
         family_spinner.setSelection(0);
@@ -228,27 +237,37 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 						
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
-							
-							//if (fam_spinner.equals(this.getString(R.string.family_prompt))) {
-							//	displayError(this.getString(R.string.no_family));
-							//}
-							//else {
-								//User user = new User(this);
-								
+						
+							//User user = new User(this);
+							if (fam_spinner.equals("All")) {
+								fam.moveToFirst();
+								while (!fam.isAfterLast()) {
+									int id = user.getId(fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME)));
+									
+									if (id!=0) {
+										
+										//budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
+										budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID);
+									}
+									fam.moveToNext();
+								}
+							}
+							else {
 								int id = user.getId(fam_spinner);
 								
 								if (id!=0) {
 									
-									budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
+									//budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
 									budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID);
 								}
-								
-								//user.getUserFeedReaderDbHelper().close();
-							//}
+							}
+							
+							//user.getUserFeedReaderDbHelper().close();
+						
 						}
-						else {
+						//else {
 							budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
-						}
+						//}
 						
 						budget.getBudgetFeedReaderDbHelper().close();
 						
@@ -281,13 +300,13 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
-		errorDialog.show(getSupportFragmentManager(), "errorDialog");
+		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
 	public void displaySuccess(String message) {
 		SuccessDialogFragment successDialog = new SuccessDialogFragment();
 		successDialog.setMessage(message);
-		successDialog.show(getSupportFragmentManager(), "successDialog");
+		successDialog.show(getFragmentManager(), "successDialog");
 		timerDelayRemoveDialog(1500, successDialog);
 	}
 	

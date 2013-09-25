@@ -219,7 +219,7 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 						
 						SuccessDialogFragment successDialog = new SuccessDialogFragment();
 						successDialog.setMessage(this.getString(R.string.success));
-						successDialog.show(getSupportFragmentManager(), "successDialog");
+						successDialog.show(getFragmentManager(), "successDialog");
 						timerDelayRemoveDialog(1500, successDialog);
 					
 					    Intent serviceIntent = new Intent(SaveActivity.this, BudgetNotificationIntentService.class);
@@ -285,13 +285,13 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
-		errorDialog.show(getSupportFragmentManager(), "errorDialog");
+		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
 	public void displaySuccess(String message) {
 		SuccessDialogFragment successDialog = new SuccessDialogFragment();
 		successDialog.setMessage(message);
-		successDialog.show(getSupportFragmentManager(), "successDialog");
+		successDialog.show(getFragmentManager(), "successDialog");
 		timerDelayRemoveDialog(1500, successDialog);
 	}
 	

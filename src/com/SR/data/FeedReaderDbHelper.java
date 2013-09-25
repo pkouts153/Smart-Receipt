@@ -167,7 +167,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	    		2 + "' AS '" + FeedFamily.MEMBER2 + "', " + 
 	    		"'1' AS '" + FeedFamily.CONFIRMED + "', " + 
 	    		"'0' AS '" + FeedFamily.FOR_DELETION + "', " + 
-	    		"'0' AS '" + FeedFamily.ON_SERVER + "'";
+	    		"'0' AS '" + FeedFamily.ON_SERVER + "'" +
+	    " UNION SELECT NULL, '1', '3', '1', '0', '0'";
 		
 
 	

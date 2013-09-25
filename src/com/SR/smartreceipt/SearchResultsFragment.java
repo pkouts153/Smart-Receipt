@@ -130,7 +130,7 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		
 		try{
 			if (group_cost.size()!=0)
-				cost.setText(group_cost.get(0));
+				cost.setText(group_cost.get(position-1));
 			else
 				cost.setText("0");
 		} catch (NullPointerException e){
