@@ -30,6 +30,7 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 	View rootView = null;
 	
 	Cursor cursor;
+	Cursor sums;
 	
 	SearchHandler searchHandler;
 	
@@ -141,8 +142,9 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		
 		cursor = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
 					start_date, end_date, store, family, group_by, groups_names.get(position-1));
-
-		listFragment = SearchResultsListFragment.newInstance(cursor, getActivity(), 
+		sums = searchHandler.getSums();
+		
+		listFragment = SearchResultsListFragment.newInstance(cursor, group_cost.get(position-1), getActivity(), 
 				container, group_by);
 
 	    FragmentTransaction ft = getChildFragmentManager().beginTransaction();

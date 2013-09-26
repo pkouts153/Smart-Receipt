@@ -3,7 +3,6 @@ package com.SR.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedUser;
@@ -11,10 +10,7 @@ import com.SR.data.FeedReaderContract.FeedUser;
 public class User {
 
 	public static int USER_ID;
-	
-	/*String USERNAME;
-    String PASSWORD;
-    String EMAIL;*/
+
     
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
@@ -67,11 +63,11 @@ public class User {
     				   " FROM " + FeedUser.TABLE_NAME +
     				   " WHERE " + FeedUser._ID + "=(SELECT DISTINCT " + FeedFamily.MEMBER2 +
     				   								" FROM " + FeedFamily.TABLE_NAME +
-    				   								" WHERE " + FeedFamily.MEMBER1 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1)" +
+    				   								" WHERE " + FeedFamily.MEMBER1 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0)" +
     				   								" OR " + FeedUser._ID + "=(" +
     				   								"SELECT DISTINCT " + FeedFamily.MEMBER1 +
     				   								" FROM " + FeedFamily.TABLE_NAME +
-    				   								" WHERE " + FeedFamily.MEMBER2 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1)";
+    				   								" WHERE " + FeedFamily.MEMBER2 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0)";
     	
     	c = db.rawQuery(query, null);
     	
@@ -104,16 +100,12 @@ public class User {
     	
     	c.moveToFirst();
     	
-    	while (!c.isLast ()){
+    	while (!c.isAfterLast ()){
     		if (user.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.USERNAME)))) {
     			id = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
     		}
     		c.moveToNext ();
     	}
-    	
-		if (user.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.USERNAME)))) {
-			id = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
-		}
 		
     	return id;
     }

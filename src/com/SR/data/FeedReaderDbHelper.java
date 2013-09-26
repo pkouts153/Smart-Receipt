@@ -22,14 +22,17 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	private static final String SQL_CREATE_CATEGORIES =
 	    "CREATE TABLE IF NOT EXISTS " + FeedCategory.TABLE_NAME + " (" +
 		FeedCategory._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-		FeedCategory.NAME + " TEXT NOT NULL)";
+		FeedCategory.NAME + " TEXT NOT NULL," +
+		FeedCategory.CATEGORY_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)";
 	
 	private static final String SQL_CREATE_USER =
 		"CREATE TABLE IF NOT EXISTS " + FeedUser.TABLE_NAME + " (" +
 		FeedUser._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 		FeedUser.USERNAME + " TEXT NOT NULL," +
 		FeedUser.PASSWORD + " TEXT NOT NULL," +
-		FeedUser.EMAIL + " TEXT NOT NULL)";
+		FeedUser.EMAIL + " TEXT NOT NULL," +
+		FeedUser.FOR_UPDATE + " BOOLEAN NOT NULL," +
+		FeedUser.USER_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)";
 
 	private static final String SQL_CREATE_BUDGET =
 		"CREATE TABLE IF NOT EXISTS " + FeedBudget.TABLE_NAME + " (" +
@@ -40,8 +43,11 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedBudget.END_DATE + " TEXT NOT NULL," +
 		FeedBudget.USER + " INTEGER NOT NULL," +
 		FeedBudget.FAMILY_USER + " INTEGER," + 
+		FeedBudget.FOR_UPDATE + " BOOLEAN NOT NULL, " +
 		FeedBudget.FOR_DELETION + " BOOLEAN NOT NULL, " +
 		FeedBudget.ON_SERVER + " BOOLEAN NOT NULL, " +
+		FeedBudget.IS_SURPASSED + " BOOLEAN NOT NULL, " +
+		FeedBudget.BUDGET_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "+
 		" FOREIGN KEY (" + FeedBudget.USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + ")," +
 		" FOREIGN KEY (" + FeedBudget.EXPENSE_CATEGORY + ") REFERENCES " + FeedCategory.TABLE_NAME + " (" + FeedCategory.NAME + ")," +
 		" FOREIGN KEY (" + FeedBudget.FAMILY_USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + "))";
@@ -56,6 +62,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedProduct.STORE + " INTEGER," +
 		FeedProduct.USER + " INTEGER NOT NULL," +
 		FeedProduct.ON_SERVER + " BOOLEAN NOT NULL, " +
+		FeedProduct.PRODUCT_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "+
 		" FOREIGN KEY (" + FeedProduct.USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + ")," +
 		" FOREIGN KEY (" + FeedProduct.PRODUCT_CATEGORY + ") REFERENCES " + FeedCategory.TABLE_NAME + " (" + FeedCategory.NAME + ")," +
 		" FOREIGN KEY (" + FeedProduct.STORE + ") REFERENCES " + FeedStore.TABLE_NAME + " (" + FeedStore._ID + "))";
@@ -68,7 +75,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedOffer.PRICE + " REAL NOT NULL," +
 		FeedOffer.DISCOUNT + " REAL NOT NULL," +
 		FeedOffer.UNTIL_DATE + " TEXT," +
-		FeedOffer.STORE + " INTEGER NOT NULL," +
+		FeedOffer.STORE + " INTEGER NOT NULL, " +
+		FeedOffer.OFFER_CREATED+ " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "+
 		" FOREIGN KEY (" + FeedOffer.CATEGORY + ") REFERENCES " + FeedCategory.TABLE_NAME + " (" + FeedCategory.NAME + ")," +
 		" FOREIGN KEY (" + FeedOffer.STORE + ") REFERENCES " + FeedStore.TABLE_NAME + " (" + FeedStore._ID + "))";
 	
@@ -79,7 +87,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedFamily.MEMBER2 + " INTEGER NOT NULL," +
 		FeedFamily.CONFIRMED + " BOOLEAN NOT NULL, " +
 		FeedFamily.FOR_DELETION + " BOOLEAN NOT NULL, " +
-		FeedFamily.ON_SERVER + " BOOLEAN NOT NULL, " +
+		FeedFamily.ON_SERVER + " BOOLEAN NOT NULL," +
+		FeedFamily.FAMILY_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "+
 		" FOREIGN KEY (" + FeedFamily.MEMBER1 + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + ")," +
 		" FOREIGN KEY (" + FeedFamily.MEMBER2 + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + "))";
 	
@@ -88,16 +97,18 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedStore._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 		FeedStore.NAME + " TEXT NOT NULL," +
 		FeedStore.ADDRESS + " TEXT NOT NULL," +
-		FeedStore.VAT_NUMBER + " TEXT NOT NULL)";
+		FeedStore.VAT_NUMBER + " TEXT NOT NULL," +
+		FeedStore.STORE_CREATED+ " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)";
 	
 	
 	//insert data into tables
 	
 	private static final String SQL_ADD_CATEGORIES =
 		"INSERT INTO '" + FeedCategory.TABLE_NAME + "'" +
-	    " SELECT NULL AS '" + FeedCategory._ID + "', '" + "Food" + "' AS '" + FeedCategory.NAME + "'" +
-	    " UNION SELECT NULL, '" + "Entertainment" + "'" +
-	    " UNION SELECT NULL, '" + "Clothes" + "'";
+	    " SELECT NULL AS '" + FeedCategory._ID + "', '" + "All" + "' AS '" + FeedCategory.NAME + "', '2013-09-26 00:00:00' AS '" + FeedCategory.CATEGORY_CREATED + "'" +
+	    " UNION SELECT NULL, '" + "Food" + "', '2013-09-26 00:00:00'" +
+	    " UNION SELECT NULL, '" + "Entertainment" + "', '2013-09-26 00:00:00'" +
+	    " UNION SELECT NULL, '" + "Clothes" + "', '2013-09-26 00:00:00'";
 	
 	/*private static final String SQL_ADD_USER =
 	    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
@@ -109,46 +120,54 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
         " SELECT NULL AS '" + FeedUser._ID + "', '" + 
 			    "Vag" + "' AS '" + FeedUser.USERNAME + "', '" + 
 		        "Vag" + "' AS '" + FeedUser.PASSWORD + "', '" + 
-			    "Vag" + "' AS '" + FeedUser.EMAIL + "'";
+			    "Vag" + "' AS '" + FeedUser.EMAIL + "', '" +
+			    "0" + "' AS '" + FeedUser.FOR_UPDATE + "', '" +
+			    "2013-09-26 00:00:00" + "' AS '" + FeedUser.USER_CREATED + "'";
 	
 	private static final String SQL_ADD_USER2 =
 	    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
         " SELECT NULL AS '" + FeedUser._ID + "', '" + 
 			    "Panos" + "' AS '" + FeedUser.USERNAME + "', '" + 
 		        "Panos" + "' AS '" + FeedUser.PASSWORD + "', '" + 
-			    "Panos" + "' AS '" + FeedUser.EMAIL + "'";
+			    "Panos" + "' AS '" + FeedUser.EMAIL + "', '" +
+			    "0" + "' AS '" + FeedUser.FOR_UPDATE + "', '" +
+			    "2013-09-26 00:00:00" + "' AS '" + FeedUser.USER_CREATED + "'";
 	
 	private static final String SQL_ADD_USER3 =
 		    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
 	        " SELECT NULL AS '" + FeedUser._ID + "', '" + 
 				    "Giannis" + "' AS '" + FeedUser.USERNAME + "', '" + 
 			        "Giannis" + "' AS '" + FeedUser.PASSWORD + "', '" + 
-				    "Giannis" + "' AS '" + FeedUser.EMAIL + "'";
+				    "Giannis" + "' AS '" + FeedUser.EMAIL + "', '" +
+				    "0" + "' AS '" + FeedUser.FOR_UPDATE + "', '" +
+				    "2013-09-26 00:00:00" + "' AS '" + FeedUser.USER_CREATED + "'";
 	
 	private static final String SQL_ADD_PRODUCTS =
 		    "INSERT INTO '" + FeedProduct.TABLE_NAME + "'" +
 		    " SELECT NULL AS '" + FeedProduct._ID + "', 'Food' AS '" + FeedProduct.PRODUCT_CATEGORY + "', 'Coffee' AS '" + FeedProduct.NAME + 
 		    			"', '3' AS '" + FeedProduct.PRICE + "', '2013-09-16' AS '" + FeedProduct.PURCHASE_DATE + 
-		    			"', '2' AS '" + FeedProduct.STORE + "', '1' AS '" + FeedProduct.USER + "', '0' AS '" + FeedProduct.ON_SERVER + "'" +
-			" UNION SELECT NULL, 'Food', 'Tost', '2', '2013-09-13', '1', '1', '0'" +
-			" UNION SELECT NULL, 'Entertainment', 'Movie', '5', '2013-09-14', null, '1', '0'" +
-			" UNION SELECT NULL, 'Clothes', 'Jean', '25', '2013-09-20', '1', '1', '0'" +
-			" UNION SELECT NULL, 'Entertainment', 'Theater', '10', '2013-09-19', '1', '2', '0'" +
-			" UNION SELECT NULL, 'Food', 'Tost', '3', '2013-09-16', '2', '2', '0'";
+		    			"', '2' AS '" + FeedProduct.STORE + "', '1' AS '" + FeedProduct.USER + "', '0' AS '" + FeedProduct.ON_SERVER +
+		    			"', '2013-09-26 00:00:00' AS '" + FeedProduct.PRODUCT_CREATED + "'" +
+			" UNION SELECT NULL, 'Food', 'Tost', '2', '2013-09-13', '1', '1', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Entertainment', 'Movie', '5', '2013-09-14', null, '1', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Clothes', 'Jean', '25', '2013-09-20', '1', '1', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Entertainment', 'Theater', '10', '2013-09-19', '1', '2', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Food', 'Tost', '3', '2013-09-16', '2', '2', '0', '2013-09-26 00:00:00'";
 	
 	private static final String SQL_ADD_BUDGET =
 		    "INSERT INTO '" + FeedBudget.TABLE_NAME + "'" +
 		    " SELECT NULL AS '" + FeedBudget._ID + "', '" + "Food" + "' AS '" + FeedBudget.EXPENSE_CATEGORY + "', '" + "8" + "' AS '" + FeedBudget.SPEND_LIMIT + "', '" + 
-		    			"2013-09-10" + "' AS '" + FeedBudget.START_DATE + "', '" + "2013-09-20" + "' AS '" + FeedBudget.END_DATE + "', '" + 
+		    			"2013-09-10" + "' AS '" + FeedBudget.START_DATE + "', '" + "2013-10-10" + "' AS '" + FeedBudget.END_DATE + "', '" + 
 		    			"1" + "' AS '" + FeedBudget.USER + "', '" + "null" + "' AS '" + FeedBudget.FAMILY_USER + "', " +
-		    			"'0' AS '" + FeedBudget.FOR_DELETION + "', '0' AS '" + FeedBudget.ON_SERVER + "'" +
-			" UNION SELECT NULL, '" + "Food" + "', '" + "6" + "', '" + "2013-09-10" + "', '" + "2013-09-20" + "', '" + "2" + "', '" + "null" + "', '0', '0'";
+		    			"'0' AS '" + FeedBudget.FOR_DELETION + "', '0' AS '" + FeedBudget.ON_SERVER + "', '0' AS '" + FeedBudget.FOR_UPDATE + "', " +
+		    			"'0' AS '" + FeedBudget.IS_SURPASSED + "', '2013-09-26 00:00:00' AS '" + FeedBudget.BUDGET_CREATED + "'" +
+			" UNION SELECT NULL, '" + "Clothes" + "', '" + "50" + "', '" + "2013-09-10" + "', '" + "2013-10-10" + "', '" + "2" + "', '" + "null" + "', '0', '0', '0', '0' , '2013-09-26 00:00:00'";
 	
 	private static final String SQL_ADD_STORE =
 	    "INSERT INTO '" + FeedStore.TABLE_NAME + "'" +
         " SELECT NULL AS '" + FeedStore._ID + "', 'Nike' AS '" + FeedStore.NAME + 
-        				"', 'Syntagma' AS '" + FeedStore.ADDRESS + "', '1' AS '" + FeedStore.VAT_NUMBER + "'" +
-		" UNION SELECT NULL, 'Everest', 'Victoria', '2'";
+        				"', 'Syntagma' AS '" + FeedStore.ADDRESS + "', '1' AS '" + FeedStore.VAT_NUMBER + "', '2013-09-26 00:00:00' AS '" + FeedStore.STORE_CREATED + "'" +
+		" UNION SELECT NULL, 'Everest', 'Victoria', '2', '2013-09-26 00:00:00'";
 		
 	private static final String SQL_ADD_OFFER =
 	    "INSERT INTO '" + FeedOffer.TABLE_NAME + "'" +
@@ -158,7 +177,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 			    "100" + "' AS '" + FeedOffer.PRICE + "', '" + 
 		        "90" + "' AS '" + FeedOffer.DISCOUNT + "', '" + 
 			    "2/10/2013" + "' AS '" + FeedOffer.UNTIL_DATE + "', '" + 
-		        1 + "' AS '" + FeedOffer.STORE + "'";
+		        1 + "' AS '" + FeedOffer.STORE + "', " +
+		        "'2013-09-26 00:00:00' AS '" + FeedOffer.OFFER_CREATED + "'";
 		
 	private static final String SQL_ADD_FAMILY =
 	    "INSERT INTO '" + FeedFamily.TABLE_NAME + "'" +
@@ -167,8 +187,9 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	    		2 + "' AS '" + FeedFamily.MEMBER2 + "', " + 
 	    		"'1' AS '" + FeedFamily.CONFIRMED + "', " + 
 	    		"'0' AS '" + FeedFamily.FOR_DELETION + "', " + 
-	    		"'0' AS '" + FeedFamily.ON_SERVER + "'" +
-	    " UNION SELECT NULL, '1', '3', '1', '0', '0'";
+	    		"'0' AS '" + FeedFamily.ON_SERVER + "', " +
+	    		"'2013-09-26 00:00:00' AS '" + FeedFamily.FAMILY_CREATED + "'" +
+	    " UNION SELECT NULL, '3', '1', '1', '0', '0', '2013-09-26 00:00:00'";
 		
 
 	

@@ -1,6 +1,9 @@
 package com.SR.data;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,13 +13,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.SR.data.FeedReaderContract.FeedProduct;
 
 public class Product {
-
-	/*String PRODUCT_CATEGORY;
-    String NAME;
-    Float PRICE;
-    String PURCHASE_DATE;
-    int STORE;
-    int USER;*/
     
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
@@ -28,31 +24,7 @@ public class Product {
 		context = c;
 	}
 	
-	/*public Cursor getProducts(int id){
-    	
-    	mDbHelper = new FeedReaderDbHelper(context);
 		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-    	
-		String query = "SELECT DISTINCT " + FeedUser.USERNAME +
-				   	   " FROM " + FeedUser.TABLE_NAME +
-				       " WHERE " + FeedUser._ID + "=(SELECT DISTINCT " + FeedFamily.MEMBER2 +
-				   									" FROM " + FeedFamily.TABLE_NAME +
-				   									" WHERE " + FeedFamily.MEMBER1 + "=" + user +
-				   									" UNION ALL " +
-				   									"SELECT DISTINCT " + FeedFamily.MEMBER1 +
-				   									" FROM " + FeedFamily.TABLE_NAME +
-				   									" WHERE " + FeedFamily.MEMBER2 + "=" + user + ")";
-	
-		c = db.rawQuery(query, null);
-	
-		
-		return c;
-		
-	}*/
-	
-	
     public void saveProduct(ArrayList<String> products_list, String date, String VAT){
 		mDbHelper = new FeedReaderDbHelper(context);
 		
@@ -72,6 +44,12 @@ public class Product {
 			values.put(FeedProduct.STORE, VAT);
 			values.put(FeedProduct.USER, User.USER_ID);
 			values.put(FeedProduct.ON_SERVER, 0);
+			
+			Date date1 = new Date();
+			Timestamp timestampToday = new Timestamp(date1.getTime());
+			String today = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestampToday);
+			
+			values.put(FeedProduct.PRODUCT_CREATED, today);
 			
 			db.insert(FeedProduct.TABLE_NAME, "null", values);
 			values.clear();

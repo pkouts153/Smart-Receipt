@@ -123,14 +123,15 @@ public class SearchResultsActivity extends FragmentActivity {
 				}
 				c.moveToNext();
 			}
-			
-			sums.moveToFirst();
-			
-			while (!sums.isAfterLast()){
-				group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
-				sums.moveToNext();
-			}
 		}
+		
+		sums.moveToFirst();
+		
+		while (!sums.isAfterLast()){
+			group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
+			sums.moveToNext();
+		}
+		
 		group_names.trimToSize();
 		group_cost.trimToSize();
 		
@@ -141,7 +142,9 @@ public class SearchResultsActivity extends FragmentActivity {
 		    FragmentManager fragmentManager = getSupportFragmentManager();
 		    FragmentTransaction ft = fragmentManager.beginTransaction();
 		    
-		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(c, this, 
+		    Log.w("ResultsActivity", group_cost.get(0));
+
+		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(c, group_cost.get(0), this, 
 		    		(ViewGroup) findViewById(R.id.search_results_no_tabs), null);
 		    
 		    ft.add(R.id.fragment_frame, listFragment);

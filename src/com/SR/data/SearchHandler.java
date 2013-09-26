@@ -15,7 +15,7 @@ public class SearchHandler {
     SQLiteDatabase db;
     Cursor c;
     Cursor sums;
-    
+    Cursor c32;
     Context context;
     
 	public SearchHandler(Context c) {
@@ -30,6 +30,22 @@ public class SearchHandler {
 		// Gets the data repository in write mode
 		db = mDbHelper.getWritableDatabase();
 		
+		
+		/*String query1 = "SELECT " + FeedProduct._ID + ", " + FeedProduct.NAME + ", " + FeedProduct.PRICE + ", " + FeedProduct.PRODUCT_CATEGORY + ", " + FeedProduct.PURCHASE_DATE + 
+						" FROM " + FeedProduct.TABLE_NAME;
+		
+		Log.w("", query1);
+		
+		c32 = db.rawQuery(query1, null);  
+		
+		c32.moveToFirst();
+		while (!c32.isAfterLast()) {
+			c.getString(c32.getColumnIndexOrThrow(FeedProduct.NAME));
+			c32.moveToNext();
+		}*/
+			
+		   
+		   
 		String query = "SELECT DISTINCT " + FeedProduct.TABLE_NAME + "." + FeedProduct._ID + ", " + FeedProduct.NAME + ", " + FeedProduct.PRICE + 
 							", " + FeedProduct.PRODUCT_CATEGORY + ", " + FeedProduct.PURCHASE_DATE + 
 							", CASE WHEN " + FeedProduct.STORE + " is null THEN 'Unknown store' ELSE " + FeedStore.NAME + " END AS store_name" +
@@ -51,7 +67,7 @@ public class SearchHandler {
 			sum_query = sum_query + " AND " + FeedProduct.NAME + "='" + product + "'";
 		}
 		
-		if (!(category.equals(""))) {
+		if (!(category.equals("")) && !(category.equals("All"))) {
 			query = query + " AND " + FeedProduct.PRODUCT_CATEGORY + "='" + category + "'";
 			sum_query = sum_query + " AND " + FeedProduct.PRODUCT_CATEGORY + "='" + category + "'";
 		}

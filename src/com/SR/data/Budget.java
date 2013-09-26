@@ -1,5 +1,9 @@
 package com.SR.data;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,14 +13,6 @@ import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedProduct;
 
 public class Budget {
-
-	/*String EXPENSE_CATEGORY;
-	Float SPEND_LIMIT;
-    String START_DATE;
-    String END_DATE;
-    int NOTIFICATION;
-    int USER;
-    int FAMILY_USER;*/
     
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
@@ -45,9 +41,10 @@ public class Budget {
 			FeedBudget.END_DATE,
 			FeedBudget.USER,
 			FeedBudget.FAMILY_USER,
+			FeedBudget.IS_SURPASSED
 		    };
 		
-		String where = "" + FeedBudget.USER + "=" + user_id;
+		String where = "" + FeedBudget.USER + "=" + user_id + " AND " + FeedBudget.FOR_DELETION + "=0";
 		
 		c1 = db.query(
 			FeedBudget.TABLE_NAME,  				  // The table to query
@@ -78,10 +75,20 @@ public class Budget {
 		if (family_id != 0)
 			values.put(FeedBudget.FAMILY_USER, family_id);
 		values.put(FeedBudget.FOR_DELETION, 0);
+		values.put(FeedBudget.FOR_UPDATE, 0);
 		values.put(FeedBudget.ON_SERVER, 0);
+		values.put(FeedBudget.IS_SURPASSED, 0);
+		
+		Date date = new Date();
+		Timestamp timestampToday = new Timestamp(date.getTime());
+		String today = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestampToday);
+		
+		values.put(FeedBudget.BUDGET_CREATED, today);
 		
 		db.insert(FeedBudget.TABLE_NAME, "null", values);
 		values.clear();
+		
+		getBudgetFeedReaderDbHelper().close();
     }
     
     public boolean deleteBudget(int id){
@@ -91,52 +98,52 @@ public class Budget {
 		// Gets the data repository in write mode
 		db = mDbHelper.getWritableDatabase();
 		
-		return db.delete(FeedBudget.TABLE_NAME, FeedBudget._ID + "=" + id, null) > 0;
+		ContentValues values = new ContentValues();
+		values.put(FeedBudget.FOR_DELETION, 1);
+		return db.update(FeedBudget.TABLE_NAME, values, FeedBudget._ID + "=" + id, null) > 0;
 		
     }
     
-    public boolean isBudgetSurpassed() {
+    public Boolean BudgetsSurpassed() {
     	boolean surpassed = false;
-    	
-		/*String query = "SELECT " + FeedProduct.USER + ", SUM(" + FeedProduct.PRICE + ") as sum" + ", " + FeedBudget.START_DATE + ", " + FeedBudget.END_DATE +
-				   	   " FROM " + FeedProduct.TABLE_NAME + ", " + FeedBudget.TABLE_NAME +
-					   " WHERE " + FeedProduct.USER + "=" + User.USER_ID + " AND " + FeedBudget.USER + "=" + User.USER_ID +
-					   " AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + FeedBudget.START_DATE + "') AND Date('" + FeedBudget.END_DATE + "')" +
-					   " GROUP BY " + FeedProduct.USER + 
-					   " HAVING sum>(SELECT " + FeedBudget.SPEND_LIMIT + 
-								 " FROM " + FeedBudget.TABLE_NAME +
-								 " WHERE " + FeedBudget.USER + "=" + User.USER_ID + ")";*/
 		
 		c2 = getBudget(User.USER_ID);
 		
-		//This implies that users have only one budget
 		c2.moveToFirst();
 		
-		String productQuery = "SELECT SUM(" + FeedProduct.PRICE + ") AS sum" + 
-						   	   " FROM " + FeedProduct.TABLE_NAME +
-							   " WHERE " + FeedProduct.USER + "=" + User.USER_ID +
-							   		" AND " + FeedProduct.PRODUCT_CATEGORY + "='" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY)) + "'" +
-						   	   		" AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.START_DATE)) + "')" +
-						   													" AND Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.END_DATE)) + "')";
+		while (!c2.isAfterLast()) {
+			String productQuery = "SELECT SUM(" + FeedProduct.PRICE + ") AS sum" + 
+							   	   " FROM " + FeedProduct.TABLE_NAME +
+								   " WHERE " + FeedProduct.USER + "=" + User.USER_ID +
+								   " AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.START_DATE)) + "')" +
+								   " AND Date('" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.END_DATE)) + "')";
 			
-		c1 = db.rawQuery(productQuery, null);
-        
-        c1.moveToFirst();
-        c2.moveToFirst();
-		
-        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))){
+			if (!c2.getString(c2.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY)).equals("All"))
+				productQuery = productQuery +" AND " + FeedProduct.PRODUCT_CATEGORY + "='" + c2.getString(c2.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY)) + "'";
 			
-			surpassed = true;
+			
+			c1 = db.rawQuery(productQuery, null);
+			
+	        c1.moveToFirst();
+	        
+	        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))) {
+	        	
+	        	ContentValues values = new ContentValues();
+	        	values.put(FeedBudget.IS_SURPASSED, 1);
+	        	db.update(FeedBudget.TABLE_NAME, values, FeedBudget._ID+"="+c2.getInt(c2.getColumnIndexOrThrow(FeedBudget._ID)), null);
+	        	surpassed = true;
+			}
+	        c2.moveToNext();
 		}
 
 		c1.close();
 		c2.close();
-		
+			
 		getBudgetFeedReaderDbHelper().close();
 		
     	return surpassed;
     }
-    
+
     public FeedReaderDbHelper getBudgetFeedReaderDbHelper(){
     	return mDbHelper;
     }

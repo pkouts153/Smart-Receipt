@@ -60,6 +60,12 @@
     <string name="same_on">Same on</string>
     <string name="category_prompt">Expenses category</string>
     <string name="family_prompt">Family member</string>
+    
+    <string name="euro">€</string>
+    <string name="exp_category_hint">category</string>
+    <string name="limit_hint">spend limit</string>
+    <string name="start_date_hint">start date</string>
+    <string name="end_date_hint">end date</string>
 
     <!-- Strings of activity_save -->
 
@@ -91,6 +97,14 @@
         <item>Store</item>
         <item>Family member</item>
     </string-array>
+    
+    <string name="total_cost">Total Cost:</string>
+    
+    <string name="name_hint">name</string>
+    <string name="price_hint">price</string>
+    <string name="purchase_date_hint">purchase date</string>
+    <string name="category_hint">category</string>
+    <string name="store_hint">store</string>
 
     <!-- Button strings -->
 
