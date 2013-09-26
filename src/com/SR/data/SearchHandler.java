@@ -29,21 +29,6 @@ public class SearchHandler {
 		
 		// Gets the data repository in write mode
 		db = mDbHelper.getWritableDatabase();
-		
-		
-		/*String query1 = "SELECT " + FeedProduct._ID + ", " + FeedProduct.NAME + ", " + FeedProduct.PRICE + ", " + FeedProduct.PRODUCT_CATEGORY + ", " + FeedProduct.PURCHASE_DATE + 
-						" FROM " + FeedProduct.TABLE_NAME;
-		
-		Log.w("", query1);
-		
-		c32 = db.rawQuery(query1, null);  
-		
-		c32.moveToFirst();
-		while (!c32.isAfterLast()) {
-			c.getString(c32.getColumnIndexOrThrow(FeedProduct.NAME));
-			c32.moveToNext();
-		}*/
-			
 		   
 		   
 		String query = "SELECT DISTINCT " + FeedProduct.TABLE_NAME + "." + FeedProduct._ID + ", " + FeedProduct.NAME + ", " + FeedProduct.PRICE + 
@@ -63,8 +48,8 @@ public class SearchHandler {
 		
 		if (!(product.equals("")))
 		{
-			query = query + " AND " + FeedProduct.NAME + "='" + product + "'";
-			sum_query = sum_query + " AND " + FeedProduct.NAME + "='" + product + "'";
+			query = query + " AND " + FeedProduct.NAME + " LIKE '%" + product + "%'";
+			sum_query = sum_query + " AND " + FeedProduct.NAME + " LIKE '%" + product + "%'";
 		}
 		
 		if (!(category.equals("")) && !(category.equals("All"))) {
@@ -134,8 +119,8 @@ public class SearchHandler {
 		
 		
 				
-		Log.w("", query);
-		Log.w("", sum_query);
+		//Log.w("", query);
+		//Log.w("", sum_query);
 		
 		c = db.rawQuery(query, null);
 		sums = db.rawQuery(sum_query, null);

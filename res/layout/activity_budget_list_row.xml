@@ -4,10 +4,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:id="@+id/results_row"
-    android:background="@android:color/white"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
-
+    android:background="@android:color/white">
+    
+    <LinearLayout
+	    android:background="#59B6E5"
+	    android:layout_width="match_parent"
+	    android:layout_height="0.3dp" >
+    </LinearLayout>
+    
     <TextView android:id="@+id/budget_id"
         android:textSize="16sp"
         android:layout_width="0dp"
@@ -18,13 +22,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/delete_budget"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/drawable_horizontal_margin" >
-    
+        android:orientation="vertical" >
+        
 	    <LinearLayout
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:orientation="horizontal" >
+	        android:orientation="horizontal"
+        	android:paddingTop="@dimen/drawable_horizontal_margin" >
 	        
 		    <LinearLayout
 		        android:layout_width="0dp"
@@ -144,12 +148,6 @@
 			</LinearLayout>
 			
 		</LinearLayout>
-		
-		<LinearLayout
-		    android:background="#59B6E5"
-		    android:layout_width="match_parent"
-		    android:layout_height="0.3dp" >
-    	</LinearLayout>
     	
 	</LinearLayout>
 

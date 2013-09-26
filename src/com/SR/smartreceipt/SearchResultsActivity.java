@@ -21,7 +21,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
@@ -141,8 +140,6 @@ public class SearchResultsActivity extends FragmentActivity {
 
 		    FragmentManager fragmentManager = getSupportFragmentManager();
 		    FragmentTransaction ft = fragmentManager.beginTransaction();
-		    
-		    Log.w("ResultsActivity", group_cost.get(0));
 
 		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(c, group_cost.get(0), this, 
 		    		(ViewGroup) findViewById(R.id.search_results_no_tabs), null);

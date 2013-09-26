@@ -1,21 +1,14 @@
 package com.SR.smartreceipt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.SR.data.FeedReaderContract.FeedCategory;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 @SuppressLint("ValidFragment")
