@@ -3,6 +3,7 @@ package com.SR.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedUser;
@@ -61,16 +62,17 @@ public class User {
 		
     	String query = "SELECT DISTINCT " + FeedUser.USERNAME +
     				   " FROM " + FeedUser.TABLE_NAME +
-    				   " WHERE " + FeedUser._ID + "=(SELECT DISTINCT " + FeedFamily.MEMBER2 +
+    				   " WHERE " + FeedUser._ID + " IN (SELECT DISTINCT " + FeedFamily.MEMBER2 +
     				   								" FROM " + FeedFamily.TABLE_NAME +
-    				   								" WHERE " + FeedFamily.MEMBER1 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0)" +
-    				   								" OR " + FeedUser._ID + "=(" +
+    				   								" WHERE " + FeedFamily.MEMBER1 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0" +
+    				   								" UNION ALL " +
     				   								"SELECT DISTINCT " + FeedFamily.MEMBER1 +
     				   								" FROM " + FeedFamily.TABLE_NAME +
     				   								" WHERE " + FeedFamily.MEMBER2 + "=" + user + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0)";
     	
     	c = db.rawQuery(query, null);
     	
+    	Log.w("", query);
 		return c;
     }  
     
