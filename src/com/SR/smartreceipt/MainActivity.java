@@ -2,24 +2,49 @@ package com.SR.smartreceipt;
 
 import java.lang.reflect.Field;
 
-import com.SR.data.Budget;
-import com.SR.data.User;
-
-import android.os.Build;
-import android.os.Bundle;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import com.SR.data.Budget;
+import com.SR.data.Family;
+import com.SR.data.FeedReaderContract.FeedFamily;
+import com.SR.data.FeedReaderContract.FeedUser;
+import com.SR.data.FeedReaderDbHelper;
+import com.SR.data.User;
+import com.SR.processes.MyApplication;
+import com.SR.processes.RetrieveBudgetsAfterIdTask;
+import com.SR.processes.RetrieveCategoriesAfterIdTask;
+import com.SR.processes.RetrieveDeletedBudgetsTask;
+import com.SR.processes.RetrieveDeletedFamilyTask;
+import com.SR.processes.RetrieveFamilyAfterIdTask;
+import com.SR.processes.RetrieveNewFamilyMemberUserDataTask;
+import com.SR.processes.RetrieveOffersAfterIdTask;
+import com.SR.processes.RetrieveProductsAfterIdTask;
+import com.SR.processes.RetrieveStoresAfterIdTask;
+import com.SR.processes.RetrieveUpdatedBudgetsTask;
+import com.SR.processes.RetrieveUpdatedUserDataTask;
+import com.SR.processes.UploadBudgetTask;
+import com.SR.processes.UploadFamilyTask;
+import com.SR.processes.UploadProductTask;
+
 public class MainActivity extends Activity {
 
 	User user;
+	Budget budget;
+	
+	FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +86,14 @@ public class MainActivity extends Activity {
 	    		startActivity(intent);
 	            return true;
 	        case R.id.action_logout:
-	        	user = new User(this);
+	        	mDbHelper = new FeedReaderDbHelper(this);
+				db = mDbHelper.getWritableDatabase();
+				
+	        	user = new User(db);
 	        	user.userLogout();
+	        	
+	        	mDbHelper.close();
+	        	
 	        	Intent intent2 = new Intent(this, LoginActivity.class);
 	    		startActivity(intent2);
 	            return true;
@@ -77,7 +108,6 @@ public class MainActivity extends Activity {
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
-	        	//NavUtils.navigateUpFromSameTask(this);
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
@@ -104,14 +134,18 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Budget link */
 	public void goToBudget(View view) {
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
 		
-		Budget budget = new Budget(this);
+		budget = new Budget(db);
 		Cursor c = budget.getBudget(User.USER_ID);
 		if (c!=null && c.getCount()>0){
+			mDbHelper.close();
 			Intent intent = new Intent(this, BudgetListActivity.class);
 			startActivity(intent);
 		}
 		else{
+			mDbHelper.close();
 			Intent intent = new Intent(this, BudgetActivity.class);
 			intent.putExtra("Activity", "Main");
 			startActivity(intent);
@@ -147,4 +181,90 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, BudgetActivity.class);
 		startActivity(intent);
 	}
+	
+	@Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    	
+    	/*if (mDbHelper == null) {
+    		new FeedReaderDbHelper(this);
+    		db = mDbHelper.getWritableDatabase();
+    	}*/
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    
+    	/*FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();*/
+ /*    	Cursor queryResult = new Product().fetchProducts(db);
+    	
+		while(queryResult.moveToNext()){
+			
+			String id = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct._ID));
+			String name = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct.NAME));
+		
+			Log.i("id", id);
+			Log.i("name", name);
+		}
+	*/	
+    	/*Cursor queryResult1 = new User(this).getFamilyMembers(User.USER_ID);
+    	
+		while(queryResult1.moveToNext()){
+			
+			String username = queryResult1.getString(queryResult1.getColumnIndexOrThrow(FeedUser.USERNAME));
+
+			Log.i("username", username);
+
+		}
+		
+		Cursor queryResult2 = new Family().fetchFamilies(db);
+		while(queryResult2.moveToNext()){
+			String id = queryResult2.getString(queryResult2.getColumnIndexOrThrow(FeedFamily._ID));
+			
+			String member2 = queryResult2.getString(queryResult2.getColumnIndexOrThrow(FeedFamily.MEMBER2));
+			String member1 = queryResult2.getString(queryResult2.getColumnIndexOrThrow(FeedFamily.MEMBER1));
+
+			Log.i("id", id);
+			Log.i("member1", member1);
+			Log.i("member2", member2);
+		}*/
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }
+    
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+	      
+        if(!(MyApplication.isActivityVisible())){
+			
+         	FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
+			SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		
+			new RetrieveNewFamilyMemberUserDataTask().execute(db);
+			
+            new RetrieveBudgetsAfterIdTask().execute(db);
+  			new RetrieveFamilyAfterIdTask().execute(db);
+            new RetrieveProductsAfterIdTask().execute(db);
+            new RetrieveCategoriesAfterIdTask().execute(db);
+            new RetrieveStoresAfterIdTask().execute(db);
+    	    new RetrieveOffersAfterIdTask().execute(db);
+    	    
+            new UploadBudgetTask().execute(db);
+	  		new UploadFamilyTask().execute(db);  
+     		new UploadProductTask().execute(db);
+  
+    		new RetrieveDeletedBudgetsTask().execute(db);
+    		new RetrieveDeletedFamilyTask().execute(db);	
+
+      		new RetrieveUpdatedBudgetsTask().execute(db);
+      		new RetrieveUpdatedUserDataTask().execute(db);
+
+        }
+    }*/
+	
 }

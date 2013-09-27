@@ -1,6 +1,7 @@
 package com.SR.processes;
 
 import com.SR.data.Budget;
+import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.User;
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.smartreceipt.R;
@@ -12,10 +13,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.NotificationCompat;
 
 @SuppressLint("NewApi")
 public class BudgetNotificationIntentService extends IntentService {
+	
+	FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
 	
 	public BudgetNotificationIntentService() {
 		super("BudgetNotificationIntentService");
@@ -23,10 +28,13 @@ public class BudgetNotificationIntentService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-
+		
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
+		
 		boolean budgetSurpassed = false;
 		
-		Budget budget = new Budget(this);
+		Budget budget = new Budget(db);
 		budgetSurpassed = budget.BudgetsSurpassed();
 		
 		if (budgetSurpassed) {
@@ -80,6 +88,8 @@ public class BudgetNotificationIntentService extends IntentService {
 			mNotificationManager.notify(1, mBuilder.build());
 			
 		}
+		
+		mDbHelper.close();
 	}
 	
 }

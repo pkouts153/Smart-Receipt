@@ -3,8 +3,10 @@ package com.SR.smartreceipt;
 import java.lang.reflect.Field;
 
 import com.SR.data.Budget;
+import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.User;
+import com.SR.processes.MyApplication;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.annotation.TargetApi;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,9 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	Budget budget;
 	User user;
 	
+	FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
+	
 	SimpleCursorAdapter simpleCursorAdapter;
 	
 	Cursor c;
@@ -43,6 +49,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_budget_list);
+		
 		// Show the Up button in the action bar.
 		setupActionBar();
 		getOverflowMenu();
@@ -51,7 +58,10 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
         	if (getIntent().getStringExtra("Success")!=null)
         		displaySuccess(this.getString(R.string.delete_success));
 		
-		budget = new Budget(this);
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
+		
+		budget = new Budget(db);
 		
 		c = budget.getBudget(User.USER_ID);
 
@@ -69,8 +79,8 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
         simpleCursorAdapter.bindView((View)findViewById(R.id.activity_list), this, c);
         
         setListAdapter(simpleCursorAdapter);
-        budget.getBudgetFeedReaderDbHelper().close();
-        
+
+        mDbHelper.close();
 	}
 
 	/**
@@ -99,8 +109,14 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	    		startActivity(intent);
 	            return true;
 	        case R.id.action_logout:
-	        	user = new User(this);
+	        	mDbHelper = new FeedReaderDbHelper(this);
+	    		db = mDbHelper.getWritableDatabase();
+	    		
+	        	user = new User(db);
 	        	user.userLogout();
+	        	
+	        	mDbHelper.close();
+	        	
 	        	Intent intent2 = new Intent(this, LoginActivity.class);
 	    		startActivity(intent2);
 	            return true;
@@ -115,7 +131,6 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
-	        	//NavUtils.navigateUpFromSameTask(this);
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
@@ -145,7 +160,10 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 			View listViewRow;
 			ListView listView = getListView();
 			
-			budget = new Budget(this);
+			mDbHelper = new FeedReaderDbHelper(this);
+    		db = mDbHelper.getWritableDatabase();
+    		
+			budget = new Budget(db);
 			boolean error = false;
 			
 			c.moveToFirst();
@@ -159,11 +177,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 				if (!c.isLast())
 					c.moveToNext();
 			}
-			/*if (error)
-				displayError(this.getString(R.string.delete_error));
-			else
-				displaySuccess(this.getString(R.string.delete_success));*/
-				
+			
 			if (error)
 				displayError(this.getString(R.string.delete_error));
 			else {
@@ -180,7 +194,8 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 					
 				}
 			}
-			budget.getBudgetFeedReaderDbHelper().close();
+
+			mDbHelper.close();
 		}
 	}
 	public void displayError(String message) {
@@ -203,4 +218,24 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	        }
 	    }, time); 
 	}
+	
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    	
+    	/*if (mDbHelper == null) {
+    		new FeedReaderDbHelper(this);
+    		db = mDbHelper.getWritableDatabase();
+    	}*/
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    	
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }
 }

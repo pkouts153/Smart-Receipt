@@ -6,16 +6,19 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.SR.data.Category;
+import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.Product;
 import com.SR.data.Store;
 import com.SR.data.User;
 import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.processes.BudgetNotificationIntentService;
+import com.SR.processes.MyApplication;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +57,9 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
     User user;
     Store store;
     
+    FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
+	
     String cat_spinner;
 	String p_name;
 	String p_price;
@@ -69,9 +75,13 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		getOverflowMenu();
+		
 		//set up category spinner
 		
-        category = new Category(this);
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
+		
+        category = new Category(db);
 		Cursor c = category.getCategories();
 		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
@@ -93,13 +103,12 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 				c.moveToNext ();
 			}
 			c.close();
-			category.getCatFeedReaderDbHelper().close();
-			
         } catch (CursorIndexOutOfBoundsException e){
         	c.close();
-			category.getCatFeedReaderDbHelper().close();
         }
 		
+        mDbHelper.close();
+        
         //set up other ui components
         
 		product_name = (EditText)findViewById(R.id.product_name);
@@ -151,8 +160,14 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	    		startActivity(intent);
 	            return true;
 	        case R.id.action_logout:
-	        	user = new User(this);
+	        	mDbHelper = new FeedReaderDbHelper(this);
+	    		db = mDbHelper.getWritableDatabase();
+	    		
+	        	user = new User(db);
 	        	user.userLogout();
+	        	
+	        	mDbHelper.close();
+	        	
 	        	Intent intent2 = new Intent(this, LoginActivity.class);
 	    		startActivity(intent2);
 	            return true;
@@ -167,7 +182,6 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
-	        	//NavUtils.navigateUpFromSameTask(this);
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
@@ -207,14 +221,17 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 						if (!(p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt))))
 							addToArrayList();
 						
-						product = new Product(this);
-						store = new Store(this);
+						mDbHelper = new FeedReaderDbHelper(this);
+			    		db = mDbHelper.getWritableDatabase();
+			    		
+						product = new Product(db);
+						store = new Store(db);
 						
 						int id = store.getId(VAT);
 						
 						product.saveProduct(product_list, pd, id);
 						
-						product.getProductFeedReaderDbHelper().close();
+						mDbHelper.close();
 						
 						clearFields();
 						purchase_date.getText().clear();
@@ -311,24 +328,32 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	        }
 	    }, time); 
 	}
-	
+
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    	
+    	/*if (mDbHelper == null) {
+    		new FeedReaderDbHelper(this);
+    		db = mDbHelper.getWritableDatabase();
+    	}*/
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    	
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }
+    
 	@Override
 	protected void onStop() {
 	    super.onStop();
 	    
 	    product_list.clear();
 		product_list.trimToSize();
-		
-	    /*if (product.getProductFeedReaderDbHelper() != null)
-	    	product.getProductFeedReaderDbHelper().close();*/
 	}
-	
-	@Override
-	protected void onPause() {
-	    super.onPause();
-	    
-	    /*if (product.getProductFeedReaderDbHelper() != null)
-	    	product.getProductFeedReaderDbHelper().close();*/
-	}
-
 }

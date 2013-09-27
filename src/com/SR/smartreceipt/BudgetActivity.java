@@ -4,13 +4,14 @@ import java.lang.reflect.Field;
 
 import com.SR.data.Budget;
 import com.SR.data.Category;
+import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.User;
 import com.SR.data.FeedReaderContract.FeedCategory;
+import com.SR.processes.MyApplication;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
 public class BudgetActivity extends FragmentActivity implements OnClickListener {
@@ -45,6 +47,9 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
     Budget budget;
     User user;
     
+    FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
+	
     Cursor cat;
     Cursor fam;
     
@@ -57,11 +62,14 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_budget);
-		// Show the Up button in the action bar.
+		
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
 		
 		Intent intent = getIntent();
         parent_activity = intent.getStringExtra("Activity");
         
+        // Show the Up button in the action bar.
 		setupActionBar();
 		getOverflowMenu();
 		
@@ -87,7 +95,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         
         //set up category spinner
         
-        category = new Category(this);
+        category = new Category(db);
 		cat = category.getCategories();
 		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
@@ -98,7 +106,6 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		cat_adapter.add(this.getString(R.string.category_prompt));
 		
         try{
-        	
         	cat.moveToFirst();
 			String category_name;
 			
@@ -108,13 +115,9 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 				cat.moveToNext ();
 			}
 			cat.close();
-			category.getCatFeedReaderDbHelper().close();
-			
         } catch (CursorIndexOutOfBoundsException e){
         	cat.close();
-			category.getCatFeedReaderDbHelper().close();
         }
-        
         
         //set up family spinner
         
@@ -125,10 +128,12 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		family_spinner.setAdapter(fam_adapter);
 		
 		fam_adapter.add(this.getString(R.string.family_prompt));
-		fam_adapter.add("All");
 		
-		user = new User(this);
+		user = new User(db);
 		fam = user.getFamilyMembers(User.USER_ID);
+		
+		if(fam.getCount()>1)
+			fam_adapter.add("All");
 		
         try{
         	fam.moveToFirst();
@@ -139,13 +144,8 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 				fam_adapter.add(family_member);
 				fam.moveToNext ();
 			}
-			//fam.close();
-			//user.getUserFeedReaderDbHelper().close();
-			
 		} catch (CursorIndexOutOfBoundsException e){
 			fam_adapter.add("No family");
-			//fam.close();
-			//user.getUserFeedReaderDbHelper().close();
 	    }
         family_spinner.setSelection(0);
 	}
@@ -179,6 +179,9 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	        	user.userLogout();
 	        	Intent intent2 = new Intent(this, LoginActivity.class);
 	    		startActivity(intent2);
+	    		
+	    		mDbHelper.close();
+	    		
 	            return true;
 			case android.R.id.home:
 				// This ID represents the Home or Up button. In the case of this
@@ -232,46 +235,35 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
 						Float limit= Float.parseFloat(s_limit);
 						
-						budget = new Budget(this);
+						mDbHelper = new FeedReaderDbHelper(this);
+						db = mDbHelper.getWritableDatabase();
+						
+						budget = new Budget(db);
 						
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
 						
-							//User user = new User(this);
 							if (fam_spinner.equals("All")) {
 								fam.moveToFirst();
 								while (!fam.isAfterLast()) {
 									int id = user.getId(fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME)));
 									
-									if (id!=0) {
-										
-										//budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
+									if (id!=0) 
 										budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID);
-									}
+								
 									fam.moveToNext();
 								}
 							}
 							else {
 								int id = user.getId(fam_spinner);
 								
-								if (id!=0) {
-									
-									//budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
+								if (id!=0)
 									budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID);
-								}
 							}
-							
-							//user.getUserFeedReaderDbHelper().close();
-						
 						}
-						//else {
-							budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
-						//}
+						budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
 						
-						budget.getBudgetFeedReaderDbHelper().close();
-						
-						user.getUserFeedReaderDbHelper().close();
-						
+						mDbHelper.close();
 						clearFields();
 						
 						displaySuccess(this.getString(R.string.success));
@@ -330,31 +322,23 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	}
 	
 
-	/*@Override
-	protected void onStop() {
-	    super.onStop();
-	    
-	    if (budget.getBudgetFeedReaderDbHelper() != null)
-	    	budget.getBudgetFeedReaderDbHelper().close();
-	    
-	    if (user.getUserFeedReaderDbHelper() != null)
-	    	user.getUserFeedReaderDbHelper().close();
-	    
-	    if (category.getCatFeedReaderDbHelper() != null)
-	    	category.getCatFeedReaderDbHelper().close();
-	}
-	
-	@Override
-	protected void onPause() {
-	    super.onPause();
-	    
-	    if (budget.getBudgetFeedReaderDbHelper() != null)
-	    	budget.getBudgetFeedReaderDbHelper().close();
-	    
-	    if (user.getUserFeedReaderDbHelper() != null)
-	    	user.getUserFeedReaderDbHelper().close();
-	    
-	    if (category.getCatFeedReaderDbHelper() != null)
-	    	category.getCatFeedReaderDbHelper().close();
-	}*/
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    	
+    	/*if (mDbHelper == null) {
+    		new FeedReaderDbHelper(this);
+    		db = mDbHelper.getWritableDatabase();
+    	}*/
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    	
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }	
 }

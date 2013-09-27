@@ -4,33 +4,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.data.FeedReaderContract.FeedStore;
-import com.SR.data.FeedReaderContract.FeedUser;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class Store {
 	
-    FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
     Cursor c;
     
-    Context context;
-    
-    public Store(Context c){
-    	context = c;
+    public Store(SQLiteDatabase database){
+    	db = database;
     }   
 	
 	public Cursor getStores(){
-    	
-    	mDbHelper = new FeedReaderDbHelper(context);
-		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-    	
+
 		// Specifies which columns are needed from the database
 		String[] projection = {
 			FeedStore._ID,
@@ -65,16 +54,11 @@ public class Store {
 	    		}
 	    		c.moveToNext ();
 	    	}
-	    	
-	    	getStoreFeedReaderDbHelper().close();
     	}
     	
     	return id;
     }
-	
-    public FeedReaderDbHelper getStoreFeedReaderDbHelper(){
-    	return mDbHelper;
-    }
+
 	
 	
 	
@@ -90,11 +74,13 @@ public class Store {
 	
 	
 	
+    public Store(){
+
+    }   
 	
 	
 	
-	
-	/*public String fetchStoreMaxId(SQLiteDatabase db){
+	public String fetchStoreMaxId(SQLiteDatabase db){
 
 		Cursor result = db.rawQuery("SELECT max("+FeedStore._ID+") AS max FROM "+FeedStore.TABLE_NAME+"", null);
 		result.moveToNext();
@@ -124,5 +110,5 @@ public class Store {
 		db.execSQL("INSERT INTO "+FeedStore.TABLE_NAME+" ("+FeedStore._ID+", "+FeedStore.NAME+", "+FeedStore.ADDRESS+", "
 															+FeedStore.VAT_NUMBER+", "+FeedStore.STORE_CREATED+")" +
 				" VALUES ('"+id+"','"+name+"','"+address+"','"+vat+"','"+created+"')");
-	}	*/
+	}	
 }

@@ -2,9 +2,11 @@ package com.SR.smartreceipt;
 
 import java.util.ArrayList;
 
+import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.SearchHandler;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
 
 /**
  * A dummy fragment representing a section of the app, but that simply
@@ -31,6 +32,9 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 	Cursor sums;
 	
 	SearchHandler searchHandler;
+	
+	FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
 	
 	String product;
 	String category;
@@ -121,7 +125,10 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		groups_names = args.getStringArrayList("group_names");
 		group_cost = args.getStringArrayList("group_cost");
 		
-		searchHandler = new SearchHandler(getActivity());
+		mDbHelper = new FeedReaderDbHelper(getActivity());
+		db = mDbHelper.getWritableDatabase();
+		
+		searchHandler = new SearchHandler(db);
 		
 		cursor = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
 					start_date, end_date, store, family, group_by, groups_names.get(position-1));
@@ -134,17 +141,26 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 	    ft.add(R.id.results_fragment, listFragment);
 	    ft.commit();
 	    
+	    //mDbHelper.close();
+	    
 	    rootView = inflater.inflate(R.layout.fragment_search_results, container, false);
 	    
 		return rootView;
 	}
 	
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }	
+    
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
 		groups_names.clear();
 		groups_names.trimToSize();
-		searchHandler.getSearchFeedReaderDbHelper().close();
 	}
 	
 	@Override

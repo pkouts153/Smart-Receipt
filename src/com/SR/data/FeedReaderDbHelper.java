@@ -221,14 +221,27 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_ADD_FAMILY);
 		db.execSQL(SQL_ADD_PRODUCTS);
 		db.execSQL(SQL_ADD_BUDGET);
+	
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		/*switch (oldVersion) {
 		case 1:
-			db.execSQL(SQL_ADD_USER3);
+			db.execSQL(SQL_ADD_PRODUCTS);
+			db.execSQL(SQL_ADD_BUDGET);
 		}*/
+		
+		android.util.Log.w("LunchList", "Upgrading database, which will destroy all old data");
+	    db.execSQL("DROP TABLE IF EXISTS '"+FeedCategory.TABLE_NAME+"'");
+	    db.execSQL("DROP TABLE IF EXISTS '"+FeedUser.TABLE_NAME+"'");
+	    db.execSQL("DROP TABLE IF EXISTS '"+FeedStore.TABLE_NAME+"'");
+	    db.execSQL("DROP TABLE IF EXISTS '"+FeedFamily.TABLE_NAME+"'");
+	    db.execSQL("DROP TABLE IF EXISTS '"+FeedBudget.TABLE_NAME+"'");
+	    db.execSQL("DROP TABLE IF EXISTS '"+FeedProduct.TABLE_NAME+"'");
+	    db.execSQL("DROP TABLE IF EXISTS '"+FeedOffer.TABLE_NAME+"'");
+
+		onCreate(db);		
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.SR.data;
 
-import android.content.Context;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -8,25 +11,15 @@ import com.SR.data.FeedReaderContract.FeedCategory;
 
 public class Category {
 	
-	//String NAME;
-
-    FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
     Cursor c;
     
-    Context context;
-    
-    public Category(Context c){
-    	context = c;
+    public Category(SQLiteDatabase database){
+    	db = database;
     }
     
     public Cursor getCategories(){
-    	
-    	mDbHelper = new FeedReaderDbHelper(context);
-		
-		// Gets the data repository in write mode
-		db = mDbHelper.getWritableDatabase();
-    	
+
 		// Specifies which columns are needed from the database
 		String[] projection = {
 			FeedCategory.NAME
@@ -45,7 +38,40 @@ public class Category {
 		return c;
     }
     
-    public FeedReaderDbHelper getCatFeedReaderDbHelper(){
-    	return mDbHelper;
-    }
+
+    
+    
+    public Category() {
+    	
+	}
+    
+    public String fetchCategoryMaxId(SQLiteDatabase db){
+
+		Cursor result = db.rawQuery("SELECT max("+FeedCategory._ID+") AS max FROM "+FeedCategory.TABLE_NAME+"", null);
+		result.moveToNext();
+		String lastId = result.getString(result.getColumnIndexOrThrow("max"));
+		
+		return lastId;
+	}
+	
+	public void handleCategoryJSONArray(JSONArray json, SQLiteDatabase db) throws JSONException{
+		
+		for(int i=0; i<json.length(); i++){
+			
+			JSONObject json_data =json.getJSONObject(i);
+
+			String id = json_data.get("id").toString();
+			String name = json_data.get("name").toString();
+			String created = json_data.get("created").toString();
+						
+			insertCategory(id, name, created, db);
+		}	
+	}
+
+	private void insertCategory(String id, String name, String created, SQLiteDatabase db){
+			 
+		db.execSQL("INSERT INTO "+FeedCategory.TABLE_NAME+" ("+FeedCategory._ID+", "+FeedCategory.NAME+" ,"+FeedCategory.CATEGORY_CREATED+")" +
+					" VALUES ('"+id+"','"+name+"','"+created+"')");
+	}
+
 }

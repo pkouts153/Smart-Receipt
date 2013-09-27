@@ -3,10 +3,12 @@ package com.SR.smartreceipt;
 import java.lang.reflect.Field;
 
 import com.SR.data.Category;
+import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.SearchHandler;
 import com.SR.data.User;
 import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.data.FeedReaderContract.FeedUser;
+import com.SR.processes.MyApplication;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +60,9 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	User user;
 	Category cat;
 	
+	FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
+	
 	DatePickerFragment dateFragment;
 	
 	SearchHandler searchHandler;
@@ -87,7 +93,10 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		
 		//set up category spinner
 		
-		cat = new Category(this);
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
+		
+		cat = new Category(db);
 		Cursor c = cat.getCategories();
 		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
@@ -98,7 +107,6 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		cat_adapter.add(this.getString(R.string.category_prompt));
 		
         try{
-        	
 			c.moveToFirst();
 			String category_name;;
 			
@@ -108,11 +116,8 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 				c.moveToNext ();
 			}
 			c.close();
-			cat.getCatFeedReaderDbHelper().close();
-			
         } catch (CursorIndexOutOfBoundsException e){
         	c.close();
-        	cat.getCatFeedReaderDbHelper().close();
         }
 		
         //set up family spinner
@@ -125,11 +130,12 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		
 		fam_adapter.add(this.getString(R.string.family_prompt));
 		
-		user = new User(this);
+		user = new User(db);
 		Cursor c1 = user.getFamilyMembers(User.USER_ID);
 		
-		if (c1.getCount()>1)
+		if(c1.getCount()>1)
 			fam_adapter.add("All");
+		
         try{
 	        
         	c1.moveToFirst();
@@ -141,13 +147,12 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 				c1.moveToNext ();
 			}
 			c1.close();
-			user.getUserFeedReaderDbHelper().close();
-			
 		} catch (CursorIndexOutOfBoundsException e){
 			fam_adapter.add("No family");
 			c1.close();
-			user.getUserFeedReaderDbHelper().close();
 	    }
+        
+        mDbHelper.close();
         
         //set up group_by spinner
         
@@ -203,7 +208,6 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
-	        	//NavUtils.navigateUpFromSameTask(this);
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
@@ -333,4 +337,24 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		search_store.getText().clear();
 	}
 	
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    	
+    	/*if (mDbHelper == null) {
+    		new FeedReaderDbHelper(this);
+    		db = mDbHelper.getWritableDatabase();
+    	}*/
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    	
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }	
+    
 }

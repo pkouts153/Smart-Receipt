@@ -4,13 +4,16 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.SearchHandler;
 import com.SR.data.User;
+import com.SR.processes.MyApplication;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -60,6 +63,9 @@ public class SearchResultsActivity extends FragmentActivity {
 
 	User user;
 	
+	FeedReaderDbHelper mDbHelper;
+	SQLiteDatabase db;
+	
 	DatePickerFragment dateFragment;
 	
 	SearchHandler searchHandler;
@@ -95,10 +101,12 @@ public class SearchResultsActivity extends FragmentActivity {
 		family = extras.getString("family");
 		group_by = extras.getString("group_by");
 		
-		searchHandler = new SearchHandler(this);
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
+		
+		searchHandler = new SearchHandler(db);
 		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
 		sums = searchHandler.getSums();
-		//searchHandler.getSearchFeedReaderDbHelper().close();
 		
 		group_names = new ArrayList<String>();
 		group_cost = new ArrayList<String>();
@@ -146,7 +154,8 @@ public class SearchResultsActivity extends FragmentActivity {
 		    
 		    ft.add(R.id.fragment_frame, listFragment);
 		    ft.commit();
-
+		    
+		    //mDbHelper.close();
         } 
 		else{
 			
@@ -159,9 +168,10 @@ public class SearchResultsActivity extends FragmentActivity {
 	
 			// Set up the ViewPager with the sections adapter.
 			mViewPager = (ViewPager) findViewById(R.id.pager);
-			//mViewPager.setCurrentItem(1);
 
 			mViewPager.setAdapter(mSectionsPagerAdapter);
+			
+			//mDbHelper.close();
 		}
 		
 	}
@@ -194,8 +204,14 @@ public class SearchResultsActivity extends FragmentActivity {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_logout:
-	        	user = new User(this);
+	        	mDbHelper = new FeedReaderDbHelper(this);
+	    		db = mDbHelper.getWritableDatabase();
+	    		
+	        	user = new User(db);
 	        	user.userLogout();
+	        	
+	        	mDbHelper.close();
+	        	
 	        	Intent intent = new Intent(this, LoginActivity.class);
 	    		startActivity(intent);
 	            return true;
@@ -210,7 +226,6 @@ public class SearchResultsActivity extends FragmentActivity {
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
-	        	//NavUtils.navigateUpFromSameTask(this);
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
@@ -229,6 +244,26 @@ public class SearchResultsActivity extends FragmentActivity {
 	    }
 	}
 	
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    	
+    	/*if (mDbHelper == null) {
+    		new FeedReaderDbHelper(this);
+    		db = mDbHelper.getWritableDatabase();
+    	}*/
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    	
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }	
+    
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
@@ -236,7 +271,6 @@ public class SearchResultsActivity extends FragmentActivity {
 		group_cost.clear();
 		group_names.trimToSize();
 		group_cost.trimToSize();
-		searchHandler.getSearchFeedReaderDbHelper().close();
 	}
 	
 	
@@ -292,7 +326,6 @@ public class SearchResultsActivity extends FragmentActivity {
 			Locale l = Locale.getDefault();
 			
 			String title = group_names.get(position).toUpperCase(l);
-			//title = title + "Total Cost: " + group_cost.get(position).toUpperCase(l);
 			return title;
 		}
 	}
