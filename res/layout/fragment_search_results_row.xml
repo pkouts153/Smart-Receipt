@@ -55,30 +55,35 @@
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content"
 				    android:textSize="11sp"
+				    android:gravity="center"
 				    android:hint="@string/price_hint" />
 		    
-		    <LinearLayout
+		    <RelativeLayout
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
-		        android:orientation="horizontal"
 				android:layout_marginRight="@dimen/drawable_horizontal_margin" >
-		        
-				<TextView
-				    android:id="@+id/price"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:textSize="16sp"
-				    android:gravity="right" />
-				
+
 				<TextView
 				    android:id="@+id/price_symbol"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
+				    android:layout_alignParentRight="true"
+				    android:layout_alignParentTop="true"
+				    android:layout_marginRight="14dp"
 				    android:hint="@string/euro"
-				    android:gravity="right"
-				    android:layout_marginRight="@dimen/results_horizontal_margin"
 				    android:textSize="16sp" />
-			</LinearLayout>
+
+				<TextView
+				    android:id="@+id/price"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_alignParentTop="true"
+				    android:layout_toLeftOf="@+id/price_symbol"
+				    android:layout_marginRight="4dp"
+				    android:textSize="16sp"
+				    android:textAlignment="viewEnd" />
+
+			</RelativeLayout>
 			
 			
 		</LinearLayout>

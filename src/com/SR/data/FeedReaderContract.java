@@ -21,6 +21,7 @@ public final class FeedReaderContract {
         public static final String EMAIL = "email";
         public static final String FOR_UPDATE= "for_update";
         public static final String USER_CREATED = "user_created";
+        public static final String FROM_SERVER = "from_server";
     }
     
     /* Inner class that defines the table contents */

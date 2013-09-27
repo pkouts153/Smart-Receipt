@@ -28,10 +28,11 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	private static final String SQL_CREATE_USER =
 		"CREATE TABLE IF NOT EXISTS " + FeedUser.TABLE_NAME + " (" +
 		FeedUser._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-		FeedUser.USERNAME + " TEXT NOT NULL," +
-		FeedUser.PASSWORD + " TEXT NOT NULL," +
+		FeedUser.USERNAME + " TEXT," +
+		FeedUser.PASSWORD + " TEXT," +
 		FeedUser.EMAIL + " TEXT NOT NULL," +
 		FeedUser.FOR_UPDATE + " BOOLEAN NOT NULL," +
+		FeedUser.FROM_SERVER + " BOOLEAN NOT NULL," +
 		FeedUser.USER_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)";
 
 	private static final String SQL_CREATE_BUDGET =
@@ -122,6 +123,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		        "Vag" + "' AS '" + FeedUser.PASSWORD + "', '" + 
 			    "Vag" + "' AS '" + FeedUser.EMAIL + "', '" +
 			    "0" + "' AS '" + FeedUser.FOR_UPDATE + "', '" +
+			    "1" + "' AS '" + FeedUser.FROM_SERVER + "', '" +
 			    "2013-09-26 00:00:00" + "' AS '" + FeedUser.USER_CREATED + "'";
 	
 	private static final String SQL_ADD_USER2 =
@@ -131,6 +133,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		        "Panos" + "' AS '" + FeedUser.PASSWORD + "', '" + 
 			    "Panos" + "' AS '" + FeedUser.EMAIL + "', '" +
 			    "0" + "' AS '" + FeedUser.FOR_UPDATE + "', '" +
+			    "1" + "' AS '" + FeedUser.FROM_SERVER + "', '" +
 			    "2013-09-26 00:00:00" + "' AS '" + FeedUser.USER_CREATED + "'";
 	
 	private static final String SQL_ADD_USER3 =
@@ -140,19 +143,20 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 			        "Giannis" + "' AS '" + FeedUser.PASSWORD + "', '" + 
 				    "Giannis" + "' AS '" + FeedUser.EMAIL + "', '" +
 				    "0" + "' AS '" + FeedUser.FOR_UPDATE + "', '" +
+				    "1" + "' AS '" + FeedUser.FROM_SERVER + "', '" +
 				    "2013-09-26 00:00:00" + "' AS '" + FeedUser.USER_CREATED + "'";
 	
 	private static final String SQL_ADD_PRODUCTS =
 		    "INSERT INTO '" + FeedProduct.TABLE_NAME + "'" +
 		    " SELECT NULL AS '" + FeedProduct._ID + "', 'Food' AS '" + FeedProduct.PRODUCT_CATEGORY + "', 'Coffee' AS '" + FeedProduct.NAME + 
 		    			"', '3' AS '" + FeedProduct.PRICE + "', '2013-09-16' AS '" + FeedProduct.PURCHASE_DATE + 
-		    			"', '2' AS '" + FeedProduct.STORE + "', '1' AS '" + FeedProduct.USER + "', '0' AS '" + FeedProduct.ON_SERVER +
+		    			"', '3' AS '" + FeedProduct.STORE + "', '1' AS '" + FeedProduct.USER + "', '0' AS '" + FeedProduct.ON_SERVER +
 		    			"', '2013-09-26 00:00:00' AS '" + FeedProduct.PRODUCT_CREATED + "'" +
-			" UNION SELECT NULL, 'Food', 'Tost', '2', '2013-09-13', '1', '1', '0', '2013-09-26 00:00:00'" +
-			" UNION SELECT NULL, 'Entertainment', 'Movie', '5', '2013-09-14', null, '1', '0', '2013-09-26 00:00:00'" +
-			" UNION SELECT NULL, 'Clothes', 'Jean', '25', '2013-09-20', '1', '1', '0', '2013-09-26 00:00:00'" +
-			" UNION SELECT NULL, 'Entertainment', 'Theater', '10', '2013-09-19', '1', '2', '0', '2013-09-26 00:00:00'" +
-			" UNION SELECT NULL, 'Food', 'Tost', '3', '2013-09-16', '2', '2', '0', '2013-09-26 00:00:00'";
+			" UNION SELECT NULL, 'Food', 'Tost', '2', '2013-09-13', '2', '1', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Entertainment', 'Movie', '5', '2013-09-14', '1', '1', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Clothes', 'Jean', '25', '2013-09-20', '2', '1', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Entertainment', 'Theater', '10', '2013-09-19', '2', '2', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Food', 'Tost', '3', '2013-09-16', '3', '2', '0', '2013-09-26 00:00:00'";
 	
 	private static final String SQL_ADD_BUDGET =
 		    "INSERT INTO '" + FeedBudget.TABLE_NAME + "'" +
@@ -165,9 +169,10 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	
 	private static final String SQL_ADD_STORE =
 	    "INSERT INTO '" + FeedStore.TABLE_NAME + "'" +
-        " SELECT NULL AS '" + FeedStore._ID + "', 'Nike' AS '" + FeedStore.NAME + 
-        				"', 'Syntagma' AS '" + FeedStore.ADDRESS + "', '1' AS '" + FeedStore.VAT_NUMBER + "', '2013-09-26 00:00:00' AS '" + FeedStore.STORE_CREATED + "'" +
-		" UNION SELECT NULL, 'Everest', 'Victoria', '2', '2013-09-26 00:00:00'";
+        " SELECT '1' AS '" + FeedStore._ID + "', 'Unknown store' AS '" + FeedStore.NAME + 
+        				"', 'Unknown' AS '" + FeedStore.ADDRESS + "', 'Unknown' AS '" + FeedStore.VAT_NUMBER + "', '2013-09-26 00:00:00' AS '" + FeedStore.STORE_CREATED + "'" +
+		" UNION SELECT '2', 'Nike', 'Syntagma', '3', '2013-09-26 00:00:00'" +
+		" UNION SELECT '3', 'Everest', 'Victoria', '4', '2013-09-26 00:00:00'";
 		
 	private static final String SQL_ADD_OFFER =
 	    "INSERT INTO '" + FeedOffer.TABLE_NAME + "'" +

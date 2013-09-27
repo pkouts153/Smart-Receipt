@@ -48,8 +48,6 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 	
 	SearchResultsListFragment listFragment;
 
-	TextView cost;
-	
 	public SearchResultsFragment() {
 	}
 	
@@ -111,8 +109,6 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		int position = args.getInt(ARG_SECTION_NUMBER);
 		Log.w("position", "" + position + "");
 		
-		group_cost = new ArrayList<String>();
-		
 	    product = args.getString("product");
 		category = args.getString("category");
 		min_cost = args.getString("mn_cost");
@@ -124,17 +120,6 @@ public class SearchResultsFragment extends Fragment implements OnClickListener{
 		group_by = args.getString("group_by");
 		groups_names = args.getStringArrayList("group_names");
 		group_cost = args.getStringArrayList("group_cost");
-		
-		cost = (TextView) container.findViewById(R.id.cost);
-		
-		try{
-			if (group_cost.size()!=0)
-				cost.setText(group_cost.get(position-1));
-			else
-				cost.setText("0");
-		} catch (NullPointerException e){
-		}
-			
 		
 		searchHandler = new SearchHandler(getActivity());
 		

@@ -135,7 +135,6 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 			String family_member;
 
 			while (!fam.isAfterLast ()) {
-				Log.w("", fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME)));
 				family_member = fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME));
 				fam_adapter.add(family_member);
 				fam.moveToNext ();

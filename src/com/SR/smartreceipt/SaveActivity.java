@@ -1,10 +1,13 @@
 package com.SR.smartreceipt;
-
+/**
+ * author Panagiotis Koutsaftikis 8100062
+ */
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.SR.data.Category;
 import com.SR.data.Product;
+import com.SR.data.Store;
 import com.SR.data.User;
 import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.processes.BudgetNotificationIntentService;
@@ -49,6 +52,7 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
     Product product;
     Category category;
     User user;
+    Store store;
     
     String cat_spinner;
 	String p_name;
@@ -204,7 +208,11 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 							addToArrayList();
 						
 						product = new Product(this);
-						product.saveProduct(product_list, pd, VAT);
+						store = new Store(this);
+						
+						int id = store.getId(VAT);
+						
+						product.saveProduct(product_list, pd, id);
 						
 						product.getProductFeedReaderDbHelper().close();
 						

@@ -105,7 +105,7 @@
     <string name="purchase_date_hint">purchase date</string>
     <string name="category_hint">category</string>
     <string name="store_hint">store</string>
-
+    
     <!-- Button strings -->
 
     <string name="submit">Submit</string>

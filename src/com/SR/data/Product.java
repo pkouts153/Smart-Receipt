@@ -26,7 +26,7 @@ public class Product {
 	}
 	
 		
-    public void saveProduct(ArrayList<String> products_list, String date, String VAT){
+    public void saveProduct(ArrayList<String> products_list, String date, int store_id){
 		mDbHelper = new FeedReaderDbHelper(context);
 		
 		// Gets the data repository in write mode
@@ -35,11 +35,6 @@ public class Product {
 		// Create a new map of values, where column names are the keys
 		ContentValues values = new ContentValues();
 		
-		if (VAT.equals(""))
-			Log.w("VAT", "5");
-		else
-			Log.w("VAT", VAT);
-		
 		for (int i = 0; i<products_list.size(); i += 3) {
 			
 			values.put(FeedProduct.PRODUCT_CATEGORY, products_list.get(i));
@@ -47,8 +42,7 @@ public class Product {
 			Float price = Float.parseFloat(products_list.get(i+2));
 			values.put(FeedProduct.PRICE, price);
 			values.put(FeedProduct.PURCHASE_DATE, date);
-			if (!VAT.equals(""))
-				values.put(FeedProduct.STORE, VAT);
+			values.put(FeedProduct.STORE, store_id);
 			values.put(FeedProduct.USER, User.USER_ID);
 			values.put(FeedProduct.ON_SERVER, 0);
 			

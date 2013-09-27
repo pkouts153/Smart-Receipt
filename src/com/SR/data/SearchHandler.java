@@ -33,18 +33,18 @@ public class SearchHandler {
 		   
 		String query = "SELECT DISTINCT " + FeedProduct.TABLE_NAME + "." + FeedProduct._ID + ", " + FeedProduct.NAME + ", " + FeedProduct.PRICE + 
 							", " + FeedProduct.PRODUCT_CATEGORY + ", " + FeedProduct.PURCHASE_DATE + 
-							", CASE WHEN " + FeedProduct.STORE + " is null THEN 'Unknown store' ELSE " + FeedStore.NAME + " END AS store_name" +
+							", " + FeedStore.NAME +
 							", " + FeedUser.USERNAME +
 					   " FROM " + FeedProduct.TABLE_NAME + ", " + FeedStore.TABLE_NAME + ", " + FeedUser.TABLE_NAME +
 					   " WHERE " + FeedProduct.USER + "=" + FeedUser.TABLE_NAME + "." + FeedUser._ID + 
-					   		" AND (" + FeedProduct.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID + " OR " + FeedProduct.STORE + " is null)";
+					       " AND " + FeedProduct.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID;// + " OR " + FeedProduct.STORE + " IS null)";
 		
 		String sum_query = "SELECT DISTINCT SUM(" + FeedProduct.PRICE + ") as sum, " + FeedProduct.PRODUCT_CATEGORY + 
-								", CASE WHEN " + FeedProduct.STORE + " is null THEN 'Unknown store' ELSE " + FeedStore.NAME + " END AS store_name, " + 
-								FeedUser.USERNAME +
+								", " + FeedStore.NAME +
+								", " + FeedUser.USERNAME +
 							" FROM " + FeedProduct.TABLE_NAME + ", " + FeedStore.TABLE_NAME + ", " + FeedUser.TABLE_NAME +
 							" WHERE " + FeedProduct.USER + "=" + FeedUser.TABLE_NAME + "." + FeedUser._ID + 
-								" AND (" + FeedProduct.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID + " OR " + FeedProduct.STORE + " is null)";
+								" AND " + FeedProduct.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID;// + " OR " + FeedProduct.STORE + " IS null)";
 		
 		if (!(product.equals("")))
 		{
@@ -96,31 +96,46 @@ public class SearchHandler {
 		}
 		
 		if (!(store.equals(""))) {
-			query = query + " AND " + FeedProduct.STORE + "= (SELECT " + FeedStore._ID +
+			query = query + //" AND " + FeedProduct.STORE + " IS NOT NULL " + 
+							" AND " + FeedProduct.STORE + "= (SELECT " + FeedStore._ID +
 															 " FROM " + FeedStore.TABLE_NAME +
 															 " WHERE " + FeedStore.VAT_NUMBER + "='" + store + "')";// AND " + FeedStore.VAT_NUMBER + "=" + store;
 			
-			sum_query = sum_query + " AND " + FeedProduct.STORE + "= (SELECT " + FeedStore._ID +
+			sum_query = sum_query + //" AND " + FeedProduct.STORE + " IS NOT NULL " + 
+									" AND " + FeedProduct.STORE + "= (SELECT " + FeedStore._ID +
 																     " FROM " + FeedStore.TABLE_NAME +
 																     " WHERE " + FeedStore.VAT_NUMBER + "='" + store + "')";// AND " + FeedStore.VAT_NUMBER + "='" + store + "'";
 		}
 		
+		
 		if (group_name!=null) {
-			query = query + " AND " + group_by + "='" + group_name +"'";
-			sum_query = sum_query + " AND " + group_by + "='" + group_name +"'";
+			
+			//if (!group_by.equals("store_name")){
+				query = query + " AND " + group_by + "='" + group_name +"'";
+				sum_query = sum_query + " AND " + group_by + "='" + group_name +"'";
+			/*}
+			
+			else {
+				if (!group_name.equals("Unknown store")){
+					query = query + " AND " + FeedProduct.STORE +" IS NOT NULL AND " + group_by + "='" + group_name +"'";
+					sum_query = sum_query + " AND " + FeedProduct.STORE +" IS NOT NULL AND " + group_by + "='" + group_name +"'";
+				}
+				else{
+					query = query + " AND " + FeedProduct.STORE +" IS NULL ";
+					sum_query = sum_query + " AND " + FeedProduct.STORE +" IS NULL ";
+				}
+			}*/
+			
+			
+				
 		}
 		
 		if (!(group_by.equals(""))) {
-			query = query + " ORDER BY " + group_by + ", " + FeedProduct.PURCHASE_DATE + ", " + FeedProduct.NAME;
+			query = query + " ORDER BY " + group_by + ", " + FeedProduct.PURCHASE_DATE + " DESC, " + FeedProduct.NAME;
 			sum_query = sum_query + " GROUP BY " + group_by;
 		}
 		else
-			query = query + " ORDER BY " + FeedProduct.PURCHASE_DATE + ", " + FeedProduct.NAME + ", " + FeedProduct.PRODUCT_CATEGORY;
-		
-		
-				
-		//Log.w("", query);
-		//Log.w("", sum_query);
+			query = query + " ORDER BY " + FeedProduct.PURCHASE_DATE + " DESC, " + FeedProduct.NAME + ", " + FeedProduct.PRODUCT_CATEGORY;
 		
 		c = db.rawQuery(query, null);
 		sums = db.rawQuery(sum_query, null);
