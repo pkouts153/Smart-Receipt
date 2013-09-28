@@ -22,12 +22,17 @@ public class BudgetNotificationIntentService extends IntentService {
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
+	int mId;
+	
 	public BudgetNotificationIntentService() {
 		super("BudgetNotificationIntentService");
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		
+		//if mId is the same as an existing notification, then the existing one will be replaced by the new one
+		mId = 0;
 		
 		mDbHelper = new FeedReaderDbHelper(this);
 		db = mDbHelper.getWritableDatabase();
@@ -40,53 +45,50 @@ public class BudgetNotificationIntentService extends IntentService {
 		if (budgetSurpassed) {
 			
 			Cursor c = budget.getBudget(User.USER_ID);
-			String budgets = "";
-			
-			int b = 0;
+
+			NotificationCompat.Builder mBuilder =
+			        new NotificationCompat.Builder(this)
+					.setSmallIcon(R.drawable.budget)
+					.setContentTitle("Budget Control");
 			
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
-				if (c.getInt(c.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))>0) {
-					if (b==1)
-						budgets = budgets + ", ";
-					budgets = budgets + c.getString(c.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY));
-					b=1;
-				}
+     
+				if (c.getInt(c.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==1) 
+					mBuilder.setContentText("Budget 80% surpassed: " + c.getString(c.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY)));
+				
+				else if (c.getInt(c.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==2)
+					mBuilder.setContentText("Budget surpassed: " + c.getString(c.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY)));
+				
+					// Creates an explicit intent for an Activity in your app
+					//Intent resultIntent = new Intent(this, BudgetActivity.class);
+			
+					// The stack builder object will contain an artificial back stack for the
+					// started Activity.
+					// This ensures that navigating backward from the Activity leads out of
+					// your application to the Home screen.
+					//TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+					// Adds the back stack for the Intent (but not the Intent itself)
+					/*stackBuilder.addParentStack(BudgetActivity.class);
+					// Adds the Intent that starts the Activity to the top of the stack
+					stackBuilder.addNextIntent(arg0);
+					PendingIntent resultPendingIntent =
+					        stackBuilder.getPendingIntent(
+					            0,
+					            PendingIntent.FLAG_UPDATE_CURRENT
+					        );*/
+					PendingIntent pendingIntent
+					  = PendingIntent.getActivity(getBaseContext(),
+					    0, intent,
+					    Intent.FLAG_ACTIVITY_NEW_TASK);
+					mBuilder.setContentIntent(pendingIntent);
+					NotificationManager mNotificationManager =
+					    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					// mId allows you to update the notification later on.
+					mNotificationManager.notify(++mId, mBuilder.build());
+				
 		        c.moveToNext();
 			}
-			
-			NotificationCompat.Builder mBuilder =
-			        new NotificationCompat.Builder(this)
-			        .setSmallIcon(R.drawable.budget)
-			        .setContentTitle("Budget Control")
-			        .setContentText("Budgets surpassed: " + budgets);
-			// Creates an explicit intent for an Activity in your app
-			//Intent resultIntent = new Intent(this, BudgetActivity.class);
-	
-			// The stack builder object will contain an artificial back stack for the
-			// started Activity.
-			// This ensures that navigating backward from the Activity leads out of
-			// your application to the Home screen.
-			//TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-			// Adds the back stack for the Intent (but not the Intent itself)
-			/*stackBuilder.addParentStack(BudgetActivity.class);
-			// Adds the Intent that starts the Activity to the top of the stack
-			stackBuilder.addNextIntent(arg0);
-			PendingIntent resultPendingIntent =
-			        stackBuilder.getPendingIntent(
-			            0,
-			            PendingIntent.FLAG_UPDATE_CURRENT
-			        );*/
-			PendingIntent pendingIntent
-			  = PendingIntent.getActivity(getBaseContext(),
-			    0, intent,
-			    Intent.FLAG_ACTIVITY_NEW_TASK);
-			mBuilder.setContentIntent(pendingIntent);
-			NotificationManager mNotificationManager =
-			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			// mId allows you to update the notification later on.
-			mNotificationManager.notify(1, mBuilder.build());
-			
 		}
 		
 		mDbHelper.close();

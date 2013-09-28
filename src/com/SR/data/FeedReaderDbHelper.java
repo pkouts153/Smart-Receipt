@@ -47,7 +47,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedBudget.FOR_UPDATE + " BOOLEAN NOT NULL, " +
 		FeedBudget.FOR_DELETION + " BOOLEAN NOT NULL, " +
 		FeedBudget.ON_SERVER + " BOOLEAN NOT NULL, " +
-		FeedBudget.IS_SURPASSED + " BOOLEAN NOT NULL, " +
+		FeedBudget.IS_SURPASSED + " INTEGER NOT NULL, " +
 		FeedBudget.BUDGET_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "+
 		" FOREIGN KEY (" + FeedBudget.USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + ")," +
 		" FOREIGN KEY (" + FeedBudget.EXPENSE_CATEGORY + ") REFERENCES " + FeedCategory.TABLE_NAME + " (" + FeedCategory.NAME + ")," +
@@ -154,7 +154,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		    			"', '2013-09-26 00:00:00' AS '" + FeedProduct.PRODUCT_CREATED + "'" +
 			" UNION SELECT NULL, 'Food', 'Tost', '2', '2013-09-13', '2', '1', '0', '2013-09-26 00:00:00'" +
 			" UNION SELECT NULL, 'Entertainment', 'Movie', '5', '2013-09-14', '1', '1', '0', '2013-09-26 00:00:00'" +
-			" UNION SELECT NULL, 'Clothes', 'Jean', '25', '2013-09-20', '2', '1', '0', '2013-09-26 00:00:00'" +
+			" UNION SELECT NULL, 'Clothes', 'Jean', '25', '2013-09-20', '4', '1', '0', '2013-09-26 00:00:00'" +
 			" UNION SELECT NULL, 'Entertainment', 'Theater', '10', '2013-09-19', '2', '2', '0', '2013-09-26 00:00:00'" +
 			" UNION SELECT NULL, 'Food', 'Tost', '3', '2013-09-16', '3', '2', '0', '2013-09-26 00:00:00'";
 	
@@ -172,7 +172,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
         " SELECT '1' AS '" + FeedStore._ID + "', 'Unknown store' AS '" + FeedStore.NAME + 
         				"', 'Unknown' AS '" + FeedStore.ADDRESS + "', 'Unknown' AS '" + FeedStore.VAT_NUMBER + "', '2013-09-26 00:00:00' AS '" + FeedStore.STORE_CREATED + "'" +
 		" UNION SELECT '2', 'Nike', 'Syntagma', '3', '2013-09-26 00:00:00'" +
-		" UNION SELECT '3', 'Everest', 'Victoria', '4', '2013-09-26 00:00:00'";
+		" UNION SELECT '3', 'Everest', 'Victoria', '4', '2013-09-26 00:00:00'" +
+		" UNION SELECT '4', 'Public', 'Mall', '5', '2013-09-26 00:00:00'";
 		
 	private static final String SQL_ADD_OFFER =
 	    "INSERT INTO '" + FeedOffer.TABLE_NAME + "'" +

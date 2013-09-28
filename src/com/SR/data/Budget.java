@@ -112,7 +112,14 @@ public class Budget {
 			
 	        c1.moveToFirst();
 	        
-	        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))) {
+	        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > (c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT)))) {
+	        	
+	        	ContentValues values = new ContentValues();
+	        	values.put(FeedBudget.IS_SURPASSED, 2);
+	        	db.update(FeedBudget.TABLE_NAME, values, FeedBudget._ID+"="+c2.getInt(c2.getColumnIndexOrThrow(FeedBudget._ID)), null);
+	        	surpassed = true;
+			}
+	        else if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > (c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))*0.8)) {
 	        	
 	        	ContentValues values = new ContentValues();
 	        	values.put(FeedBudget.IS_SURPASSED, 1);
