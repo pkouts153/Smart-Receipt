@@ -29,10 +29,12 @@ public class Product {
 	}
 	
 		
-    public void saveProduct(ArrayList<String> products_list, String date, int store_id){
+    public boolean saveProduct(ArrayList<String> products_list, String date, int store_id){
 
 		// Create a new map of values, where column names are the keys
 		ContentValues values = new ContentValues();
+		
+		boolean successful_save = true;
 		
 		for (int i = 0; i<products_list.size(); i += 3) {
 			
@@ -51,9 +53,13 @@ public class Product {
 			
 			values.put(FeedProduct.PRODUCT_CREATED, today);
 			
-			db.insert(FeedProduct.TABLE_NAME, "null", values);
+			if (!(db.insert(FeedProduct.TABLE_NAME, "null", values)>0) && successful_save == true)
+				successful_save = false;
+				
 			values.clear();
 		}
+		
+		return successful_save;
     }
     
     

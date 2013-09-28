@@ -164,7 +164,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
     		db = mDbHelper.getWritableDatabase();
     		
 			budget = new Budget(db);
-			boolean error = false;
+			boolean deletion_error = false;
 			
 			c.moveToFirst();
 			for (int i=0; i<c.getCount(); i++) {
@@ -172,14 +172,14 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 				CheckBox delete_budget = (CheckBox)listViewRow.findViewById(R.id.delete_budget);
 				if (delete_budget.isChecked()){
 					if (!(budget.deleteBudget(c.getInt(c.getColumnIndexOrThrow(FeedBudget._ID)))))
-						error = true;
+						deletion_error = true;
 				}
 				if (!c.isLast())
 					c.moveToNext();
 			}
 			
-			if (error)
-				displayError(this.getString(R.string.delete_error));
+			if (deletion_error)
+				displayError(this.getString(R.string.budget_delete_error));
 			else {
 				if (c.getCount()==1){
 					Intent intent = new Intent(this, BudgetActivity.class);

@@ -229,7 +229,10 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 						
 						int id = store.getId(VAT);
 						
-						product.saveProduct(product_list, pd, id);
+						boolean save_error = false;
+						
+						if (!product.saveProduct(product_list, pd, id))
+							save_error = true;
 						
 						mDbHelper.close();
 						
@@ -243,13 +246,17 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 						products = 0;
 						number_of_products.setText(""+products+"");
 						
-						SuccessDialogFragment successDialog = new SuccessDialogFragment();
-						successDialog.setMessage(this.getString(R.string.success));
-						successDialog.show(getFragmentManager(), "successDialog");
-						timerDelayRemoveDialog(1500, successDialog);
-					
-					    Intent serviceIntent = new Intent(SaveActivity.this, BudgetNotificationIntentService.class);
-					    SaveActivity.this.startService(serviceIntent);
+						if (save_error)
+							displayError(this.getString(R.string.product_save_error));
+						else{
+							SuccessDialogFragment successDialog = new SuccessDialogFragment();
+							successDialog.setMessage(this.getString(R.string.success));
+							successDialog.show(getFragmentManager(), "successDialog");
+							timerDelayRemoveDialog(1500, successDialog);
+						
+						    Intent serviceIntent = new Intent(SaveActivity.this, BudgetNotificationIntentService.class);
+						    SaveActivity.this.startService(serviceIntent);
+						}
 					}
 				}
 				else if (reset.getId() == ((Button)v).getId()){

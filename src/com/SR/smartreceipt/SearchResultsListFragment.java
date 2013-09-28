@@ -18,24 +18,22 @@ public class SearchResultsListFragment extends ListFragment {
 	static int[] textviews;
 	static SimpleCursorAdapter simpleCursorAdapter;
 	
-	static TextView cost;
-	
-	static String total_cost;
+	TextView cost;
 	
 	public SearchResultsListFragment() {
 		
 	}
-	
-	/*public SearchResultsListFragment(Cursor c) {
-		cursor = c;
-	}*/
 	
 	public static SearchResultsListFragment newInstance(Cursor cursor, String cost, Context context, ViewGroup container, String group_by){
 
 		//List<String> temp = new ArrayList<String>();
 		SearchResultsListFragment listFragment = new SearchResultsListFragment();
 		
-		total_cost = cost;
+		Bundle args = new Bundle(1);
+		
+		args.putString("cost", cost);
+		listFragment.setArguments(args);
+		//total_cost = cost;
 		//if the user has selected group by for his search the group by column will not be visible in the row
 		//but only in the tab title
 		/*if (group_by!=null) {
@@ -49,7 +47,9 @@ public class SearchResultsListFragment extends ListFragment {
 		else*/
 		
 		columns = cursor.getColumnNames();
-	
+		
+		cursor.moveToFirst();
+		
 		/*if (group_by.equals("product_category"))
 			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.purchase_date,R.id.store};
 		else if (group_by.equals("store_name"))
@@ -69,16 +69,10 @@ public class SearchResultsListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
 
-    	/*columns = cursor.getColumnNames();
-    	textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date,R.id.store,R.id.username};
-
-    	simpleCursorAdapter = new SimpleCursorAdapter(inflater.getContext(), R.layout.fragment_search_results_row, cursor, columns, textviews, 0);
-        simpleCursorAdapter.bindView(container, inflater.getContext(), cursor);
-        
-        setListAdapter(simpleCursorAdapter);*/
-
         // Inflate the layout for this fragment
     	View view = inflater.inflate(R.layout.fragment_search_results_list, container, false);
+    	
+    	String total_cost = getArguments().getString("cost");
     	
     	cost = (TextView)view.findViewById(R.id.cost);
     	cost.setText(total_cost);

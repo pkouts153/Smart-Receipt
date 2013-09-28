@@ -240,6 +240,8 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 						
 						budget = new Budget(db);
 						
+						boolean save_error = false;
+						
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
 						
@@ -249,7 +251,8 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 									int id = user.getId(fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME)));
 									
 									if (id!=0) 
-										budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID);
+										if (!budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID))
+											save_error=true;
 								
 									fam.moveToNext();
 								}
@@ -258,15 +261,20 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 								int id = user.getId(fam_spinner);
 								
 								if (id!=0)
-									budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID);
+									if (!budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID))
+											save_error=true;
 							}
 						}
-						budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0);
+						if (!budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0))
+							save_error=true;
 						
 						mDbHelper.close();
 						clearFields();
 						
-						displaySuccess(this.getString(R.string.success));
+						if (save_error)
+							displayError(this.getString(R.string.budget_save_error));
+						else
+							displaySuccess(this.getString(R.string.success));
 					}
 				
 				} catch (NumberFormatException e) {

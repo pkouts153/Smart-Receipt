@@ -2,6 +2,7 @@ package com.SR.smartreceipt;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.SR.data.FeedReaderDbHelper;
@@ -10,7 +11,6 @@ import com.SR.data.User;
 import com.SR.processes.MyApplication;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -46,8 +46,6 @@ public class SearchResultsActivity extends FragmentActivity {
 	 */
 	ViewPager mViewPager;
 	
-	Context context = this;
-	
 	//Search selection input
 	
 	Float total_cost;
@@ -69,8 +67,6 @@ public class SearchResultsActivity extends FragmentActivity {
 	DatePickerFragment dateFragment;
 	
 	SearchHandler searchHandler;
-	
-	SearchResultsFragment searchResultsFragment;
 	
 	Cursor c;
 	Cursor sums;
@@ -120,23 +116,25 @@ public class SearchResultsActivity extends FragmentActivity {
 			
 			group_names.add(group_name);
 			
-			c.moveToNext();
+			if (c.moveToNext()){
 			
-			while (!c.isAfterLast()){
-				group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
-				if (!group_name1.equals(group_name)) {
-					group_name = c.getString(c.getColumnIndexOrThrow(group_by));
-					group_names.add(group_name);
+				while (!c.isAfterLast()){
+					group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
+					if (!group_name1.equals(group_name)) {
+						group_name = c.getString(c.getColumnIndexOrThrow(group_by));
+						group_names.add(group_name);
+					}
+					c.moveToNext();
 				}
-				c.moveToNext();
 			}
 		}
 		
-		sums.moveToFirst();
-		
-		while (!sums.isAfterLast()){
-			group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
-			sums.moveToNext();
+		if (sums.moveToFirst()){
+			
+			while (!sums.isAfterLast()){
+				group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
+				sums.moveToNext();
+			}
 		}
 		
 		group_names.trimToSize();
@@ -161,10 +159,12 @@ public class SearchResultsActivity extends FragmentActivity {
 			
 			setContentView(R.layout.activity_search_results);
 
+			List<Fragment> fragments =  getFragments();
+			
 			// Create the adapter that will return a fragment for each of the three
 			// primary sections of the app.
 			mSectionsPagerAdapter = new SectionsPagerAdapter(
-					getSupportFragmentManager());
+					getSupportFragmentManager(), fragments);
 	
 			// Set up the ViewPager with the sections adapter.
 			mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -176,6 +176,38 @@ public class SearchResultsActivity extends FragmentActivity {
 		
 	}
 
+	private List<Fragment> getFragments(){
+		
+		List<Fragment> fList = new ArrayList<Fragment>();
+		
+		Bundle args = new Bundle();
+
+		args.putString("product", product);
+		args.putString("category", category);
+		args.putString("mn_cost", min_cost);
+		args.putString("mx_cost", max_cost);
+		args.putString("start_date", start_date);
+		args.putString("end_date", end_date);
+		args.putString("store", store);
+		args.putString("family", family);
+		args.putString("group_by", group_by);
+		
+		for (int i=0; i<group_names.size(); i++){
+			args.putString("group_name", group_names.get(i));
+			args.putString("group_cost", group_cost.get(i));
+			
+			Cursor cursor = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
+						start_date, end_date, store, family, group_by, group_names.get(i));
+
+			fList.add(SearchResultsListFragment.newInstance(cursor, group_cost.get(i), this, 
+					(ViewGroup) findViewById(R.id.search_results), group_by));
+			
+		}
+		
+		return fList;
+	}
+	
+	
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
@@ -279,9 +311,12 @@ public class SearchResultsActivity extends FragmentActivity {
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-		public SectionsPagerAdapter(FragmentManager fm) {
+		
+		private List<Fragment> fragments;
+		
+		public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
 			super(fm);
+			this.fragments = fragments;
 		}
 
 		@Override
@@ -290,27 +325,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			// Return a SearchResultsFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 			
-			Fragment fragment = new SearchResultsFragment();
-			Bundle args = new Bundle();
-			args.putInt(SearchResultsFragment.ARG_SECTION_NUMBER, position + 1);
-			args.putString("product", product);
-			args.putString("category", category);
-			args.putString("mn_cost", min_cost);
-			args.putString("mx_cost", max_cost);
-			args.putString("start_date", start_date);
-			args.putString("end_date", end_date);
-			args.putString("store", store);
-			args.putString("family", family);
-			args.putString("group_by", group_by);
-			args.putStringArrayList("group_names", group_names);
-			args.putStringArrayList("group_cost", group_cost);
-			
-			
-			//Fragment fragment = SearchResultsFragment.newInstance(context, (ViewGroup) findViewById(R.id.search_results), args);
-			
-			fragment.setArguments(args);
-			
-			return fragment;
+			return this.fragments.get(position);
 			
 		}
 		

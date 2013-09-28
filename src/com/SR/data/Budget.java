@@ -57,7 +57,7 @@ public class Budget {
 		return c1;
     }
     
-    public void saveBudget(String category, Float limit, String from_date, String until_date, int user_id, int family_id){
+    public boolean saveBudget(String category, Float limit, String from_date, String until_date, int user_id, int family_id){
     	
 		ContentValues values = new ContentValues();
 		values.put(FeedBudget.EXPENSE_CATEGORY, category);
@@ -78,8 +78,7 @@ public class Budget {
 		
 		values.put(FeedBudget.BUDGET_CREATED, today);
 		
-		db.insert(FeedBudget.TABLE_NAME, "null", values);
-		values.clear();
+		return db.insert(FeedBudget.TABLE_NAME, "null", values) > 0;
 		
     }
     
