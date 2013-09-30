@@ -23,7 +23,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
@@ -67,18 +66,27 @@ public class SearchResultsActivity extends FragmentActivity {
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
+	// object for accessing data passed from previous activity 
 	Bundle extras;
 
-	Cursor c;
-	Cursor sums;
+	// search results without separation of the groups
+	Cursor general_results;
 	
+	// the costs of the groups
+	Cursor costs;
 	
-	DatePickerFragment dateFragment;
+	// the product results of each group
+	Cursor group_results;
 	
+	/**
+	 * Saves the group names depending on the group_by selection of the user for further manipulation
+	 */
 	ArrayList<String> group_names;
-	ArrayList<String> group_cost;
 	
-	SimpleCursorAdapter simpleCursorAdapter;
+	/**
+	 * Saves the cost for each group or the total cost if there are no groups for further manipulation
+	 */
+	ArrayList<String> group_cost;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +113,8 @@ public class SearchResultsActivity extends FragmentActivity {
 		
 		//get the product results for these data
 		searchHandler = new SearchHandler(db);
-		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
-		sums = searchHandler.getSums();
+		general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
+		costs = searchHandler.getSums();
 		
 		group_names = new ArrayList<String>();
 		group_cost = new ArrayList<String>();
@@ -114,32 +122,32 @@ public class SearchResultsActivity extends FragmentActivity {
 		// if the user has selected a group_by, then get the group_names for this group_by
 		if (!group_by.equals("")){
 			
-			c.moveToFirst();
+			general_results.moveToFirst();
 			
-			String group_name = c.getString(c.getColumnIndexOrThrow(group_by));
-			String group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
+			String group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+			String group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
 			
 			group_names.add(group_name);
 			
-			if (c.moveToNext()){
+			if (general_results.moveToNext()){
 			
-				while (!c.isAfterLast()){
-					group_name1 = c.getString(c.getColumnIndexOrThrow(group_by));
+				while (!general_results.isAfterLast()){
+					group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
 					if (!group_name1.equals(group_name)) {
-						group_name = c.getString(c.getColumnIndexOrThrow(group_by));
+						group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
 						group_names.add(group_name);
 					}
-					c.moveToNext();
+					general_results.moveToNext();
 				}
 			}
 		}
 		
 		// get the total cost for each group or the total cost if there is no group_by
-		if (sums.moveToFirst()){
+		if (costs.moveToFirst()){
 			
-			while (!sums.isAfterLast()){
-				group_cost.add(sums.getString(sums.getColumnIndexOrThrow("sum")));
-				sums.moveToNext();
+			while (!costs.isAfterLast()){
+				group_cost.add(costs.getString(costs.getColumnIndexOrThrow("sum")));
+				costs.moveToNext();
 			}
 		}
 		
@@ -158,7 +166,7 @@ public class SearchResultsActivity extends FragmentActivity {
 
 		    // the last variable (group_name) is null because the user hasn't selected a group_by and
 		    // we display all the product results
-		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(c, group_cost.get(0), this, 
+		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(general_results, group_cost.get(0), this, 
 		    		(ViewGroup) findViewById(R.id.search_results_no_tabs), null);
 		    
 		    ft.add(R.id.fragment_frame, listFragment);
@@ -213,10 +221,10 @@ public class SearchResultsActivity extends FragmentActivity {
 			args.putString("group_name", group_names.get(i));
 			args.putString("group_cost", group_cost.get(i));
 			
-			Cursor cursor = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
+			group_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, 
 						start_date, end_date, store, family, group_by, group_names.get(i));
 
-			fList.add(SearchResultsListFragment.newInstance(cursor, group_cost.get(i), this, 
+			fList.add(SearchResultsListFragment.newInstance(group_results, group_cost.get(i), this, 
 					(ViewGroup) findViewById(R.id.search_results), group_by));
 			
 		}

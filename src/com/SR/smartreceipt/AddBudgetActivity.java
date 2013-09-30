@@ -62,7 +62,9 @@ public class AddBudgetActivity extends FragmentActivity implements OnClickListen
     Cursor category_cursor;
     Cursor family_cursor;
     
-    // Fragment for date selection
+    /**
+     *  Fragment for date selection
+     */
     DatePickerFragment dateFragment = new DatePickerFragment();
     
     // shows which Activity called AddBudgetActivity (MainActivity or BudgetListActivity)

@@ -35,6 +35,8 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     public static String mail;
 	public static String pass;
 	
+	// data variables
+	
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	

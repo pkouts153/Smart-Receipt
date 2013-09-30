@@ -53,9 +53,14 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
     Button reset;
     Button scan;
     
+    /**
+     *  Fragment for date selection
+     */
     DatePickerFragment dateFragment = new DatePickerFragment();
     
-    // it saves the products' category, date and price. A product per 3 positions
+    /**
+     * It saves the products' category, date and price. A product per 3 positions
+     */
     ArrayList<String> product_list = new ArrayList<String>();
     
     // data variables

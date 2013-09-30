@@ -41,6 +41,9 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
+	/**
+	 * An adapter to map columns from the cursor to TextViews 
+	 */
 	SimpleCursorAdapter simpleCursorAdapter;
 	
 	// user's budgets cursor

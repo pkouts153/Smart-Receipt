@@ -73,9 +73,11 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 
 	Bundle extras;
 
+    /**
+     *  Fragment for date selection
+     */
 	DatePickerFragment dateFragment;
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

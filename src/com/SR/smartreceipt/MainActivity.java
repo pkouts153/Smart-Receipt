@@ -46,12 +46,16 @@ import com.SR.processes.UploadProductTask;
 */
 public class MainActivity extends Activity {
 
+	// data variables
 	User user;
 	Budget budget;
 	
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
+	/**
+	 * An object for accessing preference data
+	 */
 	SharedPreferences sharedPref;
 	
 	@Override

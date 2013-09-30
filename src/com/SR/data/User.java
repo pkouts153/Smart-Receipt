@@ -29,7 +29,11 @@ public class User {
     SQLiteDatabase db;
     Cursor c;
    
+    /**
+     * An object for accessing preference data
+     */
     SharedPreferences sharedPref;
+    
     /**
     * User constructor 
     * 

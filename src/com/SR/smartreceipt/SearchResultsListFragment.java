@@ -24,6 +24,9 @@ public class SearchResultsListFragment extends ListFragment {
 	// the ui components to display each of the columns
 	static int[] textviews;
 	
+	/**
+	 * An easy adapter to map columns from the cursor to TextViews 
+	 */
 	static SimpleCursorAdapter simpleCursorAdapter;
 	
 	TextView cost;
