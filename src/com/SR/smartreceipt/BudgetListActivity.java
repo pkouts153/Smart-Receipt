@@ -27,8 +27,14 @@ import android.widget.ListView;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SimpleCursorAdapter;
 
+/**
+* Activity that displays the budget list screen
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class BudgetListActivity extends ListActivity implements OnClickListener{
 
+	//data variables
 	Budget budget;
 	User user;
 	
@@ -37,10 +43,15 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	
 	SimpleCursorAdapter simpleCursorAdapter;
 	
+	// user's budgets cursor
 	Cursor c;
 	
+	// the columns of the cursor
 	String[] columns;
+	// the ui components to display each of the columns
 	int[] textviews;
+	
+	// UI components
 	
 	Button delete;
 	Button add_budget;
@@ -50,10 +61,11 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_budget_list);
 		
-		// Show the Up button in the action bar.
+		// set up the UP button in ActionBar and Overflow menu
 		setupActionBar();
 		getOverflowMenu();
 		
+		// if the user deletes budget(s) display a success dialog
 		if (getIntent()!=null)
         	if (getIntent().getStringExtra("Success")!=null)
         		displaySuccess(this.getString(R.string.delete_success));
@@ -65,12 +77,16 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 		
 		c = budget.getBudget(User.USER_ID);
 
+		//set up UI components
+		
 		delete = (Button)findViewById(R.id.delete);
 		delete.setOnClickListener((android.view.View.OnClickListener) this);
 		
 		add_budget = (Button)findViewById(R.id.add_budget);
 		add_budget.setOnClickListener((android.view.View.OnClickListener) this);
 		
+		// create a list of budgets and bind the cursor to the list, 
+		// leading the list's rows to display the data from the corresponding cursor lines
 		columns = c.getColumnNames();
 		
 		textviews = new int[]{R.id.budget_id, R.id.exp_category,R.id.limit,R.id.start_date,R.id.end_date};
@@ -84,7 +100,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	}
 
 	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 * Set up the ActionBar, if the API is available.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -92,17 +108,21 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
-
+	
+	/**
+	 * Inflate the menu; this adds items to the action bar if it is present.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_actions, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Handle presses on the action bar items
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	    	case R.id.action_search:
 	    		Intent intent = new Intent(this, SearchActivity.class);
@@ -121,13 +141,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	    		startActivity(intent2);
 	            return true;
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
+				// This action represents the Home or Up button which leads the user to the previous screen
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
@@ -135,6 +149,9 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	    }
 	}
     
+	/**
+	 * Set up the Overflow menu.
+	 */
 	private void getOverflowMenu() {
 
 	     try {
@@ -151,11 +168,13 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
+		// if the user clicks the "add budget" button
 		if (add_budget.getId() == ((Button)v).getId()){
-			Intent intent = new Intent(this, BudgetActivity.class);
+			Intent intent = new Intent(this, AddBudgetActivity.class);
 			intent.putExtra("Activity", "Budget");
 			startActivity(intent);
 		}
+		// else if the delete button is clicked
 		else {
 			View listViewRow;
 			ListView listView = getListView();
@@ -164,15 +183,26 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
     		db = mDbHelper.getWritableDatabase();
     		
 			budget = new Budget(db);
+
+			// if an error occurs during the deletion of a budget it becomes true
 			boolean deletion_error = false;
 			
+			// counts the deleted budgets
+			int deleted = 0;
+			
+			// for each budget
 			c.moveToFirst();
 			for (int i=0; i<c.getCount(); i++) {
+				// get the corresponding row of the list
 				listViewRow = listView.getChildAt(i);
 				CheckBox delete_budget = (CheckBox)listViewRow.findViewById(R.id.delete_budget);
+				
+				// delete the budget if the checkbox is checked
 				if (delete_budget.isChecked()){
 					if (!(budget.deleteBudget(c.getInt(c.getColumnIndexOrThrow(FeedBudget._ID)))))
 						deletion_error = true;
+					
+					deleted++;
 				}
 				if (!c.isLast())
 					c.moveToNext();
@@ -181,29 +211,48 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 			if (deletion_error)
 				displayError(this.getString(R.string.budget_delete_error));
 			else {
-				if (c.getCount()==1){
-					Intent intent = new Intent(this, BudgetActivity.class);
-					intent.putExtra("Activity", "Main");
-					intent.putExtra("Success", "Success");
-					startActivity(intent);
+				// if the user deleted a budget and didn't simply clicked delete with unckecked checkboxes
+				if (deleted>0){
+					// if there was only one budget before the deletion, then call the AddBudgetActivity
+					if (c.getCount()==1){
+						Intent intent = new Intent(this, AddBudgetActivity.class);
+						intent.putExtra("Activity", "Main");
+						intent.putExtra("Success", "Success");
+						startActivity(intent);
+					}
+					// else refresh the BudgetListActivity
+					else {
+						finish();
+						getIntent().putExtra("Success", "Success");
+						startActivity(getIntent());
+					}
 				}
+				//else if no checkbox was checked
 				else {
-					finish();
-					getIntent().putExtra("Success", "Success");
-					startActivity(getIntent());
-					
+					displayError(this.getString(R.string.unckecked_budgets));
 				}
 			}
 
 			mDbHelper.close();
 		}
 	}
+	
+	/**
+	 * Display an error dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
 		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
+	/**
+	 * Display a success dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displaySuccess(String message) {
 		SuccessDialogFragment successDialog = new SuccessDialogFragment();
 		successDialog.setMessage(message);
@@ -211,6 +260,9 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 		timerDelayRemoveDialog(1500, successDialog);
 	}
 
+	/**
+	 * Set the time delay of the dialog
+	 */
 	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){
 	    new Handler().postDelayed(new Runnable() {
 	        public void run() {                

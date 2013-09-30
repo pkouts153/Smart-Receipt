@@ -19,23 +19,40 @@ import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.processes.Functions;
 
+/**
+* This class represents product and is responsible for the necessary processes
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class Product {
     
     SQLiteDatabase db;
     Cursor c;
     
+    /**
+    * Product constructor 
+    * 
+    * @param database   saves the database object, that was passed from the Activity, 
+    * 					in the database object of the class for use in the methods
+    */
 	public Product(SQLiteDatabase database) {
 		db = database;
 	}
 	
-		
+	 /**
+     * Gets data from the Activity and creates a new line in the Product table with these data
+     * 
+     * @return whether the insertion was made successfully or not
+     */	
     public boolean saveProduct(ArrayList<String> products_list, String date, int store_id){
 
 		// Create a new map of values, where column names are the keys
 		ContentValues values = new ContentValues();
 		
+		// if even one product was not saved successfully it will be false
 		boolean successful_save = true;
 		
+		// products_list represent one product per 3 lines (PRODUCT_CATEGORY, NAME, PRICE)
 		for (int i = 0; i<products_list.size(); i += 3) {
 			
 			values.put(FeedProduct.PRODUCT_CATEGORY, products_list.get(i));
@@ -47,6 +64,7 @@ public class Product {
 			values.put(FeedProduct.USER, User.USER_ID);
 			values.put(FeedProduct.ON_SERVER, 0);
 			
+			// PRODUCT_CREATED takes the date and time of the creation
 			Date date1 = new Date();
 			Timestamp timestampToday = new Timestamp(date1.getTime());
 			String today = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestampToday);

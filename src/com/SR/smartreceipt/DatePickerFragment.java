@@ -10,8 +10,14 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+/**
+* Fragment that displays a dialog for date selection
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 
+	// the EditText the user clicked and launched the dialog
 	EditText a;
 	
     @Override
@@ -26,6 +32,9 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         return new DatePickerDialog(getActivity(), this, year, month, day);
     }
     
+    /**
+     * Gets the selection of the user and sets the text of the EditText accordingly
+     */
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
     	String date;
@@ -43,6 +52,9 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     	this.dismiss();
     }
 
+    /**
+     * @param v the view (EditView) the user clicked
+     */
     public void setView(View v) {
     	a = (EditText) v;
     }

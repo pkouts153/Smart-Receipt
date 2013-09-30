@@ -11,28 +11,52 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+/**
+* Fragment that displays the search results product list
+* 
+* @author Panagiotis Koutsaftikis
+*/
 @SuppressLint("ValidFragment")
 public class SearchResultsListFragment extends ListFragment {
 
+	// the columns of the cursor
 	static String[] columns;
+	// the ui components to display each of the columns
 	static int[] textviews;
+	
 	static SimpleCursorAdapter simpleCursorAdapter;
 	
 	TextView cost;
 	
+	/**
+	 * Class consructor
+	 */
 	public SearchResultsListFragment() {
 		
 	}
 	
+	/**
+	 * Creates an instance of the class
+	 * 
+	 * @param cursor  the cursor to be displayed
+	 * @param cost  the total cost of the products of the search results
+	 * @param context
+	 * @param container  the layout of the SearchResultsActivity
+	 * @param group_by  
+	 * @return the new instance of the list fragment
+	 */
 	public static SearchResultsListFragment newInstance(Cursor cursor, String cost, Context context, ViewGroup container, String group_by){
 
 		//List<String> temp = new ArrayList<String>();
 		SearchResultsListFragment listFragment = new SearchResultsListFragment();
 		
+		//add the cost to the arguments for the handling of the TextView in the onCreate method
 		Bundle args = new Bundle(1);
-		
 		args.putString("cost", cost);
 		listFragment.setArguments(args);
+		
+		
+		
 		//total_cost = cost;
 		//if the user has selected group by for his search the group by column will not be visible in the row
 		//but only in the tab title
@@ -46,6 +70,9 @@ public class SearchResultsListFragment extends ListFragment {
 		}
 		else*/
 		
+		
+		// create a list of budgets and bind the cursor to the list, 
+				// leading the list's rows to display the data from the corresponding cursor lines
 		columns = cursor.getColumnNames();
 		
 		cursor.moveToFirst();
@@ -55,6 +82,8 @@ public class SearchResultsListFragment extends ListFragment {
 		else if (group_by.equals("store_name"))
 			textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date};
 		else*/
+		
+		
 		textviews = new int[]{R.id.id,R.id.name,R.id.price,R.id.category,R.id.purchase_date,R.id.store};
     	
 		simpleCursorAdapter = new SimpleCursorAdapter(context, R.layout.fragment_search_results_row, cursor, columns, textviews, 0);
@@ -72,8 +101,8 @@ public class SearchResultsListFragment extends ListFragment {
         // Inflate the layout for this fragment
     	View view = inflater.inflate(R.layout.fragment_search_results_list, container, false);
     	
+    	// set the text of the total cost TextView
     	String total_cost = getArguments().getString("cost");
-    	
     	cost = (TextView)view.findViewById(R.id.cost);
     	cost.setText(total_cost);
     	

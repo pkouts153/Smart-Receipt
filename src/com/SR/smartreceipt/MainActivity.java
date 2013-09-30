@@ -38,6 +38,11 @@ import com.SR.processes.UploadBudgetTask;
 import com.SR.processes.UploadFamilyTask;
 import com.SR.processes.UploadProductTask;
 
+/**
+* Activity that displays the budget addition screen
+* 
+* @author Panagiotis Koutsaftikis, Vaggelis Marakis
+*/
 public class MainActivity extends Activity {
 
 	User user;
@@ -49,11 +54,16 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// set up the UP button in ActionBar and Overflow menu
 		setupActionBar();
 		getOverflowMenu();
+		
+		// if some user is logged in display the MainActivity
 		if (User.USER_ID != 0) {
 			setContentView(R.layout.activity_main);
 		}
+		//else display LoginActivity
 		else {
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
@@ -61,7 +71,9 @@ public class MainActivity extends Activity {
 	}
 	
 	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 * Set up the ActionBar, if the API is available.
+	 * 
+	 * the Home button is not enabled in MainActivity because there is no previous screen
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -70,16 +82,20 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Inflate the menu; this adds items to the action bar if it is present.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_actions, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Handle presses on the action bar items
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_search:
 	    		Intent intent = new Intent(this, SearchActivity.class);
@@ -98,13 +114,7 @@ public class MainActivity extends Activity {
 	    		startActivity(intent2);
 	            return true;
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
+				// This action represents the Home or Up button which leads the user to the previous screen
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
@@ -112,6 +122,9 @@ public class MainActivity extends Activity {
 	    }
 	}
 	
+	/**
+	 * Set up the Overflow menu.
+	 */
 	private void getOverflowMenu() {
 
 	     try {
@@ -139,14 +152,17 @@ public class MainActivity extends Activity {
 		
 		budget = new Budget(db);
 		Cursor c = budget.getBudget(User.USER_ID);
+		
+		// if the user has budgets, call the BudgetListActivity
 		if (c!=null && c.getCount()>0){
 			mDbHelper.close();
 			Intent intent = new Intent(this, BudgetListActivity.class);
 			startActivity(intent);
 		}
+		// else call the AddBudgetActivity
 		else{
 			mDbHelper.close();
-			Intent intent = new Intent(this, BudgetActivity.class);
+			Intent intent = new Intent(this, AddBudgetActivity.class);
 			intent.putExtra("Activity", "Main");
 			startActivity(intent);
 		}
@@ -160,7 +176,7 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Offers link */
 	public void goToOffers(View view) {
-		Intent intent = new Intent(this, BudgetActivity.class);
+		Intent intent = new Intent(this, AddBudgetActivity.class);
 		startActivity(intent);
 	}
 	
@@ -172,13 +188,13 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the List link */
 	public void goToList(View view) {
-		Intent intent = new Intent(this, BudgetActivity.class);
+		Intent intent = new Intent(this, AddBudgetActivity.class);
 		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the Stores link */
 	public void goToStores(View view) {
-		Intent intent = new Intent(this, BudgetActivity.class);
+		Intent intent = new Intent(this, AddBudgetActivity.class);
 		startActivity(intent);
 	}
 	

@@ -29,20 +29,21 @@ import android.view.MenuItem;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
+/**
+* Activity that displays the search results screen
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class SearchResultsActivity extends FragmentActivity {
 
 	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-	 * will keep every loaded fragment in memory. If this becomes too memory
-	 * intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 * The PagerAdapter that will provide fragments for each of the sections. We use a
+	 * FragmentPagerAdapter derivative, which will keep every loaded fragment in memory
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	/**
-	 * The {@link ViewPager} that will host the section contents.
+	 * The ViewPager that will host the section contents.
 	 */
 	ViewPager mViewPager;
 	
@@ -59,32 +60,34 @@ public class SearchResultsActivity extends FragmentActivity {
 	String family;
 	String group_by;
 
+	//data variables
 	User user;
+	SearchHandler searchHandler;
 	
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
-	DatePickerFragment dateFragment;
-	
-	SearchHandler searchHandler;
-	
+	Bundle extras;
+
 	Cursor c;
 	Cursor sums;
 	
+	
+	DatePickerFragment dateFragment;
+	
 	ArrayList<String> group_names;
 	ArrayList<String> group_cost;
-	
-	Bundle extras;
 	
 	SimpleCursorAdapter simpleCursorAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Show the Up button in the action bar.
+		// set up the UP button in ActionBar and Overflow menu
 		setupActionBar();
 		getOverflowMenu();
 		
+		//get the data from SearchActivity
 		extras = getIntent().getExtras();
 		
 		product = extras.getString("product");
@@ -100,6 +103,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		mDbHelper = new FeedReaderDbHelper(this);
 		db = mDbHelper.getWritableDatabase();
 		
+		//get the product results for these data
 		searchHandler = new SearchHandler(db);
 		c = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
 		sums = searchHandler.getSums();
@@ -107,6 +111,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		group_names = new ArrayList<String>();
 		group_cost = new ArrayList<String>();
 		
+		// if the user has selected a group_by, then get the group_names for this group_by
 		if (!group_by.equals("")){
 			
 			c.moveToFirst();
@@ -129,6 +134,7 @@ public class SearchResultsActivity extends FragmentActivity {
 			}
 		}
 		
+		// get the total cost for each group or the total cost if there is no group_by
 		if (sums.moveToFirst()){
 			
 			while (!sums.isAfterLast()){
@@ -140,13 +146,18 @@ public class SearchResultsActivity extends FragmentActivity {
 		group_names.trimToSize();
 		group_cost.trimToSize();
 		
+		// if there is no group_by
 		if (group_by.equals("") || group_names.size()==0) {
-		
+			
+			// set the content view to "no tabs"
 			setContentView(R.layout.activity_search_results_no_tabs);
 
+			// set up the fragment manager and add a SearchResultsListFragment
 		    FragmentManager fragmentManager = getSupportFragmentManager();
 		    FragmentTransaction ft = fragmentManager.beginTransaction();
 
+		    // the last variable (group_name) is null because the user hasn't selected a group_by and
+		    // we display all the product results
 		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(c, group_cost.get(0), this, 
 		    		(ViewGroup) findViewById(R.id.search_results_no_tabs), null);
 		    
@@ -159,10 +170,10 @@ public class SearchResultsActivity extends FragmentActivity {
 			
 			setContentView(R.layout.activity_search_results);
 
+			// the list of fragments to be displayed
 			List<Fragment> fragments =  getFragments();
 			
-			// Create the adapter that will return a fragment for each of the three
-			// primary sections of the app.
+			// Create the adapter that will return a fragment for each section of the searhc results.
 			mSectionsPagerAdapter = new SectionsPagerAdapter(
 					getSupportFragmentManager(), fragments);
 	
@@ -173,9 +184,14 @@ public class SearchResultsActivity extends FragmentActivity {
 			
 			//mDbHelper.close();
 		}
-		
 	}
 
+	/**
+	 * Creates the fragments for the PagerAdapter
+	 * each fragment represents a group's products in the results screen
+	 * 
+	 * @return a list of fragments to be displayed in the sections
+	 */
 	private List<Fragment> getFragments(){
 		
 		List<Fragment> fList = new ArrayList<Fragment>();
@@ -192,6 +208,7 @@ public class SearchResultsActivity extends FragmentActivity {
 		args.putString("family", family);
 		args.putString("group_by", group_by);
 		
+		// for each of the search groups create a SearchResultsListFragment
 		for (int i=0; i<group_names.size(); i++){
 			args.putString("group_name", group_names.get(i));
 			args.putString("group_cost", group_cost.get(i));
@@ -207,7 +224,11 @@ public class SearchResultsActivity extends FragmentActivity {
 		return fList;
 	}
 	
-	
+	/**
+	 * Display an error dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
@@ -215,7 +236,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	}
 	
 	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 * Set up the ActionBar, if the API is available.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -224,16 +245,20 @@ public class SearchResultsActivity extends FragmentActivity {
 		}
 	}
 
+	/**
+	 * Inflate the menu; this adds items to the action bar if it is present.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.search, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Handle presses on the action bar items
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_logout:
 	        	mDbHelper = new FeedReaderDbHelper(this);
@@ -248,13 +273,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	    		startActivity(intent);
 	            return true;
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
+				// This action represents the Home or Up button which leads the user to the previous screen
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
@@ -262,6 +281,9 @@ public class SearchResultsActivity extends FragmentActivity {
 	    }
 	}
     
+	/**
+	 * Set up the Overflow menu.
+	 */
 	private void getOverflowMenu() {
 
 	     try {
@@ -307,8 +329,8 @@ public class SearchResultsActivity extends FragmentActivity {
 	
 	
 	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
+	 * A FragmentPagerAdapter that returns a fragment corresponding to
+	 * one of the sections
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		
@@ -319,22 +341,36 @@ public class SearchResultsActivity extends FragmentActivity {
 			this.fragments = fragments;
 		}
 
+		/**
+		 * Instantiates the fragment for the given section
+		 * 
+		 * @param position  the section number 
+		 * @return the fragment of the list that corresponds to the given section
+		 */
 		@Override
 		public Fragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a SearchResultsFragment (defined as a static inner class
-			// below) with the page number as its lone argument.
-			
+
 			return this.fragments.get(position);
 			
 		}
 		
+		/**
+		 * Sets the number of sections to be displayed
+		 * 
+		 * @return the number of sections
+		 */
 		@Override
 		public int getCount() {
 			
 			return group_names.size();
 		}
 
+		/**
+		 * Creates the title of each section
+		 * 
+		 * @param position  the section number 
+		 * @return the title
+		 */
 		@Override
 		public CharSequence getPageTitle(int position) {
 			

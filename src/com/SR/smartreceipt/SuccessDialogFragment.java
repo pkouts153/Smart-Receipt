@@ -5,7 +5,14 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 
+/**
+* Fragment that displays a dialog for a success message
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class SuccessDialogFragment extends DialogFragment {
+	
+	// the message to be displayed
 	String message;
 	
     @Override
@@ -18,6 +25,12 @@ public class SuccessDialogFragment extends DialogFragment {
         return builder.create();
     }
     
+    
+	/**
+	 * sets the message that takes from the Activity
+	 * 
+	 * @param m  the message to be displayed
+	 */
     public void setMessage (String m){
     	message = m;
     }

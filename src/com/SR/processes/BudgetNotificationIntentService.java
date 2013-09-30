@@ -16,12 +16,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.NotificationCompat;
 
+/**
+* This class is responsible for displaying notification for surpassed budgets in the notification bar
+* 
+* @author Panagiotis Koutsaftikis
+*/
 @SuppressLint("NewApi")
 public class BudgetNotificationIntentService extends IntentService {
 	
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
+	// mId allows you to update the notification later on.
+	//if mId is the same as an existing notification, then the existing one will be replaced by the new one
 	int mId;
 	
 	public BudgetNotificationIntentService() {
@@ -31,7 +38,6 @@ public class BudgetNotificationIntentService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		
-		//if mId is the same as an existing notification, then the existing one will be replaced by the new one
 		mId = 0;
 		
 		mDbHelper = new FeedReaderDbHelper(this);
@@ -48,7 +54,7 @@ public class BudgetNotificationIntentService extends IntentService {
 
 			NotificationCompat.Builder mBuilder =
 			        new NotificationCompat.Builder(this)
-					.setSmallIcon(R.drawable.budget)
+					.setSmallIcon(R.drawable.notification_budget)
 					.setContentTitle("Budget Control");
 			
 			c.moveToFirst();
@@ -84,7 +90,7 @@ public class BudgetNotificationIntentService extends IntentService {
 					mBuilder.setContentIntent(pendingIntent);
 					NotificationManager mNotificationManager =
 					    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					// mId allows you to update the notification later on.
+
 					mNotificationManager.notify(++mId, mBuilder.build());
 				
 		        c.moveToNext();

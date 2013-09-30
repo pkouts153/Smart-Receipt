@@ -1,7 +1,5 @@
 package com.SR.smartreceipt;
-/**
- * author Panagiotis Koutsaftikis 8100062
- */
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -35,7 +33,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+/**
+* Activity that displays the product save screen
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class SaveActivity extends FragmentActivity implements OnClickListener {
+	
+	// UI components
 	
 	Spinner category_spinner;
 	EditText product_name;
@@ -50,7 +55,10 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
     
     DatePickerFragment dateFragment = new DatePickerFragment();
     
+    // it saves the products' category, date and price. A product per 3 positions
     ArrayList<String> product_list = new ArrayList<String>();
+    
+    // data variables
     
     Product product;
     Category category;
@@ -60,19 +68,24 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
     FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
+	//user input variables
+	
     String cat_spinner;
 	String p_name;
 	String p_price;
 	Float p;
 	String pd;
 	String VAT;
+	
+	// the number of products added to the list
 	int products = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_save);
-		// Show the Up button in the action bar.
+		
+		// set up the UP button in ActionBar and Overflow menu
 		setupActionBar();
 		getOverflowMenu();
 		
@@ -135,7 +148,7 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	}
 	
 	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 * Set up the ActionBar, if the API is available.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -144,6 +157,9 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 		}
 	}
 	
+	/**
+	 * Inflate the menu; this adds items to the action bar if it is present.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -151,6 +167,9 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Handle presses on the action bar items
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
@@ -172,13 +191,7 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	    		startActivity(intent2);
 	            return true;
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
+				// This action represents the Home or Up button which leads the user to the previous screen
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
@@ -186,6 +199,9 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	    }
 	}
 	
+	/**
+	 * Set up the Overflow menu.
+	 */
 	private void getOverflowMenu() {
 
 	     try {
@@ -204,20 +220,56 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	public void onClick(View v) {
 		if (v instanceof Button) {
 			try{
-				if (save.getId() == ((Button)v).getId()) {
+				// if the clicked button is add
+				if (add.getId() == ((Button)v).getId()) {
 					
+					//get user's input
+					cat_spinner = category_spinner.getSelectedItem().toString();
+					p_name = product_name.getText().toString();
+					p_price = price.getText().toString();
+					
+					//if any field is empty display error dialog
+					if ((p_name.equals("")) || (p_price.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
+						
+						displayError(this.getString(R.string.no_input));
+					}
+					else {
+						p = Float.parseFloat(p_price);
+						
+						//add the product data to the product_list
+						addToArrayList();
+						
+						//clear the fields
+						clearFields();
+						
+						//update the number of products
+						products++;
+						number_of_products.setText(""+products+"");
+						
+						displaySuccess(this.getString(R.string.added));
+					}
+				}
+				// else if the clicked button is save
+				else if (save.getId() == ((Button)v).getId()){
+					
+					// get user's input
 					cat_spinner = category_spinner.getSelectedItem().toString();
 					p_name = product_name.getText().toString();
 					p_price = price.getText().toString();
 					pd = purchase_date.getText().toString();
 					VAT = store_VAT.getText().toString();
 	
+					// display an error dialog when 
+					//		no product is added and the fields are empty 
+					//		and product was added, but the date is empty
 					if ((product_list.size()==0 && (p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt)))) 
 							|| (product_list.size()!=0 && (pd.equals("")))) {
 							
 						displayError(this.getString(R.string.no_input));
 					}
 					else {
+						// if the fields are not empty, add the new product to the list 
+						//(if the list is not empty then there is no need for the fields to be full and a new product to be added)
 						if (!(p_name.equals("") || pd.equals("") || p_price.equals("") || cat_spinner.equals(this.getString(R.string.category_prompt))))
 							addToArrayList();
 						
@@ -227,8 +279,10 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 						product = new Product(db);
 						store = new Store(db);
 						
+						// get the store id from the VAT number typed by the user
 						int id = store.getId(VAT);
 						
+						// if a product is not saved successfully it will be true
 						boolean save_error = false;
 						
 						if (!product.saveProduct(product_list, pd, id))
@@ -236,16 +290,19 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 						
 						mDbHelper.close();
 						
+						//clear user's input
 						clearFields();
 						purchase_date.getText().clear();
 						store_VAT.getText().clear();
 						
+						// set products to default
 						product_list.clear();
 						product_list.trimToSize();
 						
 						products = 0;
 						number_of_products.setText(""+products+"");
 						
+						// if an error occurred during the saving display error dialog
 						if (save_error)
 							displayError(this.getString(R.string.product_save_error));
 						else{
@@ -254,73 +311,70 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 							successDialog.show(getFragmentManager(), "successDialog");
 							timerDelayRemoveDialog(1500, successDialog);
 						
+							// if the save was successful call the notification service to check if any budget was surpassed
 						    Intent serviceIntent = new Intent(SaveActivity.this, BudgetNotificationIntentService.class);
 						    SaveActivity.this.startService(serviceIntent);
 						}
 					}
 				}
+				//else if the clicked button is reset clear the fields
 				else if (reset.getId() == ((Button)v).getId()){
 					clearFields();
 					purchase_date.getText().clear();
 					store_VAT.getText().clear();
 				}
-				else if (add.getId() == ((Button)v).getId()){
-					
-					cat_spinner = category_spinner.getSelectedItem().toString();
-					p_name = product_name.getText().toString();
-					p_price = price.getText().toString();
-					
-					
-					if ((p_name.equals("")) || (p_price.equals("")) || (cat_spinner.equals(this.getString(R.string.category_prompt)))) {
-						
-						displayError(this.getString(R.string.no_input));
-					}
-					else {
-						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
-						p = Float.parseFloat(p_price);
-						
-						addToArrayList();
-						clearFields();
-						products++;
-						number_of_products.setText(""+products+"");
-						
-						displaySuccess(this.getString(R.string.added));
-					}
-				}
+				//else if the clicked button is scan return to the Main (scan is not implemented yet)
 				else {
 					Intent intent = new Intent(this, MainActivity.class);
 					startActivity(intent);
 				}
-			
+			// if an error occurs during the parsing of the price to float
 			} catch (NumberFormatException e) {
 				
 				displayError(this.getString(R.string.not_a_price));
 			}
 		}
+		// if the view clicked was an EditView (date) call the date picker dialog
 		else {
 			dateFragment.setView(v);
 	    	dateFragment.show(getSupportFragmentManager(), "datePicker");
 		}
 	}
 	
+	/**
+	 * Clear the fields from user's input
+	 */
 	public void clearFields() {
 		category_spinner.setSelection(0);
 		product_name.getText().clear();
 		price.getText().clear();
 	}
 	
+	/**
+	 * Adds product category, name and price to an ArrayList
+	 */
 	public void addToArrayList() {
 		product_list.add(cat_spinner);
 		product_list.add(p_name);
 		product_list.add(p_price);
 	}
 	
+	/**
+	 * Display an error dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
 		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
+	/**
+	 * Display a success dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displaySuccess(String message) {
 		SuccessDialogFragment successDialog = new SuccessDialogFragment();
 		successDialog.setMessage(message);
@@ -328,6 +382,9 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 		timerDelayRemoveDialog(1500, successDialog);
 	}
 	
+	/**
+	 * Set the time delay of the dialog
+	 */
 	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){
 	    new Handler().postDelayed(new Runnable() {
 	        public void run() {                

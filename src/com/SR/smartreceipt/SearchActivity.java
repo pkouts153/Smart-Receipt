@@ -29,9 +29,14 @@ import android.widget.Spinner;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 
+/**
+* Activity that displays the search screen
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class SearchActivity extends FragmentActivity implements OnClickListener{
 	
-	//Search selection input
+	//User's input
 	
 	String product = "";
 	String category = "";
@@ -43,7 +48,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	String family = "";
 	String group_by = "";
 	
-	//Search selection fragment components
+	//UI components
 	
 	EditText product_name;
 	Spinner category_spinner;
@@ -57,25 +62,29 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	Button submit;
 	Button reset;
 	
+	//data variables
+	
 	User user;
 	Category cat;
+	SearchHandler searchHandler;
 	
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
+
+	Bundle extras;
+	
 	
 	DatePickerFragment dateFragment;
-	
-	SearchHandler searchHandler;
-	
-	Bundle extras;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-		// Show the Up button in the action bar.
+		// set up the UP button in ActionBar and Overflow menu
 		setupActionBar();
 		getOverflowMenu();
+		
 		//set up EditTexts
 		
 		product_name = (EditText)findViewById(R.id.product_name);
@@ -133,11 +142,11 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		user = new User(db);
 		Cursor c1 = user.getFamilyMembers(User.USER_ID);
 		
+		// if there are more than one family members, add the choice "All" to the spinner
 		if(c1.getCount()>1)
 			fam_adapter.add("All");
 		
         try{
-	        
         	c1.moveToFirst();
 			String family_member;
 
@@ -172,7 +181,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	}
 
 	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 * Set up the ActionBar, if the API is available.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -181,6 +190,9 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		}
 	}
 
+	/**
+	 * Inflate the menu; this adds items to the action bar if it is present.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -188,6 +200,9 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Handle presses on the action bar items
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
@@ -198,13 +213,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	    		startActivity(intent2);
 	            return true;
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
+				// This action represents the Home or Up button which leads the user to the previous screen
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
 	        default:
@@ -212,6 +221,9 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	    }
 	}
 	
+	/**
+	 * Set up the Overflow menu.
+	 */
 	private void getOverflowMenu() {
 
 	     try {
@@ -230,8 +242,10 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	public void onClick(View v) {
 		if (v instanceof Button) {
 			try {
+				// if the clicked button is submit
 				if (submit.getId() == ((Button)v).getId()) {
 
+					// if all the fields are empty, display an error dialog
 					if (product_name.getText().toString().equals("") && search_store.getText().toString().equals("") && 
 						min_cost.getText().toString().equals("") && max_cost.getText().toString().equals("") &&
 						search_start_date.getText().toString().equals("") && search_end_date.getText().toString().equals("") && 
@@ -242,6 +256,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 					}
 					else {
 						
+						// get the input of the user where there is one
 						if (!(product_name.getText().toString().equals(""))){
 							product = product_name.getText().toString();
 						}
@@ -252,11 +267,13 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 						
 						if (!(min_cost.getText().toString().equals(""))) {
 							mn_cost =  min_cost.getText().toString();
+							// parses float to see if there is an error
 							Float m_cost = Float.parseFloat(mn_cost);
 						}
 						
 						if (!(max_cost.getText().toString().equals(""))) {
 							mx_cost =  max_cost.getText().toString();
+							// parses float to see if there is an error
 							Float x_cost = Float.parseFloat(mx_cost);
 						}
 						
@@ -276,6 +293,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 							family = family_spinner.getSelectedItem().toString();
 						}
 						
+						// depending on the selection of the user, change the selection to a form readable by the database
 						if (!(group_by_spinner.getSelectedItem().toString().equals(this.getString(R.string.group_by_prompt)))){
 							group_by = group_by_spinner.getSelectedItem().toString();
 							
@@ -287,6 +305,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 								group_by = "username";
 						}
 						
+						// add the input data into a Bundle and call SearchResultsActivity
 						extras = new Bundle();
 						extras.putString("product", product);
 						extras.putString("category", category);
@@ -303,14 +322,17 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 						startActivity(intent);
 					}
 				}
+				//else if the button that was clicked was reset
 				else{
 					clearFields();
 				}
+			// if an error occurs during the parsing of the price to float
 			} catch (NumberFormatException e) {
 				
 				displayError(this.getString(R.string.not_a_number));
 			}
 		}
+		//else if the view that was clicked was an EditText (start date, end date), display the DatePickerDialog
 		else {
 			dateFragment = new DatePickerFragment();
 			dateFragment.setView(v);
@@ -319,12 +341,20 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		
 	}
 	
+	/**
+	 * Display an error dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
 		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
+	/**
+	 * Clear the fields from user's input
+	 */
 	public void clearFields() {
 		category_spinner.setSelection(0);
 		family_spinner.setSelection(0);

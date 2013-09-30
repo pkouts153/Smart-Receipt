@@ -32,8 +32,15 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
-public class BudgetActivity extends FragmentActivity implements OnClickListener {
+/**
+* Activity that displays the budget addition screen
+* 
+* @author Panagiotis Koutsaftikis
+*/
+public class AddBudgetActivity extends FragmentActivity implements OnClickListener {
 
+	// UI components
+	
 	Spinner category_spinner;
 	EditText spend_limit;
 	EditText from_date;
@@ -43,6 +50,8 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
     Button submit;
     Button reset;
     
+    // data variables
+    
     Category category;
     Budget budget;
     User user;
@@ -50,11 +59,13 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
     FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
-    Cursor cat;
-    Cursor fam;
+    Cursor category_cursor;
+    Cursor family_cursor;
     
+    // Fragment for date selection
     DatePickerFragment dateFragment = new DatePickerFragment();
     
+    // shows which Activity called AddBudgetActivity (MainActivity or BudgetListActivity)
     String parent_activity;
     
 	@SuppressLint("NewApi")
@@ -69,14 +80,15 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		Intent intent = getIntent();
         parent_activity = intent.getStringExtra("Activity");
         
-        // Show the Up button in the action bar.
+        // set up the UP button in ActionBar and Overflow menu
 		setupActionBar();
 		getOverflowMenu();
 		
+		// if AddBudgetActivity is called from BudgetListActivity and the user deleted all the budgets
 		if (intent.getStringExtra("Success")!=null)
 			displaySuccess(this.getString(R.string.delete_success));
 		
-		//set up ui components
+		//set up UI components
 		
 		spend_limit = (EditText)findViewById(R.id.spend_limit);
 		from_date = (EditText)findViewById(R.id.from_date);
@@ -96,7 +108,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
         //set up category spinner
         
         category = new Category(db);
-		cat = category.getCategories();
+        category_cursor = category.getCategories();
 		
 		category_spinner = (Spinner) findViewById(R.id.category_spinner);
 		ArrayAdapter <CharSequence> cat_adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
@@ -106,17 +118,17 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		cat_adapter.add(this.getString(R.string.category_prompt));
 		
         try{
-        	cat.moveToFirst();
+        	category_cursor.moveToFirst();
 			String category_name;
 			
-			while (!cat.isAfterLast ()) {
-				category_name = cat.getString(cat.getColumnIndexOrThrow(FeedCategory.NAME));
+			while (!category_cursor.isAfterLast ()) {
+				category_name = category_cursor.getString(category_cursor.getColumnIndexOrThrow(FeedCategory.NAME));
 				cat_adapter.add(category_name);
-				cat.moveToNext ();
+				category_cursor.moveToNext ();
 			}
-			cat.close();
+			category_cursor.close();
         } catch (CursorIndexOutOfBoundsException e){
-        	cat.close();
+        	category_cursor.close();
         }
         
         //set up family spinner
@@ -130,19 +142,20 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		fam_adapter.add(this.getString(R.string.family_prompt));
 		
 		user = new User(db);
-		fam = user.getFamilyMembers(User.USER_ID);
+		family_cursor = user.getFamilyMembers(User.USER_ID);
 		
-		if(fam.getCount()>1)
+		// if there are more than one family members, add the choice "All" to the spinner
+		if(family_cursor.getCount()>1)
 			fam_adapter.add("All");
 		
         try{
-        	fam.moveToFirst();
+        	family_cursor.moveToFirst();
 			String family_member;
 
-			while (!fam.isAfterLast ()) {
-				family_member = fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME));
+			while (!family_cursor.isAfterLast ()) {
+				family_member = family_cursor.getString(family_cursor.getColumnIndexOrThrow(FeedUser.USERNAME));
 				fam_adapter.add(family_member);
-				fam.moveToNext ();
+				family_cursor.moveToNext ();
 			}
 		} catch (CursorIndexOutOfBoundsException e){
 			fam_adapter.add("No family");
@@ -151,7 +164,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	}
     
 	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 * Set up the ActionBar, if the API is available.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -159,17 +172,21 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
-
+	
+	/**
+	 * Inflate the menu; this adds items to the action bar if it is present.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_actions, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Handle presses on the action bar items
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_search:
 	    		Intent intent = new Intent(this, SearchActivity.class);
@@ -177,20 +194,13 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	            return true;
 	        case R.id.action_logout:
 	        	user.userLogout();
+	        	mDbHelper.close();
 	        	Intent intent2 = new Intent(this, LoginActivity.class);
 	    		startActivity(intent2);
-	    		
-	    		mDbHelper.close();
-	    		
+	    	
 	            return true;
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
+				// This action represents the Home or Up button which leads the user to the previous screen
 				Intent upIntent;
 				if (parent_activity.equals("Main"))
 					upIntent = new Intent(this, MainActivity.class);
@@ -203,6 +213,9 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	    }
 	}
 	
+	/**
+	 * Set up the Overflow menu.
+	 */
 	private void getOverflowMenu() {
 
 	     try {
@@ -220,19 +233,21 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 	@Override
 	public void onClick(View v) {
 		if (v instanceof Button) {
+			// if the clicked button is submit
 			if (submit.getId() == ((Button)v).getId()) {
 				try{
 					
+					// get user input
 					String cat_spinner = category_spinner.getSelectedItem().toString();
 					String s_limit = spend_limit.getText().toString();
 					String fd = from_date.getText().toString();
 					String ud = until_date.getText().toString();
 					
+					// if any field is empty display an error dialog
 					if (cat_spinner.equals(this.getString(R.string.category_prompt)) || s_limit.equals("") || fd.equals("") || ud.equals("")) {
 						displayError(this.getString(R.string.no_input));
 					}
 					else {
-						//to evala edw giati 8elw na pianei prwta to no_input error an einai keno
 						Float limit= Float.parseFloat(s_limit);
 						
 						mDbHelper = new FeedReaderDbHelper(this);
@@ -240,31 +255,41 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 						
 						budget = new Budget(db);
 						
+						// if a budget is not saved successfully it will be true
 						boolean save_error = false;
 						
+						// if the user checked the "same on" checkbox 
+						// then get the selected family member(s) and save the same budget to them
 						if (same_on.isChecked()) {
 							String fam_spinner = family_spinner.getSelectedItem().toString();
 						
+							// if the selection is "All" save the budget to all the user's family members
 							if (fam_spinner.equals("All")) {
-								fam.moveToFirst();
-								while (!fam.isAfterLast()) {
-									int id = user.getId(fam.getString(fam.getColumnIndexOrThrow(FeedUser.USERNAME)));
+								family_cursor.moveToFirst();
+								while (!family_cursor.isAfterLast()) {
+									//get the id for each family member's username
+									int id = user.getId(family_cursor.getString(family_cursor.getColumnIndexOrThrow(FeedUser.USERNAME)));
 									
+									//save the budget to each family member
 									if (id!=0) 
 										if (!budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID))
 											save_error=true;
 								
-									fam.moveToNext();
+									family_cursor.moveToNext();
 								}
 							}
+							//else if the user selects a certain family member
 							else {
 								int id = user.getId(fam_spinner);
 								
+								//save the budget to the family member
 								if (id!=0)
 									if (!budget.saveBudget(cat_spinner, limit, fd, ud, id, User.USER_ID))
 											save_error=true;
 							}
 						}
+						
+						//save the budget to the user
 						if (!budget.saveBudget(cat_spinner, limit, fd, ud, User.USER_ID, 0))
 							save_error=true;
 						
@@ -276,7 +301,7 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 						else
 							displaySuccess(this.getString(R.string.success));
 					}
-				
+				// if an error occurs during the parsing of the price to float
 				} catch (NumberFormatException e) {
 					displayError(this.getString(R.string.not_a_number));
 					
@@ -284,11 +309,13 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 					displayError(this.getString(R.string.no_family));
 				}
 			}
+			//else if the button that was clicked was reset
 			else {
 				clearFields();
 			}
 				
 		}
+		//else if the view that was clicked was an EditText (start date, end date), display the DatePickerDialog
 		else {
 			dateFragment.setView(v);
 	    	dateFragment.show(getSupportFragmentManager(), "datePicker");
@@ -296,19 +323,44 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 
 	}
 	
+	/**
+	 * Display an error dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
 		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
+	/**
+	 * Display a success dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displaySuccess(String message) {
 		SuccessDialogFragment successDialog = new SuccessDialogFragment();
 		successDialog.setMessage(message);
 		successDialog.show(getFragmentManager(), "successDialog");
+		// dismiss dialog after 1,5 seconds
 		timerDelayRemoveDialog(1500, successDialog);
 	}
 	
+	/**
+	 * Set the time delay of the dialog
+	 */
+	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){
+	    new Handler().postDelayed(new Runnable() {
+	        public void run() {                
+	            d.dismiss();         
+	        }
+	    }, time); 
+	}
+	
+	/**
+	 * Clear the fields from user's input
+	 */
 	public void clearFields() {
 		category_spinner.setSelection(0);
 		spend_limit.getText().clear();
@@ -320,15 +372,6 @@ public class BudgetActivity extends FragmentActivity implements OnClickListener 
 		family_spinner.setSelection(0);
 		
 	}
-	
-	public void timerDelayRemoveDialog(long time, final SuccessDialogFragment d){
-	    new Handler().postDelayed(new Runnable() {
-	        public void run() {                
-	            d.dismiss();         
-	        }
-	    }, time); 
-	}
-	
 
     @Override
     protected void onResume() {

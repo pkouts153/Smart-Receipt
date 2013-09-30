@@ -9,15 +9,31 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.SR.data.FeedReaderContract.FeedCategory;
 
+/**
+* This class represents category and is responsible for the necessary processes
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class Category {
 	
     SQLiteDatabase db;
     Cursor c;
     
+    /**
+    * Category constructor 
+    * 
+    * @param database   saves the database object, that was passed from the Activity, 
+    * 					in the database object of the class for use in the methods
+    */
     public Category(SQLiteDatabase database){
     	db = database;
     }
-    
+	
+	/**
+	 * Gets categories from the database
+	 * 
+	 * @return a cursor with the categories
+	 */
     public Cursor getCategories(){
 
 		// Specifies which columns are needed from the database

@@ -13,17 +13,34 @@ import android.database.sqlite.SQLiteDatabase;
 import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedUser;
 
+/**
+* This class represents user and is responsible for the necessary processes
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class User {
 
+	// saves the id of the user that is logged in
 	public static int USER_ID;
 
     SQLiteDatabase db;
     Cursor c;
    
+    /**
+    * User constructor 
+    * 
+    * @param database   saves the database object, that was passed from the Activity, 
+    * 					in the database object of the class for use in the methods
+    */
 	public User(SQLiteDatabase database) {
 		db = database;
 	}
 	
+	/**
+	 * Gets users from the database
+	 * 
+	 * @return a cursor with the users
+	 */
     public Cursor getUsers(){
 
 		// Specifies which columns are needed from the database
@@ -47,9 +64,14 @@ public class User {
 		return c;
     }
     
-    
+    /**
+     * Gets the names of the family members of a given user
+     * 
+     * @param user  the id of the user
+     * @return a cursor with the family names
+     */
     public Cursor getFamilyMembers(int user){
-
+    	
     	String query = "SELECT DISTINCT " + FeedUser.USERNAME +
     				   " FROM " + FeedUser.TABLE_NAME +
     				   " WHERE " + FeedUser._ID + " IN (SELECT DISTINCT " + FeedFamily.MEMBER2 +
@@ -65,7 +87,13 @@ public class User {
 		return c;
     }  
     
-
+    /**
+     * Checks if the user that attempts to log in exists in the database
+     * 
+     * @param email the typed email of the user
+     * @param password the typed password of the user
+     * @return whether the user exists
+     */
     public boolean userLogin(String email, String password){
     	
     	boolean found = false;
@@ -84,6 +112,12 @@ public class User {
     	return found;
     }
     
+	/**
+	 * Finds the id of a user whose username is been given
+	 * 
+	 * @param user  the username
+	 * @return the id of the user
+	 */
     public int getId(String user){
     	
     	int id = 0;
@@ -101,7 +135,9 @@ public class User {
     	return id;
     }
 
-    
+    /**
+     * This method is called when the user wants to logout and replaced the id with the default value
+     */
     public void userLogout() {
     	USER_ID = 0;
     }

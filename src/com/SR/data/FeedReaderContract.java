@@ -2,18 +2,22 @@ package com.SR.data;
 
 import android.provider.BaseColumns;
 
+/**
+* @authors Panagiotis Koutsaftikis, Vaggelis Marakis, Giannis Diamantidis
+*/
+
 public final class FeedReaderContract {
 	
     public FeedReaderContract() {}
 
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the Category table contents */
     public static abstract class FeedCategory implements BaseColumns {
         public static final String TABLE_NAME = "category";
         public static final String NAME = "category_name";
         public static final String CATEGORY_CREATED = "category_created";
     }
     
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the User table contents */
     public static abstract class FeedUser implements BaseColumns {
         public static final String TABLE_NAME = "user";
         public static final String USERNAME = "username";
@@ -24,7 +28,7 @@ public final class FeedReaderContract {
         public static final String FROM_SERVER = "from_server";
     }
     
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the Budget table contents */
     public static abstract class FeedBudget implements BaseColumns {
         public static final String TABLE_NAME = "budget";
         public static final String EXPENSE_CATEGORY = "expense_category";
@@ -40,7 +44,7 @@ public final class FeedReaderContract {
         public static final String IS_SURPASSED = "is_surpassed";
     }
     
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the Product table contents */
     public static abstract class FeedProduct implements BaseColumns {
         public static final String TABLE_NAME = "product";
         public static final String PRODUCT_CATEGORY = "product_category";
@@ -53,7 +57,7 @@ public final class FeedReaderContract {
         public static final String PRODUCT_CREATED = "product_created";
     }
     
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the Offer table contents */
     public static abstract class FeedOffer implements BaseColumns {
         public static final String TABLE_NAME = "offer";
         public static final String PRODUCT_NAME = "offer_product_name";
@@ -65,7 +69,7 @@ public final class FeedReaderContract {
         public static final String OFFER_CREATED = "offer_created";
     }
     
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the Family table contents */
     public static abstract class FeedFamily implements BaseColumns {
         public static final String TABLE_NAME = "family";
         public static final String MEMBER1 = "member1";
@@ -76,7 +80,7 @@ public final class FeedReaderContract {
         public static final String FAMILY_CREATED = "family_created";
     }
     
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the Store table contents */
     public static abstract class FeedStore implements BaseColumns {
         public static final String TABLE_NAME = "store";
         public static final String NAME = "store_name";

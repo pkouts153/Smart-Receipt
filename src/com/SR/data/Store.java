@@ -9,15 +9,31 @@ import com.SR.data.FeedReaderContract.FeedStore;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+* This class represents store and is responsible for the necessary processes
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class Store {
 	
     SQLiteDatabase db;
     Cursor c;
     
+    /**
+    * Store constructor 
+    * 
+    * @param database   saves the database object, that was passed from the Activity, 
+    * 					in the database object of the class for use in the methods
+    */
     public Store(SQLiteDatabase database){
     	db = database;
     }   
 	
+	/**
+	 * Gets stores from the database
+	 * 
+	 * @return a cursor with the stores
+	 */
 	public Cursor getStores(){
 
 		// Specifies which columns are needed from the database
@@ -39,10 +55,18 @@ public class Store {
 		return c;
     }
     
+	/**
+	 * Finds the id of a store whose VAT number is been given
+	 * 
+	 * @param VAT  the VAT number of the store
+	 * @return the id of the store
+	 */
     public int getId(String VAT){
     	
     	int id = 1;
     	
+    	// if the user doesn't specify a VAT number in the save product screen 
+    	//	then the store's id is 1, which is the id of the "Unknown store"
     	if (!VAT.equals("")) {
 	    	c = getStores();
 	    	

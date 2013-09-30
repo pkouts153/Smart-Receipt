@@ -1,6 +1,7 @@
 package com.SR.data;
 
 import java.sql.Timestamp;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,15 +19,34 @@ import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.processes.Functions;
 
+/**
+* This class represents budget and is responsible for the necessary processes
+* 
+* @author Panagiotis Koutsaftikis
+*/
+
 public class Budget {
     
     SQLiteDatabase db;
     Cursor c1;
     Cursor c2;
     
+    /**
+    * Budget constructor 
+    * 
+    * @param database   saves the database object, that was passed from the Activity, 
+    * 					in the database object of the class for use in the methods
+    */
 	public Budget(SQLiteDatabase database) {
 		db = database;
 	}
+	
+	/**
+	 * Gets budgets of a user from the database
+	 * 
+	 * @param user_id  specifies which user's budgets the method will return
+	 * @return a cursor with the budgets of the user
+	 */
 	
     public Cursor getBudget(int user_id){
     	
@@ -57,6 +77,11 @@ public class Budget {
 		return c1;
     }
     
+    /**
+     * Gets data from the Activity and creates a new line in the Budget table with these data
+     * 
+     * @return whether the insertion was made successfully or not
+     */
     public boolean saveBudget(String category, Float limit, String from_date, String until_date, int user_id, int family_id){
     	
 		ContentValues values = new ContentValues();
@@ -72,16 +97,25 @@ public class Budget {
 		values.put(FeedBudget.ON_SERVER, 0);
 		values.put(FeedBudget.IS_SURPASSED, 0);
 		
+		// BUDGET_CREATED takes the date and time of the creation
 		Date date = new Date();
 		Timestamp timestampToday = new Timestamp(date.getTime());
 		String today = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestampToday);
 		
 		values.put(FeedBudget.BUDGET_CREATED, today);
 		
+		// if the insertion was made successfully then it will return 1 (>0)
 		return db.insert(FeedBudget.TABLE_NAME, "null", values) > 0;
 		
     }
     
+    /**
+     * Updates a line of the budget table making FOR_DELETION column 1 
+     * (the actual deletion will be made after the database in the server updates it's own tables)
+     * 
+     * @param id  the id of the budget to be deleted
+     * @return whether the update was made successfully
+     */
     public boolean deleteBudget(int id){
 		
 		ContentValues values = new ContentValues();
@@ -90,12 +124,21 @@ public class Budget {
 		
     }
     
-    public Boolean BudgetsSurpassed() {
+    /**
+     * Checks if budgets are surpassed
+     * 
+     * @return true if at least one budget is surpassed 
+     */
+    public boolean BudgetsSurpassed() {
+    	
+    	// if at least one budget is surpassed it will be true
     	boolean surpassed = false;
 		
 		c2 = getBudget(User.USER_ID);
 		
 		c2.moveToFirst();
+		
+		// for its budget of the user compare the sum of the products' price with the SPEND_LIMIT
 		
 		while (!c2.isAfterLast()) {
 			String productQuery = "SELECT SUM(" + FeedProduct.PRICE + ") AS sum" + 
@@ -112,6 +155,8 @@ public class Budget {
 			
 	        c1.moveToFirst();
 	        
+	        // if sum > SPEND_LIMIT then IS_SURPASSED is 2
+	        //	else IS_SURPASSED is 1 which means > 80% of SPEND_LIMIT
 	        if (c1.getFloat(c1.getColumnIndexOrThrow("sum")) > (c2.getFloat(c2.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT)))) {
 	        	
 	        	ContentValues values = new ContentValues();

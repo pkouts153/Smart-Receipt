@@ -42,7 +42,7 @@
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
         <activity
-            android:name="com.SR.smartreceipt.BudgetActivity"
+            android:name="com.SR.smartreceipt.AddBudgetActivity"
             android:label="@string/title_activity_budget"
             android:parentActivityName="com.SR.smartreceipt.BudgetListActivity" >
             <meta-data

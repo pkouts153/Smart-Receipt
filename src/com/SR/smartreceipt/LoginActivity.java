@@ -17,12 +17,20 @@ import com.SR.data.User;
 import com.SR.processes.MyApplication;
 import com.SR.processes.RetrieveUserDataTask;
 
+/**
+* Activity that displays the login screen
+* 
+* @author Panagiotis Koutsaftikis
+*/
 public class LoginActivity extends FragmentActivity implements OnClickListener {
 
+	// UI components
+	
 	EditText email;
 	EditText password;
 	Button login;
     Button reset;
+    
     
     public static String mail;
 	public static String pass;
@@ -37,6 +45,8 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 
+		// set up UI components
+		
 		email = (EditText)findViewById(R.id.email);
 		password = (EditText)findViewById(R.id.password);
 
@@ -50,9 +60,11 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 	
 	@Override
 	public void onClick(View v) {
-
+		
+		// if user clicked login
 		if (login.getId() == ((Button)v).getId()) {
 
+			// get user input
 			mail = email.getText().toString();
 			pass = password.getText().toString();
 			
@@ -61,45 +73,32 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 			
 			//mDbHelper.onUpgrade(db, 1, 1);
 
+			// if the user has typed an email and a password
 			if (!(mail.equals("") || pass.equals(""))) {
 				//if (isEmailValid(mail)) {
 					
 					user = new User(db);
-					
-					/*if (user.userLogin(mail, pass)) {
-						Intent intent = new Intent(this, MainActivity.class);
-						startActivity(intent);
-					}
-					else {
-						an einai sundedemenos
-							psa3e sto server
-							
-							an uparxei
-								new RetrieveUserDataTask(this).execute();
-							alliws
-								displayError(this.getString(R.string.no_user));
-						alliws
-							displayError(this.getString(R.string.no_user));
-					}*/
 					
 					/*if(user.isDatabaseEmpty()){
 						Boolean connected = true;
 						if(connected){
 							new RetrieveUserDataTask(this).execute(db);
 						} else {
-							displayError("You must connect to the Internet1");
+							displayError("You must connect to the Internet!");
 						}
 					} else {*/
+						// if user exists in the mobile database call MainActivity
 						if (user.userLogin(mail, pass)) {
 							Intent intent = new Intent(this, MainActivity.class);
 							startActivity(intent);
 						}
+						//else check the server online
 						else {
 							/*Boolean connected = true;
 							if(connected){
 								new RetrieveUserDataTask(this).execute(db);
 							} else {*/
-								displayError("You must connect to the Internet");
+								displayError("You must connect to the Internet!");
 							//}
 						}
 					
@@ -108,12 +107,14 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 					displayError(this.getString(R.string.not_a_mail));
 				}*/
 			}
+			//else if email or password is empty
 			else {
 				displayError(this.getString(R.string.no_input));
 			}
 			
 			mDbHelper.close();
 		}
+		//else if the user clicked reset
 		else {
 			clearFields();
 		}
@@ -121,7 +122,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 	
 	
 	/**
-	 * method is used for checking valid email id format.
+	 * Check if the mail format is valid
 	 * 
 	 * @param email
 	 * @return boolean true for valid false for invalid
@@ -140,12 +141,20 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 	    return isValid;
 	}
 	
+	/**
+	 * Display an error dialog
+	 * 
+	 * @param message  the message to be displayed in the dialog
+	 */
 	public void displayError(String message) {
 		InputErrorDialogFragment errorDialog = new InputErrorDialogFragment();
 		errorDialog.setMessage(message);
 		errorDialog.show(getFragmentManager(), "errorDialog");
 	}
 	
+	/**
+	 * Clear the fields from user's input
+	 */
 	public void clearFields() {
 		email.getText().clear();
 		password.getText().clear();
@@ -171,20 +180,4 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     		mDbHelper.close();
     }	
 
-	
-	/*@Override
-	protected void onStop() {
-	    super.onStop();
-	    
-	    if (user.getUserFeedReaderDbHelper() != null)
-	    	user.getUserFeedReaderDbHelper().close();
-	}
-	
-	@Override
-	protected void onPause() {
-	    super.onPause();
-	    
-	    if (user.getUserFeedReaderDbHelper() != null)
-	    	user.getUserFeedReaderDbHelper().close();
-	}*/
 }
