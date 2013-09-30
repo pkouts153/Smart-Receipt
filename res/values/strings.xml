@@ -13,23 +13,18 @@
     <string name="title_activity_budget">Control your budget</string>
     <string name="heading_activity_budget">Select your preferences</string>
     <string name="heading_activity_budget_list">Budget list</string>
-    
     <string name="title_activity_add_family">Unite the family</string>
     <string name="heading_add_family_member">Add a family member</string>
-    
     <string name="title_activity_save">Save your receipts</string>
     <string name="heading_activity_save">Fill in the fields</string>
-    
     <string name="title_activity_login">Login</string>
-    
     <string name="title_activity_search">Search your transactions</string>
     <string name="heading_search_selection">Search selection</string>
     <string name="heading_search_results">Search results</string>
     <string name="heading_search_diagrams">Search diagrams</string>
     <string name="title_search_results">Search results</string>
     <string name="title_search_diagrams">Search diagrams</string>
-    
-
+    <string name="title_activity_map">Find associated stores</string>
     <!-- colors -->
 
     <color name="light_blue">#59B6E5</color>
@@ -60,7 +55,6 @@
     <string name="same_on">Same on</string>
     <string name="category_prompt">Expenses category</string>
     <string name="family_prompt">Family member</string>
-    
     <string name="euro">€</string>
     <string name="exp_category_hint">category</string>
     <string name="limit_hint">spend limit</string>
@@ -97,15 +91,14 @@
         <item>Store</item>
         <item>Family member</item>
     </string-array>
-    
+
     <string name="total_cost">Total Cost:</string>
-    
     <string name="name_hint">name</string>
     <string name="price_hint">price</string>
     <string name="purchase_date_hint">purchase date</string>
     <string name="category_hint">category</string>
     <string name="store_hint">store</string>
-    
+
     <!-- Button strings -->
 
     <string name="submit">Submit</string>
@@ -141,6 +134,6 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
     <string name="no_results">There are no results for these data!</string>
-    
+
 
 </resources>

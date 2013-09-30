@@ -141,7 +141,10 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		user = new User(db);
 		Cursor c1 = user.getFamilyMembers(User.USER_ID);
 		
-		fam_adapter.add("All");
+		// if there are at least one family members, add the choice "All" to the spinner, 
+		// which will include the user and the family members
+		if(c1.getCount()>0)
+			fam_adapter.add("All");
 		
         try{
         	c1.moveToFirst();

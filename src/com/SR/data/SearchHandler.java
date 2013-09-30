@@ -1,5 +1,6 @@
 package com.SR.data;
 
+import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderContract.FeedStore;
 import com.SR.data.FeedReaderContract.FeedUser;
@@ -105,9 +106,34 @@ public class SearchHandler {
 			sum_query = sum_query + " AND " + FeedProduct.USER + "= " + User.USER_ID + "";
 
 		}
-		// else if the user selects all, do nothing (same as all categories)
+		// else if the user selects all, search for the user and the family members
 		else if (family.equals("All")){
 			
+			query = query + " AND " + FeedProduct.USER + 
+									" IN (SELECT DISTINCT " + FeedFamily.MEMBER2 +
+										" FROM " + FeedFamily.TABLE_NAME +
+										" WHERE " + FeedFamily.MEMBER1 + "=" + User.USER_ID + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0" +
+										" UNION ALL " +
+										"SELECT DISTINCT " + FeedFamily.MEMBER1 +
+										" FROM " + FeedFamily.TABLE_NAME +
+										" WHERE " + FeedFamily.MEMBER2 + "=" + User.USER_ID + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0" +
+										" UNION ALL " +
+										"SELECT DISTINCT " + FeedUser._ID +
+										" FROM " + FeedUser.TABLE_NAME +
+										" WHERE " + FeedUser._ID + "=" + User.USER_ID + ")";
+			
+			sum_query = sum_query + " AND " + FeedProduct.USER + 
+											" IN (SELECT DISTINCT " + FeedFamily.MEMBER2 +
+											" FROM " + FeedFamily.TABLE_NAME +
+											" WHERE " + FeedFamily.MEMBER1 + "=" + User.USER_ID + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0" +
+											" UNION ALL " +
+											"SELECT DISTINCT " + FeedFamily.MEMBER1 +
+											" FROM " + FeedFamily.TABLE_NAME +
+											" WHERE " + FeedFamily.MEMBER2 + "=" + User.USER_ID + " AND " + FeedFamily.CONFIRMED + "=1 AND " + FeedFamily.FOR_DELETION + "=0" +
+											" UNION ALL " +
+											"SELECT DISTINCT " + FeedUser._ID +
+											" FROM " + FeedUser.TABLE_NAME +
+											" WHERE " + FeedUser._ID + "=" + User.USER_ID + ")";
 		}
 		// else if the user selects a certain family member
 		else {
