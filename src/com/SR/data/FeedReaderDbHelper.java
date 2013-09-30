@@ -94,6 +94,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedFamily.CONFIRMED + " BOOLEAN NOT NULL, " +
 		FeedFamily.FOR_DELETION + " BOOLEAN NOT NULL, " +
 		FeedFamily.ON_SERVER + " BOOLEAN NOT NULL," +
+		FeedUser.FOR_UPDATE + " BOOLEAN NOT NULL," +
 		FeedFamily.FAMILY_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "+
 		" FOREIGN KEY (" + FeedFamily.MEMBER1 + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + ")," +
 		" FOREIGN KEY (" + FeedFamily.MEMBER2 + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + "))";
@@ -199,8 +200,9 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	    		"'1' AS '" + FeedFamily.CONFIRMED + "', " + 
 	    		"'0' AS '" + FeedFamily.FOR_DELETION + "', " + 
 	    		"'0' AS '" + FeedFamily.ON_SERVER + "', " +
+	    		"'0' AS '" + FeedFamily.FOR_UPDATE + "', " +
 	    		"'2013-09-26 00:00:00' AS '" + FeedFamily.FAMILY_CREATED + "'" +
-	    " UNION SELECT NULL, '3', '1', '1', '0', '0', '2013-09-26 00:00:00'";
+	    " UNION SELECT NULL, '3', '1', '1', '0', '0', '0', '2013-09-26 00:00:00'";
 		
 
 	

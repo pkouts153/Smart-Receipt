@@ -72,8 +72,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	SQLiteDatabase db;
 
 	Bundle extras;
-	
-	
+
 	DatePickerFragment dateFragment;
 
 	
@@ -142,9 +141,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 		user = new User(db);
 		Cursor c1 = user.getFamilyMembers(User.USER_ID);
 		
-		// if there are more than one family members, add the choice "All" to the spinner
-		if(c1.getCount()>1)
-			fam_adapter.add("All");
+		fam_adapter.add("All");
 		
         try{
         	c1.moveToFirst();

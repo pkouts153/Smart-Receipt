@@ -78,6 +78,7 @@ public final class FeedReaderContract {
         public static final String FOR_DELETION = "for_deletion";
         public static final String ON_SERVER = "on_server";
         public static final String FAMILY_CREATED = "family_created";
+        public static final String FOR_UPDATE= "for_update";
     }
     
     /* Inner class that defines the Store table contents */
@@ -89,9 +90,3 @@ public final class FeedReaderContract {
         public static final String STORE_CREATED = "user_created";
     } 
 }
-
-
-
-
-
-

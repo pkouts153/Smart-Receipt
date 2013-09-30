@@ -127,6 +127,7 @@
     <string name="no_family">There is an error in your input! No family member was selected. If you don\'t want any please uncheck "same on".</string>
     <string name="no_user">No user was found with these data!</string>
     <string name="no_input">You haven\'t filled all the required fields!</string>
+    <string name="no_connection">It is the first time you attempt to log in. You must connect to the Internet!</string>
     <string name="missing_input">All the fields are empty!</string>
     <string name="no_family_members_add">Currently you don\'t have any family members in your list. Please add more!</string>
     <string name="success">Your data has been saved successfully!</string>

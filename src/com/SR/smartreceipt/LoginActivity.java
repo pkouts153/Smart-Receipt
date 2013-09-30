@@ -84,7 +84,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 						if(connected){
 							new RetrieveUserDataTask(this).execute(db);
 						} else {
-							displayError("You must connect to the Internet!");
+							displayError(this.getString(R.string.no_connection));
 						}
 					} else {*/
 						// if user exists in the mobile database call MainActivity
@@ -98,7 +98,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 							if(connected){
 								new RetrieveUserDataTask(this).execute(db);
 							} else {*/
-								displayError("You must connect to the Internet!");
+								displayError(this.getString(R.string.no_connection));
 							//}
 						}
 					

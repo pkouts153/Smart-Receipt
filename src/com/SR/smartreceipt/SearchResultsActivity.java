@@ -37,8 +37,8 @@ import android.view.ViewGroup;
 public class SearchResultsActivity extends FragmentActivity {
 
 	/**
-	 * The PagerAdapter that will provide fragments for each of the sections. We use a
-	 * FragmentPagerAdapter derivative, which will keep every loaded fragment in memory
+	 * The PagerAdapter that will provide fragments for each of the sections. 
+	 * We use a FragmentPagerAdapter derivative, which will keep every loaded fragment in memory
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
