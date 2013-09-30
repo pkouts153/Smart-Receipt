@@ -183,7 +183,7 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
 	    		db = mDbHelper.getWritableDatabase();
 	    		
 	        	user = new User(db);
-	        	user.userLogout();
+	        	user.userLogout(this);
 	        	
 	        	mDbHelper.close();
 	        	

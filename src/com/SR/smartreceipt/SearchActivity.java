@@ -208,7 +208,7 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_logout:
-	        	user.userLogout();
+	        	user.userLogout(this);
 	        	Intent intent2 = new Intent(this, LoginActivity.class);
 	    		startActivity(intent2);
 	            return true;

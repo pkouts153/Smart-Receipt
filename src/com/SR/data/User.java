@@ -7,11 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedUser;
+import com.SR.smartreceipt.R;
 
 /**
 * This class represents user and is responsible for the necessary processes
@@ -26,6 +29,7 @@ public class User {
     SQLiteDatabase db;
     Cursor c;
    
+    SharedPreferences sharedPref;
     /**
     * User constructor 
     * 
@@ -88,13 +92,13 @@ public class User {
     }  
     
     /**
-     * Checks if the user that attempts to log in exists in the database
+     * Checks if the user that attempts to log in exists in the database and if he does save his id
      * 
      * @param email the typed email of the user
      * @param password the typed password of the user
      * @return whether the user exists
      */
-    public boolean userLogin(String email, String password){
+    public boolean userLogin(String email, String password, Context context){
     	
     	boolean found = false;
     	c = getUsers();
@@ -109,6 +113,15 @@ public class User {
     		c.moveToNext ();
     	}
 		
+        // get an object to access the sharedPreferences
+        sharedPref = context.getSharedPreferences(context.getString(R.string.preference_user_id), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        
+        // add the USER_ID to the shared preferences, in order not to ask the user
+        // to login every time he closes and opens the application
+        editor.putInt("USER_ID", USER_ID);
+        editor.commit();
+        
     	return found;
     }
     
@@ -138,8 +151,12 @@ public class User {
     /**
      * This method is called when the user wants to logout and replaced the id with the default value
      */
-    public void userLogout() {
+    public void userLogout(Context context) {
     	USER_ID = 0;
+        sharedPref = context.getSharedPreferences(context.getString(R.string.preference_user_id), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("USER_ID", USER_ID);
+        editor.commit();
     }
     
     

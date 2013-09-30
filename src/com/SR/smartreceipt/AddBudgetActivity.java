@@ -193,7 +193,7 @@ public class AddBudgetActivity extends FragmentActivity implements OnClickListen
 	    		startActivity(intent);
 	            return true;
 	        case R.id.action_logout:
-	        	user.userLogout();
+	        	user.userLogout(this);
 	        	mDbHelper.close();
 	        	Intent intent2 = new Intent(this, LoginActivity.class);
 	    		startActivity(intent2);

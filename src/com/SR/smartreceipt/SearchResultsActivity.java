@@ -265,7 +265,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	    		db = mDbHelper.getWritableDatabase();
 	    		
 	        	user = new User(db);
-	        	user.userLogout();
+	        	user.userLogout(this);
 	        	
 	        	mDbHelper.close();
 	        	

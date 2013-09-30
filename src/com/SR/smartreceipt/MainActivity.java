@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -51,6 +52,8 @@ public class MainActivity extends Activity {
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
+	SharedPreferences sharedPref;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,7 +62,14 @@ public class MainActivity extends Activity {
 		setupActionBar();
 		getOverflowMenu();
 		
-		// if some user is logged in display the MainActivity
+		// get the id from the last logged in user
+        sharedPref = getSharedPreferences(getString(R.string.preference_user_id), MODE_PRIVATE);
+        int id = sharedPref.getInt("USER_ID", 0);
+	    
+        if (id!=0 && User.USER_ID != id)
+        	User.USER_ID = id;
+        
+		// if a user is logged in display the MainActivity
 		if (User.USER_ID != 0) {
 			setContentView(R.layout.activity_main);
 		}
@@ -106,7 +116,7 @@ public class MainActivity extends Activity {
 				db = mDbHelper.getWritableDatabase();
 				
 	        	user = new User(db);
-	        	user.userLogout();
+	        	user.userLogout(this);
 	        	
 	        	mDbHelper.close();
 	        	

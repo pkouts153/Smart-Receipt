@@ -88,7 +88,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 						}
 					} else {*/
 						// if user exists in the mobile database call MainActivity
-						if (user.userLogin(mail, pass)) {
+						if (user.userLogin(mail, pass, this)) {
 							Intent intent = new Intent(this, MainActivity.class);
 							startActivity(intent);
 						}

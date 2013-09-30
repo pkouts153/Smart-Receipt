@@ -89,6 +89,8 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 		// leading the list's rows to display the data from the corresponding cursor lines
 		columns = c.getColumnNames();
 		
+		//budget id is displayed in an invisible TextView
+		//cursorAdapter requires an id
 		textviews = new int[]{R.id.budget_id, R.id.exp_category,R.id.limit,R.id.start_date,R.id.end_date};
     	
 		simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.activity_budget_list_row, c, columns, textviews, 0);
@@ -133,7 +135,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	    		db = mDbHelper.getWritableDatabase();
 	    		
 	        	user = new User(db);
-	        	user.userLogout();
+	        	user.userLogout(this);
 	        	
 	        	mDbHelper.close();
 	        	
