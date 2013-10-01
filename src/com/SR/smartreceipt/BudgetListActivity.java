@@ -13,17 +13,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.annotation.TargetApi;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SimpleCursorAdapter;
 
@@ -42,9 +49,9 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	SQLiteDatabase db;
 	
 	/**
-	 * An adapter to map columns from the cursor to TextViews 
+	 * A custom adapter to map columns from the cursor to TextViews 
 	 */
-	SimpleCursorAdapter simpleCursorAdapter;
+	CustomListAdapter customListAdapter;
 	
 	// user's budgets cursor
 	Cursor c;
@@ -96,10 +103,12 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 		//cursorAdapter requires an id
 		textviews = new int[]{R.id.budget_id, R.id.exp_category,R.id.limit,R.id.start_date,R.id.end_date};
     	
-		simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.activity_budget_list_row, c, columns, textviews, 0);
-        simpleCursorAdapter.bindView((View)findViewById(R.id.activity_list), this, c);
+		c.moveToFirst();
+		
+		customListAdapter= new CustomListAdapter(this, R.layout.activity_budget_list_row, c, columns, textviews);
+		customListAdapter.bindView((View)findViewById(R.id.activity_list), this, c);
         
-        setListAdapter(simpleCursorAdapter);
+        setListAdapter(customListAdapter);
 
         mDbHelper.close();
 	}
@@ -294,5 +303,56 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
     	
     	if (mDbHelper != null)
     		mDbHelper.close();
+    }
+    
+    /**
+     * Custom adapter to bind list rows to cursor and 
+     * set text color depending on the budget's spend balance
+     * 
+     * @author Panagiotis Koutsaftikis
+     *
+     */
+    private class CustomListAdapter extends SimpleCursorAdapter {
+
+		private Context context;
+        private int id;
+        private Cursor cursor;
+        
+        /**
+         * class constructor
+         */
+        public CustomListAdapter(Context con, int layout, Cursor c,
+				String[] from, int[] to) {
+			super(con, layout, c, from, to, 0);
+			cursor = c;
+			context = con;
+			id = layout;
+		}
+        
+        /**
+         * Gets each row of the list, checks the budget spend balance 
+         * and sets the TextView color accordingly
+         */
+        public View getView(int position, View v, ViewGroup parent)
+        {
+        	View mView = v ;
+        	if(mView == null){
+                LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                mView = vi.inflate(id, null);
+            }
+        	
+        	TextView budget_category = (TextView)mView.findViewById(R.id.exp_category);
+        	
+    		if (cursor.moveToPosition(position)){
+    			if (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==1)
+    				budget_category.setTextColor(getResources().getColor(R.color.yellow));
+    			
+    			else if (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==2)
+    				budget_category.setTextColor(Color.RED);
+    			
+    		}
+    		bindView(mView, context, cursor);
+			return mView;
+        }
     }
 }

@@ -27,10 +27,14 @@
     <string name="title_search_results">Search results</string>
     <string name="title_search_diagrams">Search diagrams</string>
     <string name="title_activity_map">Find associated stores</string>
+    
+    
     <!-- colors -->
 
     <color name="light_blue">#59B6E5</color>
     <color name="trans">#80FFFFFF</color>
+    <color name="yellow">#EED377</color>
+    
 
     <!-- Strings of activity_main -->
 
