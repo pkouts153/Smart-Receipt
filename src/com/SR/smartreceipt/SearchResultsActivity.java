@@ -25,15 +25,18 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
 * Activity that displays the search results screen
 * 
 * @author Panagiotis Koutsaftikis
 */
-public class SearchResultsActivity extends FragmentActivity {
+public class SearchResultsActivity extends FragmentActivity implements OnClickListener{
 
 	/**
 	 * The PagerAdapter that will provide fragments for each of the sections. 
@@ -46,6 +49,7 @@ public class SearchResultsActivity extends FragmentActivity {
 	 */
 	ViewPager mViewPager;
 	
+	Button graph;
 	//Search selection input
 	
 	Float total_cost;
@@ -178,6 +182,9 @@ public class SearchResultsActivity extends FragmentActivity {
 			
 			setContentView(R.layout.activity_search_results);
 
+			graph = (Button)findViewById(R.id.graph_button);
+			graph.setOnClickListener(this);
+			
 			// the list of fragments to be displayed
 			List<Fragment> fragments =  getFragments();
 			
@@ -387,6 +394,21 @@ public class SearchResultsActivity extends FragmentActivity {
 			String title = group_names.get(position).toUpperCase(l);
 			return title;
 		}
+	}
+
+
+	@Override
+	public void onClick(View arg0) {
+		Bundle args = getIntent().getExtras();
+		
+		Intent intent = new Intent(this, ChartActivity.class);
+		args.putStringArrayList("groups names", group_names);
+		args.putStringArrayList("groups costs", group_cost);
+		
+		intent.putExtras(args);
+		
+		startActivity(intent);
+		
 	}
 
 }

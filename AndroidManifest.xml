@@ -7,8 +7,8 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="18" />
-    
-	<uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.SR.processes.MyApplication"
@@ -88,7 +88,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.SearchActivity" />
         </activity>
-        
+        <activity
+            android:name="com.SR.smartreceipt.ChartActivity"
+            android:label="@string/title_activity_search"
+            android:parentActivityName="com.SR.smartreceipt.SearchResultsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.SearchResultsActivity" />
+        </activity>
     </application>
 
 </manifest>
