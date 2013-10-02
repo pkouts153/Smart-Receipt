@@ -28,6 +28,14 @@ public final class FeedReaderContract {
         public static final String FROM_SERVER = "from_server";
     }
     
+    /* Inner class that defines the User table contents */
+    public static abstract class FeedList implements BaseColumns {
+        public static final String TABLE_NAME = "list";
+        public static final String USER = "user";
+        public static final String PRODUCT = "product";
+        public static final String IS_CHECKED = "is_checked";
+    }
+    
     /* Inner class that defines the Budget table contents */
     public static abstract class FeedBudget implements BaseColumns {
         public static final String TABLE_NAME = "budget";

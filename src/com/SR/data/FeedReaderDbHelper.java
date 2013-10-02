@@ -3,6 +3,7 @@ package com.SR.data;
 import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedCategory;
 import com.SR.data.FeedReaderContract.FeedFamily;
+import com.SR.data.FeedReaderContract.FeedList;
 import com.SR.data.FeedReaderContract.FeedOffer;
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderContract.FeedStore;
@@ -39,7 +40,15 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		FeedUser.FOR_UPDATE + " BOOLEAN NOT NULL," +
 		FeedUser.FROM_SERVER + " BOOLEAN NOT NULL," +
 		FeedUser.USER_CREATED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)";
-
+	
+	private static final String SQL_CREATE_LIST =
+		"CREATE TABLE IF NOT EXISTS " + FeedList.TABLE_NAME + " (" +
+		FeedList._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+		FeedList.USER + " INTEGER NOT NULL," +
+		FeedList.PRODUCT + " TEXT NOT NULL," +
+		FeedList.IS_CHECKED + " BOOLEAN NOT NULL, " +
+		" FOREIGN KEY (" + FeedList.USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + "))";
+	
 	private static final String SQL_CREATE_BUDGET =
 		"CREATE TABLE IF NOT EXISTS " + FeedBudget.TABLE_NAME + " (" +
 		FeedBudget._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -57,6 +66,15 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		" FOREIGN KEY (" + FeedBudget.USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + ")," +
 		" FOREIGN KEY (" + FeedBudget.EXPENSE_CATEGORY + ") REFERENCES " + FeedCategory.TABLE_NAME + " (" + FeedCategory.NAME + ")," +
 		" FOREIGN KEY (" + FeedBudget.FAMILY_USER + ") REFERENCES " + FeedUser.TABLE_NAME + " (" + FeedUser._ID + "))";
+	
+	/*private static final String SQL_CREATE_VIEW = "CREATE VIEW IF NOT EXISTS budgets_balance AS " +
+			"SELECT " + FeedBudget.TABLE_NAME + "." +FeedBudget._ID + " AS budget_id, SUM(" + FeedProduct.PRICE + ") AS balance" + 
+	   	    " FROM " + FeedProduct.TABLE_NAME + ", " + FeedBudget.TABLE_NAME +
+		    " WHERE " + FeedProduct.TABLE_NAME + "." + FeedProduct.USER + "=" + User.USER_ID +
+			   " AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + FeedBudget.START_DATE + "')" +
+			   " AND Date('" + FeedBudget.END_DATE + "')" +
+			   " AND CASE WHEN " + FeedBudget.EXPENSE_CATEGORY + "!= 'All' THEN " + FeedProduct.PRODUCT_CATEGORY + "=" + FeedBudget.EXPENSE_CATEGORY + " ELSE " + FeedProduct.PRODUCT_CATEGORY + " IS NOT NULL END" +
+		    " GROUP BY budget_id";*/
 	
 	private static final String SQL_CREATE_PRODUCT =
 		"CREATE TABLE IF NOT EXISTS " + FeedProduct.TABLE_NAME + " (" +
@@ -217,9 +235,11 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_CREATE_USER);
 		db.execSQL(SQL_CREATE_BUDGET);
 		db.execSQL(SQL_CREATE_PRODUCT);
+		//db.execSQL(SQL_CREATE_VIEW);
 		db.execSQL(SQL_CREATE_OFFER);
 		db.execSQL(SQL_CREATE_FAMILY);
 		db.execSQL(SQL_CREATE_STORE);
+		db.execSQL(SQL_CREATE_LIST);
 		
 		db.execSQL(SQL_ADD_CATEGORIES);
 		db.execSQL(SQL_ADD_USER1);

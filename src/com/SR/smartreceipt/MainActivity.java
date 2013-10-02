@@ -202,7 +202,7 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the List link */
 	public void goToList(View view) {
-		Intent intent = new Intent(this, AddBudgetActivity.class);
+		Intent intent = new Intent(this, ShoppingListActivity.class);
 		startActivity(intent);
 	}
 	

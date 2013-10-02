@@ -16,7 +16,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,19 +26,29 @@ import android.support.v4.app.NavUtils;
 
 public class ChartActivity extends Activity {
     
+	/**
+	 * The cost of each group that specifies the group area on the pie chart
+	 */
     float costs[];
 
+    /**
+     * The colors to be displayed for the area of each group
+     */
 	int[] COLORS;
     
+	
     FeedReaderDbHelper mDbHelper;
-    User user;
     SQLiteDatabase db;
+    
+    User user;
     
     ArrayList<String> groups_names;
     ArrayList<String> groups_costs;
     
+    // UI component
     TextView total_cost;
     
+    // the total cost that is displayed in the right upper corner
     float cost;
     
 	@Override
@@ -52,18 +61,19 @@ public class ChartActivity extends Activity {
 		
 		Bundle extras = getIntent().getExtras();
 		
+		// initialize the colors
 		COLORS = new int[6];
 		COLORS[0]=getResources().getColor(R.color.brown);
 		COLORS[1]=getResources().getColor(R.color.blue);
 		COLORS[2]=getResources().getColor(R.color.light_green);
-		COLORS[3]=getResources().getColor(R.color.purple);
-		COLORS[4]=getResources().getColor(R.color.yellow);
-		COLORS[5]=getResources().getColor(R.color.light_red);
+		COLORS[3]=getResources().getColor(R.color.yellow);
+		COLORS[4]=getResources().getColor(R.color.light_red);
+		COLORS[5]=getResources().getColor(R.color.purple);
 		
 		groups_names = extras.getStringArrayList("groups names");
 		groups_costs = extras.getStringArrayList("groups costs");
 		
-	
+		// find the total cost and set it in the total cost textview
 		costs = new float[groups_costs.size()];
 		
 		for (int i=0; i<groups_costs.size(); i++){
@@ -74,7 +84,7 @@ public class ChartActivity extends Activity {
 		total_cost = (TextView)findViewById(R.id.cost);
 		total_cost.setText("" + cost);
 		
-        
+        // create the frame with the group names and their costs
 		LinearLayout linear=(LinearLayout) findViewById(R.id.categories);
 		
 		for (int i=0; i<groups_names.size(); i++){
@@ -84,29 +94,29 @@ public class ChartActivity extends Activity {
 			linear.addView(group);
 		}
 		
+		// create and add the pie chart
 		LinearLayout chart_activity=(LinearLayout) findViewById(R.id.chart_activity);
         costs=calculateData(costs);
-        chart_activity.addView(new MyGraphview(this,costs,COLORS));
-        
-
-
+        chart_activity.addView(new PieChart(this,costs,COLORS));
 	}
 
+	/**
+	 * Updates the values of the costs table with the values that are appropriate for the PieChart
+	 * and specify the area of each group
+	 * 
+	 * @param data the costs table
+	 * @return the updated costs table
+	 */
     private float[] calculateData(float[] data) {
         float total=0;
         for(int i=0;i<data.length;i++)
-        {
             total+=data[i];
-        }
+        
         for(int i=0;i<data.length;i++)
-        {
-        data[i]=360*(data[i]/total);
-        Log.w("", "" + data[i]);
-        }
+	        data[i]=360*(data[i]/total);
+        
         return data;
-
     }
-	
 	
 	
 	/**
@@ -151,17 +161,9 @@ public class ChartActivity extends Activity {
 	    		startActivity(intent1);
 	            return true;
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
-				//NavUtils.navigateUpFromSameTask(this);
-				
 				Intent upIntent = new Intent(this, SearchResultsActivity.class);
 				upIntent.putExtras(getIntent().getExtras());
+				// This action represents the Home or Up button which leads the user to the previous screen
 				NavUtils.navigateUpTo(this, upIntent);
 				
 				return true;
@@ -186,38 +188,60 @@ public class ChartActivity extends Activity {
 	    }
 	}
 
-    public class MyGraphview extends View
+	/**
+	 * Class that represents a pie chart for the groups of the search results
+	 * 
+	 * @author Panagiotis Koutsaftikis
+	 *
+	 */
+    public class PieChart extends View
     {
+    	/** Holds the color information of the chart */
         private Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
+        
+        /** The group costs */
         private float[] value_degree;
+        
+        /** The group colors */
         private int[] COLORS;
+        
+        /** Holds the coordinates of the chart */
         RectF rectf = new RectF (10, 10, 200, 200);
+        
         int temp=0;
         
-        public MyGraphview(Context context, float[] values, int[] colors_table) {
+        /**
+         * Class constructor
+         * @param context
+         * @param values	the costs of the groups
+         * @param colors_table	the colors table
+         */
+        public PieChart(Context context, float[] values, int[] colors_table) {
 
             super(context);
             COLORS = colors_table;
-            value_degree=new float[values.length];
-            for(int i=0;i<values.length;i++)
-            {
-                value_degree[i]=values[i];
-            }
+            value_degree=values;
         }
+        
+        /**
+         *  draw the pie chart
+         *  
+         *  @param canvas
+         */
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 
-            for (int i = 0; i < value_degree.length; i++) {//values2.length; i++) {
-                if (i == 0) {
+            // set the color and position of each group in the chart
+            for (int i = 0; i < value_degree.length; i++) {
+            	if (i == 0) {
                     paint.setColor(COLORS[i]);
                     canvas.drawArc(rectf, 0, value_degree[i], true, paint);
                 } 
-                else
-                {
-                        temp += (int) value_degree[i - 1];
-                        paint.setColor(COLORS[i]);
-                        canvas.drawArc(rectf, temp, value_degree[i], true, paint);
+                else {
+                    temp += (int) value_degree[i - 1];
+                    paint.setColor(COLORS[i]);
+                    canvas.drawArc(rectf, temp, value_degree[i], true, paint);
                 }
             }
         }

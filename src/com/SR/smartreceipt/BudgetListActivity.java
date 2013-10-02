@@ -17,9 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,6 +82,9 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 		db = mDbHelper.getWritableDatabase();
 		
 		budget = new Budget(db);
+		
+		// check and update the surpassed budgets
+		budget.BudgetsSurpassed();
 		
 		c = budget.getBudget(User.USER_ID);
 

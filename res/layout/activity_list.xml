@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/activity_shopping_list"
+    tools:context=".ListActivity" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#59B6E5"
+            android:paddingLeft="95dp"
+            android:paddingTop="@dimen/drawable_horizontal_margin"
+            android:text="@string/heading_activity_list"
+            android:textColor="#fff"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="38dp"
+            android:layout_height="37dp"
+            android:layout_alignBottom="@+id/textView1"
+            android:src="@drawable/ic_action_discard" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@id/android:list"
+        android:background="@drawable/list_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:drawSelectorOnTop="false"
+        android:clickable="true"
+    	android:longClickable="true" >
+    </ListView>
+    
+    <LinearLayout
+	    android:background="#59B6E5"
+	    android:layout_width="match_parent"
+	    android:layout_height="1dp" >
+    </LinearLayout>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp" >
+
+	    <Button
+	        android:id="@+id/add_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_marginRight="14dp"
+	        android:text="@string/add" />
+
+	    <EditText
+	        android:id="@+id/add_product"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_toLeftOf="@+id/add_button"
+	        android:hint="@string/add_product_string" >
+	    </EditText>
+    
+	</RelativeLayout>
+</LinearLayout>

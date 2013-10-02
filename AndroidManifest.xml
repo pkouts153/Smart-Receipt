@@ -96,6 +96,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.SearchResultsActivity" />
         </activity>
+        <activity
+            android:name="com.SR.smartreceipt.ShoppingListActivity"
+            android:label="@string/title_activity_list"
+            android:parentActivityName="com.SR.smartreceipt.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
