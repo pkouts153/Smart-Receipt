@@ -74,7 +74,7 @@ public class AddBudgetActivity extends FragmentActivity implements OnClickListen
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_budget);
+		setContentView(R.layout.activity_add_budget);
 		
 		mDbHelper = new FeedReaderDbHelper(this);
 		db = mDbHelper.getWritableDatabase();

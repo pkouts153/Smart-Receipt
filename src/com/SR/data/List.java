@@ -70,7 +70,7 @@ public class List {
 		values.put(FeedList.PRODUCT, product);
 		values.put(FeedList.IS_CHECKED, 0);
 		
-		if (!(db.insert(FeedList.TABLE_NAME, "null", values)>0) && successful_save == true)
+		if (!(db.insert(FeedList.TABLE_NAME, null, values)>0))
 			successful_save = false;
 		
 		return successful_save;
@@ -79,13 +79,13 @@ public class List {
     /**
      * Deletes a product from the user's list
      * 
-     * @param product  the product to be deleted
+     * @param id  the id of the product to be deleted
      * @return whether the deletion was made successfully
      */
-    public boolean deleteProductFromList(String product){
+    public boolean deleteProductFromList(int id){
 		
 		return db.delete(FeedList.TABLE_NAME, 
-						FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + User.USER_ID,
+						FeedList._ID + "=" + id,
 						null) > 0;
 		
     }
@@ -93,34 +93,29 @@ public class List {
     /**
      * Update a product's check value
      * 
-     * @param product  the product to be checked
+     * @param id  the id of the product to be checked
      */
-    public void checkProductOfList(String product) {
+    public void checkProductOfList(int id) {
 		ContentValues values = new ContentValues();
 		values.put(FeedList.IS_CHECKED, 1);
 		db.update(FeedList.TABLE_NAME, 
 				  values, 
-				  FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + User.USER_ID,
+				  FeedList._ID + "=" + id,
 				  null);
-    	/*String update = "UPDATE " + FeedList.TABLE_NAME + 
-    					" SET " + FeedList.IS_CHECKED + "=1" + 
-    					" WHERE " + FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + USER_ID;
-    	
-    	db.rawQuery(update, null);*/
     }
     
     /**
      * Update a product's check value
      * 
-     * @param product  the product to be unchecked
+     * @param id  the id of the product to be unchecked
      */
-    public void uncheckProductOfList(String product) {
+    public void uncheckProductOfList(int id) {
 		ContentValues values = new ContentValues();
 		values.put(FeedList.IS_CHECKED, 0);
 		
 		db.update(FeedList.TABLE_NAME, 
 				  values, 
-				  FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + User.USER_ID,
+				  FeedList._ID + "=" + id,
 				  null);
     }
 }

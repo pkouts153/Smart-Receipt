@@ -1,7 +1,6 @@
 package com.SR.smartreceipt;
 
 import java.lang.reflect.Field;
-import java.util.zip.Inflater;
 
 import com.SR.data.FeedReaderContract.FeedList;
 import com.SR.data.FeedReaderDbHelper;
@@ -28,7 +27,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.app.NavUtils;
 
@@ -64,12 +62,6 @@ public class ShoppingListActivity extends ListActivity implements OnClickListene
 	// the UI components to display each of the columns
 	int[] textviews;
 	
-	
-	
-	
-	int index;
-	int top;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,13 +83,13 @@ public class ShoppingListActivity extends ListActivity implements OnClickListene
 		add = (Button)findViewById(R.id.add_button);
 		add.setOnClickListener(this);
 
-		delete = (ImageButton)findViewById(R.id.imageButton1);
+		delete = (ImageButton)findViewById(R.id.delete_products);
 		delete.setOnClickListener(this);
 		
 		// create a list of products and bind the cursor to the list, 
 		// leading the list's rows to display the data from the corresponding cursor lines
 		columns = products_list.getColumnNames();
-		
+
 		//list id is displayed in an invisible TextView
 		//cursorAdapter requires an id
 		textviews = new int[]{R.id.list_id, R.id.product_name};
@@ -110,23 +102,8 @@ public class ShoppingListActivity extends ListActivity implements OnClickListene
         setListAdapter(customListAdapter);
         
     	mDbHelper.close();
-    	
 	}
 
-	@Override
-	public void onPause(){
-		super.onPause();
-		index = getListView().getFirstVisiblePosition();
-		View v = getListView().getChildAt(0);
-		top = (v == null) ? 0 : v.getTop();
-	}
-	
-	@Override
-	public void onResume(){
-		super.onResume();
-		getListView().setSelectionFromTop(index, top);
-	}
-	
 	/**
 	 * Set up the ActionBar, if the API is available.
 	 */
@@ -181,20 +158,20 @@ public class ShoppingListActivity extends ListActivity implements OnClickListene
 				// for each product of the list
 				products_list.moveToFirst();
 				for (int i=0; i<products_list.getCount(); i++) {
-					// get the corresponding row of the list
-					listViewRow = listView.getChildAt(i);
-					CheckBox check_product = (CheckBox)listViewRow.findViewById(R.id.delete_product);
-					
-					TextView product = (TextView)listViewRow.findViewById(R.id.product_name);
-					
-					if (check_product.isChecked()) {
-						list.checkProductOfList(product.getText().toString());
+					if (listView.getChildAt(i)!=null){
+						// get the corresponding row of the list
+						listViewRow = listView.getChildAt(i);
+						CheckBox check_product = (CheckBox)listViewRow.findViewById(R.id.delete_product);
+						
+						if (check_product.isChecked()) {
+							list.checkProductOfList(products_list.getInt(products_list.getColumnIndexOrThrow(FeedList._ID)));
+						}
+						else
+							list.uncheckProductOfList(products_list.getInt(products_list.getColumnIndexOrThrow(FeedList._ID)));
+						
+						if (!products_list.isLast())
+							products_list.moveToNext();
 					}
-					else
-						list.uncheckProductOfList(product.getText().toString());
-					
-					if (!products_list.isLast())
-						products_list.moveToNext();
 				}
 				mDbHelper.close();
 				// This action represents the Home or Up button which leads the user to the previous screen
@@ -250,31 +227,33 @@ public class ShoppingListActivity extends ListActivity implements OnClickListene
 			mDbHelper = new FeedReaderDbHelper(this);
 			db = mDbHelper.getWritableDatabase();
 			
+			// if at least one list product is deleted, it becomes true
 			boolean deleted = false;
 			
 			View listViewRow;
 			ListView listView = getListView();
 			
 			list = new List(db);
+			
 			// for each product of the list
 			products_list.moveToFirst();
 			for (int i=0; i<products_list.getCount(); i++) {
-				// get the corresponding row of the list
-				listViewRow = listView.getChildAt(i);
-				CheckBox check_product = (CheckBox)listViewRow.findViewById(R.id.delete_product);
-				
-				TextView product = (TextView)listViewRow.findViewById(R.id.product_name);
-				
-				// delete the product
-				if (check_product.isChecked())
-					if (list.deleteProductFromList(product.getText().toString()))
-						deleted=true;
-				
-				if (!products_list.isLast())
-					products_list.moveToNext();
+				if (listView.getChildAt(i)!=null){
+					// get the corresponding row of the list
+					listViewRow = listView.getChildAt(i);
+
+					CheckBox check_product = (CheckBox)listViewRow.findViewById(R.id.delete_product);
+					
+					// delete the product
+					if (check_product.isChecked())
+						if (list.deleteProductFromList(products_list.getInt(products_list.getColumnIndexOrThrow(FeedList._ID))))
+							deleted=true;
+					
+					if (!products_list.isLast())
+						products_list.moveToNext();
+				}
 			}
 			mDbHelper.close();
-			
 			
 			// if any product was deleted, refresh the activity
 			if (deleted){

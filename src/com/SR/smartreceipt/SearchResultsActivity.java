@@ -30,6 +30,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 /**
 * Activity that displays the search results screen
@@ -49,7 +50,8 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 	 */
 	ViewPager mViewPager;
 	
-	Button graph;
+	ImageButton graph;
+	
 	//Search selection input
 	
 	Float total_cost;
@@ -182,13 +184,13 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 			
 			setContentView(R.layout.activity_search_results);
 
-			graph = (Button)findViewById(R.id.graph_button);
+			graph = (ImageButton)findViewById(R.id.graph_button);
 			graph.setOnClickListener(this);
 			
 			// the list of fragments to be displayed
 			List<Fragment> fragments =  getFragments();
 			
-			// Create the adapter that will return a fragment for each section of the searhc results.
+			// Create the adapter that will return a fragment for each section of the search results.
 			mSectionsPagerAdapter = new SectionsPagerAdapter(
 					getSupportFragmentManager(), fragments);
 	

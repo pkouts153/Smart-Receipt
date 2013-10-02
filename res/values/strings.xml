@@ -38,7 +38,7 @@
     <!-- colors -->
 
     <color name="light_blue">#59B6E5</color>
-    <color name="trans">#80FFFFFF</color>
+    <color name="white_transparent">#80FFFFFF</color>
     <color name="yellow">#EED377</color>
     <color name="blue">#76B8F1</color>
     <color name="light_green">#78EC7C</color>

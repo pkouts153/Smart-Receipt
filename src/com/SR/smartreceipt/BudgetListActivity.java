@@ -27,6 +27,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
@@ -46,9 +47,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	FeedReaderDbHelper mDbHelper;
 	SQLiteDatabase db;
 	
-	/**
-	 * A custom adapter to map columns from the cursor to TextViews 
-	 */
+	/** A custom adapter to map columns from the cursor to TextViews */
 	CustomListAdapter customListAdapter;
 	
 	// user's budgets cursor
@@ -61,7 +60,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	
 	// UI components
 	
-	Button delete;
+	ImageButton delete;
 	Button add_budget;
 	
 	@Override
@@ -90,7 +89,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 
 		//set up UI components
 		
-		delete = (Button)findViewById(R.id.delete);
+		delete = (ImageButton)findViewById(R.id.delete_button);
 		delete.setOnClickListener((android.view.View.OnClickListener) this);
 		
 		add_budget = (Button)findViewById(R.id.add_budget);
@@ -184,13 +183,13 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		// if the user clicks the "add budget" button
-		if (add_budget.getId() == ((Button)v).getId()){
+		if (v instanceof Button){
 			Intent intent = new Intent(this, AddBudgetActivity.class);
 			intent.putExtra("Activity", "Budget");
 			startActivity(intent);
 		}
-		// else if the delete button is clicked
-		else {
+		// else if the delete ImageButton is clicked
+		else if (v instanceof ImageButton){
 			View listViewRow;
 			ListView listView = getListView();
 			
@@ -208,19 +207,21 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 			// for each budget
 			c.moveToFirst();
 			for (int i=0; i<c.getCount(); i++) {
-				// get the corresponding row of the list
-				listViewRow = listView.getChildAt(i);
-				CheckBox delete_budget = (CheckBox)listViewRow.findViewById(R.id.delete_budget);
-				
-				// delete the budget if the checkbox is checked
-				if (delete_budget.isChecked()){
-					if (!(budget.deleteBudget(c.getInt(c.getColumnIndexOrThrow(FeedBudget._ID)))))
-						deletion_error = true;
+				if (listView.getChildAt(i)!=null){
+					// get the corresponding row of the list
+					listViewRow = listView.getChildAt(i);
+					CheckBox delete_budget = (CheckBox)listViewRow.findViewById(R.id.delete_budget);
 					
-					deleted++;
+					// delete the budget if the checkbox is checked
+					if (delete_budget.isChecked()){
+						if (!(budget.deleteBudget(c.getInt(c.getColumnIndexOrThrow(FeedBudget._ID)))))
+							deletion_error = true;
+						
+						deleted++;
+					}
+					if (!c.isLast())
+						c.moveToNext();
 				}
-				if (!c.isLast())
-					c.moveToNext();
 			}
 			
 			if (deletion_error)

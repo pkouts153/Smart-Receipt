@@ -3,7 +3,7 @@
     android:id="@+id/results_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/trans"
+    android:background="@color/white_transparent"
     android:orientation="horizontal" >
 
     <LinearLayout
@@ -15,7 +15,7 @@
     <TextView
         android:id="@+id/list_id"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="0"
         android:textSize="16sp" />
 
