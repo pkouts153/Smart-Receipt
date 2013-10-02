@@ -33,7 +33,7 @@ import android.support.v4.app.NavUtils;
 /**
 * Activity that displays the user's shopping list
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class ShoppingListActivity extends ListActivity implements OnClickListener{
     

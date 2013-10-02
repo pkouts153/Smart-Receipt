@@ -7,9 +7,9 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:background="#59B6E5"
-        android:paddingLeft="90dp"
+        android:paddingLeft="70dp"
         android:paddingTop="@dimen/drawable_horizontal_margin"
         android:text="@string/heading_search_diagrams"
         android:textColor="#fff"

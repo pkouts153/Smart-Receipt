@@ -13,7 +13,7 @@ import android.widget.EditText;
 /**
 * Fragment that displays a dialog for date selection
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 

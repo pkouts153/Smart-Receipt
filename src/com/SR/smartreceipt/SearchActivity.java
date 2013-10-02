@@ -32,7 +32,7 @@ import android.support.v4.app.NavUtils;
 /**
 * Activity that displays the search screen
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class SearchActivity extends FragmentActivity implements OnClickListener{
 	

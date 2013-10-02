@@ -19,13 +19,15 @@ import com.SR.smartreceipt.R;
 /**
 * This class represents user and is responsible for the necessary processes
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class User {
 
-	// saves the id of the user that is logged in
+	// saves the details of the user that is logged in
 	public static int USER_ID;
-
+	public static String EMAIL;
+	public static String PASSWORD;
+		
     SQLiteDatabase db;
     Cursor c;
    
@@ -113,6 +115,8 @@ public class User {
     		if (password.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD))) && email.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL)))) {
     			found = true;
     			USER_ID = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
+    			EMAIL = c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL));
+    			PASSWORD = c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD));
     		}
     		c.moveToNext ();
     	}
@@ -121,9 +125,11 @@ public class User {
         sharedPref = context.getSharedPreferences(context.getString(R.string.preference_user_id), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         
-        // add the USER_ID to the shared preferences, in order not to ask the user
+        // add the user details to the shared preferences, in order not to ask the user
         // to login every time he closes and opens the application
         editor.putInt("USER_ID", USER_ID);
+        editor.putString("EMAIL", EMAIL);
+        editor.putString("PASSWORD", PASSWORD);
         editor.commit();
         
     	return found;
@@ -153,133 +159,36 @@ public class User {
     }
 
     /**
-     * This method is called when the user wants to logout and replaced the id with the default value
+     * This method is called when the user wants to logout and 
+     * replaced the details with the default value
      */
     public void userLogout(Context context) {
     	USER_ID = 0;
+    	EMAIL = null;
+    	PASSWORD = null;
         sharedPref = context.getSharedPreferences(context.getString(R.string.preference_user_id), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("USER_ID", USER_ID);
+        editor.putString("EMAIL", EMAIL);
+        editor.putString("PASSWORD", PASSWORD);
         editor.commit();
     }
     
     
     
-	/**
-	 * Gets user's shopping list from the database
-	 * 
-	 * @return a cursor with the list's products
-	 */
-    /*public Cursor getList(){
-
-		// Specifies which columns are needed from the database
-		String[] projection = {
-			FeedList._ID,
-			FeedList.PRODUCT,
-			FeedList.IS_CHECKED
-		    };
-		
-		String where = "" + FeedList.USER +"=" + USER_ID;
-		
-		c = db.query(
-			FeedList.TABLE_NAME,  				  // The table to query
-		    projection,                               // The columns to return
-		    where,                                	  // The columns for the WHERE clause
-		    null,                            		  // The values for the WHERE clause
-		    null,                                     // don't group the rows
-		    null,                                     // don't filter by row groups
-		    null                                 	  // The sort order
-		    );
-		
-		return c;
-    }
-    
-	/**
-	 * Saves a new product to the user's shopping list
-	 * 
-	 * @param product  the product to be saved
-     * @return whether the save was made successfully
-	 */
-    /*public boolean addProductToList(String product) {
-
-		// Create a new map of values, where column names are the keys
-		ContentValues values = new ContentValues();
-		
-		// if even one product was not saved successfully it will be false
-		boolean successful_save = true;
-		
-		values.put(FeedList.USER, USER_ID);
-		values.put(FeedList.PRODUCT, product);
-		values.put(FeedList.IS_CHECKED, 0);
-		
-		if (!(db.insert(FeedList.TABLE_NAME, "null", values)>0) && successful_save == true)
-			successful_save = false;
-		
-		return successful_save;
-    }
-    
-    /**
-     * Deletes a product from the user's list
-     * 
-     * @param product  the product to be deleted
-     * @return whether the deletion was made successfully
-     */
-    /*public boolean deleteProductFromList(String product){
-		
-		return db.delete(FeedList.TABLE_NAME, 
-						FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + USER_ID,
-						null) > 0;
-		
-    }
-    
-    /**
-     * Update a product's check value
-     * 
-     * @param product  the product to be checked
-     */
-    /*public void checkProductOfList(String product) {
-		ContentValues values = new ContentValues();
-		values.put(FeedList.IS_CHECKED, 1);
-		db.update(FeedList.TABLE_NAME, 
-				  values, 
-				  FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + USER_ID,
-				  null);
-    	/*String update = "UPDATE " + FeedList.TABLE_NAME + 
-    					" SET " + FeedList.IS_CHECKED + "=1" + 
-    					" WHERE " + FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + USER_ID;
-    	
-    	db.rawQuery(update, null);*/
-    /*}
-    
-    /**
-     * Update a product's check value
-     * 
-     * @param product  the product to be unchecked
-     */
-    /*public void uncheckProductOfList(String product) {
-		ContentValues values = new ContentValues();
-		values.put(FeedList.IS_CHECKED, 0);
-		
-		db.update(FeedList.TABLE_NAME, 
-				  values, 
-				  FeedList.PRODUCT + "='" + product + "' AND " + FeedList.USER + "=" + USER_ID,
-				  null);
-    }*/
     
     
-    
-    
-    
+  /**
+   * @author Ιωάννης Διαμαντίδης 8100039  
+   */
     
     public User() {
     	
 	}
     
-    public boolean isDatabaseEmpty(){
+    //this method checks if any value is stored in the user table
+    public boolean isDatabaseEmpty(SQLiteDatabase db){
     	
-		//mDbHelper = new FeedReaderDbHelper(context);
-		//db = mDbHelper.getWritableDatabase();
-		
 		Boolean empty = true;
 		Cursor result = db.rawQuery("SELECT count("+FeedUser._ID +") AS count FROM "+FeedUser.TABLE_NAME, null);
 		if(result.moveToNext()){
@@ -291,6 +200,7 @@ public class User {
 		return empty;
     }
     
+    //this method returns the user details if they are for update
 	public Cursor fetchUserForUpdate(SQLiteDatabase db){
 
 		String[] params = {"1", String.valueOf(User.USER_ID)};
@@ -299,6 +209,7 @@ public class User {
 		return result;
 	}
 	
+	/*this method creates a jsonArray that contains the id, the password and the email of a user.*/
     public JSONArray convertStringToJson(String id, String password, String email) throws JSONException {
 		
     	Map<String,String> user = new HashMap<String,String>();
@@ -313,7 +224,9 @@ public class User {
 		
 		return json;
 	}
-	
+   
+    /*this method handles the response JSONArray object from a PUT request. It converts its data into String variables.
+     *Then it updates the user record*/
 	public void handleUserJSONArrayForUpdate(JSONArray json, SQLiteDatabase db) throws JSONException{
 		
 		if(json.length()==1){
@@ -323,16 +236,16 @@ public class User {
 			String newPassword = json_data.get("password").toString();
 			String newEmail = json_data.get("email").toString();
 			
-			updateUserDetails(id, newPassword, newEmail);
+			updateUserDetails(id, newPassword, newEmail, db);
 		}
 	}
 	
-	private void updateUserDetails(String id, String newPassword, String newEmail){
+	/*this method gets the details of a user, gets the user record from database and updates the database record.
+	 * It is used when an update happens
+	 */
+	private void updateUserDetails(String id, String newPassword, String newEmail, SQLiteDatabase db){
 		
-		//mDbHelper = new FeedReaderDbHelper(context);
-		//db = mDbHelper.getWritableDatabase();
-		
-		Cursor result = fetchUserById(id);
+		Cursor result = fetchUserById(id, db);
 		
 		result.moveToFirst();
 		String prevPassword = result.getString(result.getColumnIndexOrThrow(FeedUser.PASSWORD));
@@ -347,18 +260,23 @@ public class User {
 
 	}
 	
-	private Cursor fetchUserById(String id){
-		
-		//mDbHelper = new FeedReaderDbHelper(context);
-		//db = mDbHelper.getWritableDatabase();
+	//this method return a user record with a specific id
+	private Cursor fetchUserById(String id, SQLiteDatabase db){
 		
 		String[] param ={id};
 		Cursor result = db.rawQuery("SELECT * FROM "+FeedUser.TABLE_NAME+" WHERE "+FeedUser._ID+" = ?", param);
 		
 		return result;
 	}
-	
-	public void handleUserJSONArrayForRetrieve(JSONArray json, SQLiteDatabase database) throws JSONException{
+   
+	/*this method handles the response JSONArray object from a POST request. It converts its data into String variables.
+	 * Then, check if a record with this id exists in database. 
+	 * If it exists, check if this record was taken from server
+	 *  	or if it was created in the phone. If it was taken from server, update the password column, else get the value of the record,
+	 *  	insert them with a new id, and then delete the record with the previous id.
+	 * Else, if there is no record with this id, set that this record was taken from the server and insert it into the database
+	 */
+	public void handleUserJSONArrayForRetrieve(JSONArray json, SQLiteDatabase db) throws JSONException{
 		
 		for(int i=0; i<json.length(); i++){
 			
@@ -370,21 +288,55 @@ public class User {
 			String email = json_data.get("email").toString();
 			String created = json_data.get("created").toString();
 			String forUpdate = json_data.get("forUpdate").toString();
-		
-			database.execSQL("INSERT INTO "+FeedUser.TABLE_NAME+" ("+FeedUser._ID+", "+FeedUser.USERNAME+", "+FeedUser.PASSWORD+", "+FeedUser.EMAIL+", "+FeedUser.USER_CREATED+", "+FeedUser.FOR_UPDATE+", "+FeedUser.FROM_SERVER+") " +
-					   "VALUES ('"+id+"','"+username+"','"+password+"','"+email+"','"+created+"','"+forUpdate+"','1')");
+
+			Cursor result = fetchUserById(id,db);
+			
+			if(result.moveToNext()){
+				
+				String fromServer = result.getString(result.getColumnIndexOrThrow(FeedUser.FROM_SERVER));
+				if("1".equals(fromServer)){
+					db.execSQL("UPDATE "+FeedUser.TABLE_NAME+" SET "+FeedUser.PASSWORD+" = '"+password+"' WHERE "+FeedUser._ID+" = '"+id+"'");
+				} else {
+					String prevId = result.getString(result.getColumnIndexOrThrow(FeedUser._ID));
+					String prevUsername = result.getString(result.getColumnIndexOrThrow(FeedUser.USERNAME));
+					String prevPassword = result.getString(result.getColumnIndexOrThrow(FeedUser.PASSWORD));
+					String prevEmail = result.getString(result.getColumnIndexOrThrow(FeedUser.EMAIL));
+					String prevCreated = result.getString(result.getColumnIndexOrThrow(FeedUser.USER_CREATED));
+					String prevForUpdate = result.getString(result.getColumnIndexOrThrow(FeedUser.FOR_UPDATE));
+					String prevfromServer = result.getString(result.getColumnIndexOrThrow(FeedUser.FROM_SERVER));
+					
+					insertUser(null, prevUsername, prevPassword, prevEmail, prevCreated, prevForUpdate, prevfromServer, db);
+					
+					db.execSQL("DELETE FROM "+FeedUser.TABLE_NAME+" WHERE "+FeedUser._ID+" = '"+prevId+"'");	
+				}
+			} else {
+				String fromServer = "1";
+				insertUser(id, username, password, email, created, forUpdate, fromServer , db);
+			}
 			if(USER_ID == 0)
 				USER_ID = Integer.valueOf(id);
 		}
 	}
 	
-	public Cursor fetchUserNotOnServer(SQLiteDatabase db){
+	/*
+	 * this method gets the values of a user object and insert them into the database
+	 */
+	public void insertUser(String id, String username, String password, String email, String created, String forUpdate,
+																								String fromServer, SQLiteDatabase db){
+		db.execSQL("INSERT INTO "+FeedUser.TABLE_NAME+" ("+FeedUser._ID+", "+FeedUser.USERNAME+", "+FeedUser.PASSWORD+", " +
+								""+FeedUser.EMAIL+", "+FeedUser.USER_CREATED+", "+FeedUser.FOR_UPDATE+", "+FeedUser.FROM_SERVER+") " +
+				   "VALUES ('"+id+"','"+username+"','"+password+"','"+email+"','"+created+"','"+forUpdate+"','"+fromServer+"')");
+	}
+	
+	//this method returns the entries in user table that are created locally
+	public Cursor fetchUserNotFromServer(SQLiteDatabase db){
 
 		String[] params = {"0"};
 		Cursor result = db.rawQuery("SELECT * FROM "+FeedUser.TABLE_NAME+" WHERE "+FeedUser.FROM_SERVER+" = ? ", params);
 		return result;
 	}
 
+	//this method convert the id and the email of a user into json format. it is used when a new family member is made by his email.
 	public JSONArray convertUserToJson(String id, String email) throws JSONException {
 		
 		Map<String,String> user = new HashMap<String,String>();
@@ -398,28 +350,30 @@ public class User {
 		
 		return json;	
 	}
-
+	
+	/*this method handles the user data of a new family member, that exists in local database, 
+	 * but his details are not download from server.This method gets this details from a jsonArray, updates the record from
+	 * family table in order to correspond to the new id of the member2 user, delete the record of member2 from user table, 
+	 * and insert his data in a new record with the right id.
+	 */
 	public void handleNewFamilyMemberJSONArray(JSONArray json, SQLiteDatabase db) throws JSONException {
 		
-		JSONObject json_data = json.getJSONObject(0);
-		
-		String id = json_data.get("id").toString();
-		String username = json_data.get("username").toString();
-		String password = json_data.get("password").toString();
-		String email = json_data.get("email").toString();
-		String created = json_data.get("created").toString();
-		String forUpdate = json_data.get("forUpdate").toString();
-		
-		db.execSQL("UPDATE "+FeedFamily.TABLE_NAME+" SET "+FeedFamily.MEMBER2+" = '"+id+"' " +
-				"WHERE "+FeedFamily.MEMBER2+" = (SELECT "+FeedUser._ID+" FROM "+FeedUser.TABLE_NAME+" WHERE "+FeedUser.EMAIL+"='"+email+"')" );
-		
-		db.execSQL("DELETE FROM "+FeedUser.TABLE_NAME+" WHERE "+FeedUser.EMAIL+" = '"+email+"' and "+FeedUser.FROM_SERVER+" = 0 ");
-		
-		db.execSQL("INSERT INTO "+FeedUser.TABLE_NAME+" ("+FeedUser._ID+", "+FeedUser.USERNAME+", "+FeedUser.PASSWORD+", "+FeedUser.EMAIL+", "+FeedUser.USER_CREATED+", "+FeedUser.FOR_UPDATE+", "+FeedUser.FROM_SERVER+") " +
-				   "VALUES ('"+id+"','"+username+"','"+password+"','"+email+"','"+created+"','"+forUpdate+"','1')");
-		
-
+		if(json.length()>0){
+			
+			JSONObject json_data = json.getJSONObject(0);
+			
+			String id = json_data.get("id").toString();
+			String username = json_data.get("username").toString();
+			String email = json_data.get("email").toString();
+			String created = json_data.get("created").toString();
+			String forUpdate = json_data.get("forUpdate").toString();
+			
+			db.execSQL("UPDATE "+FeedFamily.TABLE_NAME+" SET "+FeedFamily.MEMBER2+" = '"+id+"' " +
+					"WHERE "+FeedFamily.MEMBER2+" = (SELECT "+FeedUser._ID+" FROM "+FeedUser.TABLE_NAME+" WHERE "+FeedUser.EMAIL+"='"+email+"')" );
+						
+			db.execSQL("DELETE FROM "+FeedUser.TABLE_NAME+" WHERE "+FeedUser.EMAIL+" = '"+email+"' and "+FeedUser.FROM_SERVER+" = 0 ");
+      		
+			insertUser(id, username, null, email, created, forUpdate, "1" , db);
+		}
 	}
-
 }
-

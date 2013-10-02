@@ -10,38 +10,42 @@ import android.os.AsyncTask;
 import com.SR.data.Budget;
 import com.SR.data.FeedReaderContract.FeedBudget;
 
-public class DeleteBudgetTask extends AsyncTask<SQLiteDatabase, Void, String> {
+/**
+ * 
+ * @author Ιωάννης Διαμαντίδης 8100039
+ * 
+ * This AsyncTask is used to call a web service which deletes a budget
+ *
+ */
+
+public class DeleteBudgetTask extends AsyncTask<SQLiteDatabase, Void, Void> {
 	
     @Override
-	protected String doInBackground(SQLiteDatabase... arg0) {
+	protected Void doInBackground(SQLiteDatabase... arg0) {
     	
-		String BudgetId;
+		String BudgetId;//contains the id of the budget which will be deleted
 		SQLiteDatabase db = arg0[0];
-/*		
-		db.execSQL("UPDATE "+FeedBudget.TABLE_NAME+" SET "+FeedBudget.FOR_DELETION+" = '1' " +
-				   "WHERE "+FeedBudget._ID+" ='13' and "+FeedBudget.USER+" ="+ User.USER_ID+"");
-*/		
+		
+//		db.execSQL("UPDATE "+FeedBudget.TABLE_NAME+" SET "+FeedBudget.FOR_DELETION+" = '1' WHERE "+FeedBudget._ID+" ='13'");
+		
+		//call fetchBudgetsForDeletion method to retrieve the budgets that will be deleted
 		Cursor deletedBudgetsQuery = new Budget().fetchBudgetsForDeletion(db);
-
+		//as long as there are budgets to be deleted
 		while (deletedBudgetsQuery.moveToNext()){
-					
+			//get the id of the budget		
 			BudgetId = deletedBudgetsQuery.getString(deletedBudgetsQuery.getColumnIndexOrThrow(FeedBudget._ID));
-			
-			String URL = "http://10.0.2.2/php/rest/budget.php";		
+			//the URL of the web service
+			String URL = "http://10.0.2.2/php/rest/budget.php";
+			//add the id to the URL
 			URL = URL+"/"+BudgetId;
-			
+			//call handleDeleteRequest method to make a DELETE request and get the response status
 			StatusLine statusLine = new Functions().handleDeleteRequest(URL);
-					
+			//if status is Ok, or code is 200
 	        if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-				 		
+				//call deleteBudget function		
 	        	new Budget().deleteBudget(BudgetId, db);
 	         }
 		}
-		return "ok";
-    }
-    
-    @Override
-	protected void onPostExecute(String result) {
-
+		return null;
     }
 }

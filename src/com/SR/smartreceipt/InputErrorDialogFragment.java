@@ -9,7 +9,7 @@ import android.os.Bundle;
 /**
 * Fragment that displays a dialog for an error message
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class InputErrorDialogFragment extends DialogFragment {
     

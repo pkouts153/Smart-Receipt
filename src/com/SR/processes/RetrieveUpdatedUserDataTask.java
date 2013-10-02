@@ -14,33 +14,45 @@ import android.util.Log;
 
 import com.SR.data.User;
 
-public class RetrieveUpdatedUserDataTask extends AsyncTask<SQLiteDatabase, Void, String> {
+/**
+ * 
+ * @author Ιωάννης Διαμαντίδης 8100039
+ * 
+ * this AsyncTask is used to retrieve User records which are updated from the site
+ *
+ */
+
+public class RetrieveUpdatedUserDataTask extends AsyncTask<SQLiteDatabase, Void, Void> {
 	
     SQLiteDatabase db;
 	
     @Override
-	protected String doInBackground(SQLiteDatabase... arg0) {
+	protected Void doInBackground(SQLiteDatabase... arg0) {
 
-    	String result;
-    	String URL = "http://10.0.2.2/php/rest/user.php/updated";
-    	HttpEntity entity;
-    	InputStream instream;
-    	JSONArray jsonArray = null;
+    	String result;//contains the String value of the response content
+    	String URL = "http://10.0.2.2/php/rest/user.php/updated";//the web service URL
+    	HttpEntity entity;//contains the response Entity
+    	InputStream instream;//used to retrieve the content of the response entity
+    	JSONArray jsonArray = null;//contains the response content in JSONArray format
     	
 		db = arg0[0];
 		
+		//call handleGetRequest function to make a GET Request and retrieve the response entity
 		entity = new Functions().handleGetRequest(URL);
         
         if(entity!=null){
 			try{
+				//get he content of the response entity
         		instream = entity.getContent();
+        		//call the convertStreamToString method
         		result = new Functions().convertStreamToString(instream);
-
+        		//create a JSONArray with the response content
                 jsonArray = new JSONArray(result);
+                //close InputStream
                 instream.close();
         		
                 Log.i("UpdatedUser", jsonArray.toString());
- 
+        		//call handleUserJSONArrayForUpdate method
                 new User().handleUserJSONArrayForUpdate(jsonArray, db);
 	        		        	
 			} catch (ClientProtocolException e) {
@@ -51,13 +63,10 @@ public class RetrieveUpdatedUserDataTask extends AsyncTask<SQLiteDatabase, Void,
 				e.printStackTrace();
 			}
 		}
-    	
+        
+    	//call UpdateUserTask AsyncTask
         new UpdateUserTask().execute(db);
         
-   		return "OK";
-	}
-    	 	
-    protected void onPostExecute(String result) {
-    	
-    }
+   		return null;
+	}	 	
 }

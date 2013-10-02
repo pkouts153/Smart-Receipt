@@ -24,8 +24,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
+
+/**
+ * Activity that displays the chart screen for the selection results
+ * 
+ * @author Παναγιώτης Κουτσαυτίκης 8100062
+ *
+ */
 public class ChartActivity extends Activity {
-    
+   
 	/**
 	 * The cost of each group that specifies the group area on the pie chart
 	 */
@@ -36,7 +43,7 @@ public class ChartActivity extends Activity {
      */
 	int[] COLORS;
     
-	
+	// data variables
     FeedReaderDbHelper mDbHelper;
     SQLiteDatabase db;
     
@@ -191,11 +198,10 @@ public class ChartActivity extends Activity {
 	/**
 	 * Class that represents a pie chart for the groups of the search results
 	 * 
-	 * @author Panagiotis Koutsaftikis
+	 * @author Παναγιώτης Κουτσαυτίκης 8100062
 	 *
 	 */
-    public class PieChart extends View
-    {
+    public class PieChart extends View {
     	/** Holds the color information of the chart */
         private Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
         
@@ -246,5 +252,5 @@ public class ChartActivity extends Activity {
             }
         }
     }
-	
 }
+

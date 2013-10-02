@@ -36,7 +36,7 @@ import android.widget.TextView;
 /**
 * Activity that displays the product save screen
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class SaveActivity extends FragmentActivity implements OnClickListener {
 	

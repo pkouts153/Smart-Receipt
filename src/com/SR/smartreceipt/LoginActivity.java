@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,13 +15,14 @@ import android.widget.EditText;
 
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.User;
+import com.SR.processes.Functions;
 import com.SR.processes.MyApplication;
 import com.SR.processes.RetrieveUserDataTask;
 
 /**
 * Activity that displays the login screen
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class LoginActivity extends FragmentActivity implements OnClickListener {
 
@@ -31,9 +33,9 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 	Button login;
     Button reset;
     
-    
-    public static String mail;
-	public static String pass;
+    // user's input
+    String mail;
+	String pass;
 	
 	// data variables
 	
@@ -50,6 +52,8 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 		// set up UI components
 		
 		email = (EditText)findViewById(R.id.email);
+		email.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		
 		password = (EditText)findViewById(R.id.password);
 
 		login = (Button)findViewById(R.id.login_button);
@@ -73,22 +77,23 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 			mDbHelper = new FeedReaderDbHelper(this);
 			db = mDbHelper.getWritableDatabase();
 			
-			//mDbHelper.onUpgrade(db, 1, 1);
-
 			// if the user has typed an email and a password
 			if (!(mail.equals("") || pass.equals(""))) {
-				//if (isEmailValid(mail)) {
+				if (isEmailValid(mail)) {
 					
 					user = new User(db);
 					
-					/*if(user.isDatabaseEmpty()){
-						Boolean connected = true;
-						if(connected){
-							new RetrieveUserDataTask(this).execute(db);
+					if(user.isDatabaseEmpty(db)){
+						/*to check if wifi connection exists, the following code in comments should be used
+						 * but because emulator does not support wifi connection, i check if Mobile connection exists
+						 * if(new Functions().isWifiConnected(this)){
+						 * */
+						if(new Functions().isMobileConnected(this)){
+							new RetrieveUserDataTask(this, getFragmentManager()).execute(db);
 						} else {
 							displayError(this.getString(R.string.no_connection));
 						}
-					} else {*/
+					} else {
 						// if user exists in the mobile database call MainActivity
 						if (user.userLogin(mail, pass, this)) {
 							Intent intent = new Intent(this, MainActivity.class);
@@ -96,25 +101,26 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 						}
 						//else check the server online
 						else {
-							/*Boolean connected = true;
-							if(connected){
-								new RetrieveUserDataTask(this).execute(db);
-							} else {*/
+							/*to check if wifi connection exists, the following code in comments should be used
+							 * but because this emulator does not support wifi connection, i check if Mobile connection exists
+							 * if(new Functions().isWifiConnected(this)){
+							 * */
+							if(new Functions().isMobileConnected(this)){
+								new RetrieveUserDataTask(this, getFragmentManager()).execute(db);
+							} else {
 								displayError(this.getString(R.string.no_connection));
-							//}
+							}
 						}
-					
-				/*}
+					}
+				}
 				else {
 					displayError(this.getString(R.string.not_a_mail));
-				}*/
+				}
 			}
 			//else if email or password is empty
 			else {
 				displayError(this.getString(R.string.no_input));
 			}
-			
-			mDbHelper.close();
 		}
 		//else if the user clicked reset
 		else {
@@ -173,9 +179,6 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     protected void onPause() {
     	super.onPause();
     	MyApplication.activityPaused();
-    	
-    	if (mDbHelper != null)
-    		mDbHelper.close();
     }	
 
 }

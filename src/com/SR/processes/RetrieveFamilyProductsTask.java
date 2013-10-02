@@ -8,54 +8,79 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.SR.data.Product;
-
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class RetrieveFamilyProductsTask extends AsyncTask<SQLiteDatabase, Void, String> {
+import com.SR.data.Family;
+import com.SR.data.FeedReaderContract.FeedUser;
+import com.SR.data.Product;
+
+/**
+ * 
+ * @author Ιωάννης Διαμαντίδης 8100039
+ * 
+ * this AsyncTask is used to retrieve product records for a family member from the server database.
+ *  This record will be found by the id
+ *
+ */
+
+public class RetrieveFamilyProductsTask extends AsyncTask<SQLiteDatabase, Void, Void> {
 
     SQLiteDatabase db;
    
     @Override
- 	protected String doInBackground(SQLiteDatabase... arg0) {
+ 	protected Void doInBackground(SQLiteDatabase... arg0) {
     	
-    	String result;
-    	String URL = "http://10.0.2.2/php/rest/product.php";
-    	HttpEntity entity;
-    	InputStream instream;
-    	JSONArray jsonArray = null;
+       	String result, FamilyMemberId;
+    	HttpEntity entity;//contains the response Entity
+    	InputStream instream;//used to retrieve the content of the response entity
+    	JSONArray jsonArray = null;//contains the response content in JSONArray format
+
+    	db = arg0[0];
     	
-		db = arg0[0];
-		URL = URL+"/family";
-		
-		entity =  new Functions().handleGetRequest(URL);
+    	//call fetchUsersWithoutProductsInDB to get family members without products in database
+    	Cursor queryResult = new Family().fetchUsersWithoutProductsInDB(db);
+    	
+    	//as long as there are family members
+    	while(queryResult.moveToNext()){
+    		
+    		//get the details of the family		
+    		FamilyMemberId = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedUser._ID));
+			
+    		//the web service URL
+			String URL = "http://10.0.2.2/php/rest/product.php";
+			//add the FamilyMemberId to the URL
+			URL = URL + "/" +FamilyMemberId;
 
-        if(entity!=null){
-			try{
-        		instream = entity.getContent();
-        		result =  new Functions().convertStreamToString(instream);
-
-                jsonArray = new JSONArray(result);
-                instream.close();
-             
-                Log.i("RetrieveFamilyProduct", jsonArray.toString());
+			//call handleGetRequest function to make a GET Request and retrieve the response entity
+			entity = new Functions().handleGetRequest(URL);
 	        
-                new Product().handleProductJSONArrayForRetrieve(jsonArray, db);
-
-			} catch (ClientProtocolException e) {
-		        e.printStackTrace();
-		    } catch (IOException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
+	        if(entity!=null){
+				try{
+					//get he content of the response entity
+	        		instream = entity.getContent();
+	        		//call the convertStreamToString method
+	        		result = new Functions().convertStreamToString(instream);
+	        		//create a JSONArray with the response content
+	                jsonArray = new JSONArray(result);
+	                //close InputStream
+	                instream.close();
+	                             
+	                Log.i("RetrieveFamilyProduct", jsonArray.toString());
+	        		//call handleProductJSONArrayForRetrieve method
+	                new Product().handleProductJSONArrayForRetrieve(jsonArray, db);
+	
+				} catch (ClientProtocolException e) {
+			        e.printStackTrace();
+			    } catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
-		}
-		return "OK";
+    	}
+		return null;
  	}
-    	 	
-    protected void onPostExecute(String result) {
-
-    }
 }

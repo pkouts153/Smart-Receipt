@@ -21,7 +21,7 @@ import android.support.v4.app.TaskStackBuilder;
 /**
 * This class is responsible for displaying notification for surpassed budgets in the notification bar
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 @SuppressLint("NewApi")
 public class BudgetNotificationIntentService extends IntentService {

@@ -35,7 +35,7 @@ import android.os.Build;
 /**
 * Activity that displays the budget addition screen
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class AddBudgetActivity extends FragmentActivity implements OnClickListener {
 

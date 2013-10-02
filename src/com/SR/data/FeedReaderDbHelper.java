@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
 * This class is responsible for initializing the database
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
@@ -129,12 +129,12 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	private static final String SQL_ADD_USER =
 	    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
 	    " SELECT NULL AS '" + FeedUser._ID + "', 'Vag' AS '" + FeedUser.USERNAME + "', " + 
-	    		"'Vag' AS '" + FeedUser.PASSWORD + "', 'Vag@a.com' AS '" + FeedUser.EMAIL + "', " +
+	    		"'Vag' AS '" + FeedUser.PASSWORD + "', 'Vag@example.com' AS '" + FeedUser.EMAIL + "', " +
 	    		"'0' AS '" + FeedUser.FOR_UPDATE + "', '1' AS '" + FeedUser.FROM_SERVER + "', " + "" +
 	    		"'2013-09-26 00:00:00' AS '" + FeedUser.USER_CREATED + "'" +
-		" UNION SELECT NULL, 'Panos', 'Panos', 'Panos@a.com', '0', '1', '2013-09-26 00:00:00'" +
-		" UNION SELECT NULL, 'Giannis', 'Giannis', 'Giannis@a.com', '0', '1', '2013-09-26 00:00:00'" +
-		" UNION SELECT NULL, 'user', 'user', 'user@a.com', '0', '1', '2013-09-26 00:00:00'";
+		" UNION SELECT NULL, 'Panos', 'Panos', 'Panos@example.com', '0', '1', '2013-09-26 00:00:00'" +
+		" UNION SELECT NULL, 'Giannis', 'Giannis', 'Giannis@example.com', '0', '1', '2013-09-26 00:00:00'" +
+		" UNION SELECT NULL, 'user', 'user', 'user@example.com', '0', '1', '2013-09-26 00:00:00'";
 
 	private static final String SQL_ADD_STORE =
 	    "INSERT INTO '" + FeedStore.TABLE_NAME + "'" +
@@ -188,8 +188,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-		android.util.Log.w("LunchList", "Upgrading database, which will destroy all old data");
-	    db.execSQL("DROP TABLE IF EXISTS '"+FeedCategory.TABLE_NAME+"'");
+		db.execSQL("DROP TABLE IF EXISTS '"+FeedCategory.TABLE_NAME+"'");
 	    db.execSQL("DROP TABLE IF EXISTS '"+FeedUser.TABLE_NAME+"'");
 	    db.execSQL("DROP TABLE IF EXISTS '"+FeedStore.TABLE_NAME+"'");
 	    db.execSQL("DROP TABLE IF EXISTS '"+FeedFamily.TABLE_NAME+"'");

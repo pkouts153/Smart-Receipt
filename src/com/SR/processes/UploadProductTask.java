@@ -2,10 +2,6 @@ package com.SR.processes;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -17,53 +13,43 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.SR.data.Product;
-import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedProduct;
+import com.SR.data.Product;
 
-public class UploadProductTask extends AsyncTask<SQLiteDatabase, Void, String> {
+/**
+ * 
+ * @author Ιωάννης Διαμαντίδης 8100039
+ * 
+ * this AsyncTask is used to call a web service which inserts a product into server database
+ *
+ */
+
+public class UploadProductTask extends AsyncTask<SQLiteDatabase, Void, Void> {
 	
     SQLiteDatabase db;
 
     @Override
-	protected String doInBackground(SQLiteDatabase... arg0) {
+	protected Void doInBackground(SQLiteDatabase... arg0) {
         
-    	String URL = "http://10.0.2.2/php/rest/product.php";
+    	String URL = "http://10.0.2.2/php/rest/product.php";//the URL of the web service
 		String id, name, category, price, date, user, store, created ,result;
-		HttpEntity entity;
-		InputStream instream;
-		JSONArray jsonArray, json;
-		Cursor queryResult;
+    	HttpEntity entity;//contains the response Entity
+    	InputStream instream;//used to retrieve the content of the response entity
+		JSONArray json, jsonArray;//contain the record that will be sent and the record that will be retrieved with the new id accordingly
+		Cursor queryResult;//contains the products that are stored locally
 		
 		db = arg0[0];
-		
-	/*	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date datePurchaseDate=null;
-		
-		try {
-			datePurchaseDate = dateFormat.parse("2013-09-23");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		Timestamp timestampPurchaseDate = new Timestamp(datePurchaseDate.getTime());
-		String purchaseDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestampPurchaseDate);
-		
-		Date date1= new Date();
-		Timestamp timestampToday = new Timestamp(date1.getTime());
-		String today = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestampToday);
-		
-		Log.i("today", today);
-		
+/*		
 		db.execSQL("INSERT INTO "+FeedProduct.TABLE_NAME +" ("+FeedProduct._ID +","+FeedProduct.NAME +", "+FeedProduct.PRODUCT_CATEGORY +
 				", "+FeedProduct.PRICE +", "+FeedProduct.PURCHASE_DATE +", "+FeedProduct.USER +
 				", "+FeedProduct.STORE +", "+FeedProduct.PRODUCT_CREATED +", "+FeedProduct.ON_SERVER +") " +
-				"VALUES ('10','coca-cola','2','1.2','"+purchaseDate+"','4','3','"+today+"', '0')");
-	*/
+				"VALUES ('10','coca-cola','2','1.2','2013-09-30','4','3','2013-09-24 00:00:00', '0')");
+*/	
+		//call fetchLocalProduct method to retrieve the products that are stored locally
 		queryResult = new Product().fetchLocalProduct(db);
-		
+		//as long as there are products to be uploaded
 		while(queryResult.moveToNext()){
-						
+			//get the details of the product		
 			id = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct._ID));
 			name = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct.NAME));
 			category = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct.PRODUCT_CATEGORY));
@@ -74,24 +60,25 @@ public class UploadProductTask extends AsyncTask<SQLiteDatabase, Void, String> {
 			created = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct.PRODUCT_CREATED));
 			
     		try{
-    			//android.os.Debug.waitForDebugger();
+    			//convert string values to JSONArray
     			json = new Product().convertStringToJson(id, name, category, price, date, user, store, created);
-                    			
+    			//call handlePostRequest method to make a POST request and get the response entity
     			entity =  new Functions().handlePostRequest(json, URL);
 
     	        if(entity!=null){
-	
-	        		instream = entity.getContent();
-	        		result = new Functions().convertStreamToString(instream);
-	
-	                jsonArray = new JSONArray(result);
-	                instream.close();
+    				//get he content of the response entity
+            		instream = entity.getContent();
+            		//call the convertStreamToString method
+            		result = new Functions().convertStreamToString(instream);
+            		//create a JSONArray with the response content
+                    jsonArray = new JSONArray(result);
+                    //close InputStream
+                    instream.close();
 	        		
 	                Log.i("UploadProduct", jsonArray.toString());
-
+	        		//call handleProductJSONArrayForUpload method
 	                new Product().handleProductJSONArrayForUpload(jsonArray, db);
     			}
-    	        
 			} catch (ClientProtocolException e) {
 		        e.printStackTrace();
 		    } catch (IOException e) {
@@ -100,11 +87,6 @@ public class UploadProductTask extends AsyncTask<SQLiteDatabase, Void, String> {
 				e.printStackTrace();
 			}
 		}
-    	return "OK";
-    }
-    
-    @Override
-	protected void onPostExecute(String result) {
-
+    	return null;
     }
 }

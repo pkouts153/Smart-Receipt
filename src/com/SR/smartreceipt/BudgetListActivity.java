@@ -36,7 +36,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 /**
 * Activity that displays the budget list screen
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class BudgetListActivity extends ListActivity implements OnClickListener{
 
@@ -311,7 +311,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
      * Custom adapter to bind list rows to cursor and 
      * set text color depending on the budget's spend balance
      * 
-     * @author Panagiotis Koutsaftikis
+     * @author Παναγιώτης Κουτσαυτίκης 8100062
      *
      */
     private class CustomListAdapter extends SimpleCursorAdapter {

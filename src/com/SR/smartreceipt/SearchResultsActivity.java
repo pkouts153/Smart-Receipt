@@ -35,7 +35,7 @@ import android.widget.ImageButton;
 /**
 * Activity that displays the search results screen
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class SearchResultsActivity extends FragmentActivity implements OnClickListener{
 
@@ -348,6 +348,8 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 	/**
 	 * A FragmentPagerAdapter that returns a fragment corresponding to
 	 * one of the sections
+	 * 
+	 * @author Παναγιώτης Κουτσαυτίκης 8100062
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		

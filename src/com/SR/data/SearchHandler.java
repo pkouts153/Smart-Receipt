@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 /**
 * This class is responsible for searching the database and returning the search results
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class SearchHandler {
 	

@@ -3,7 +3,7 @@ package com.SR.data;
 import android.provider.BaseColumns;
 
 /**
-* @authors Panagiotis Koutsaftikis, Vaggelis Marakis, Giannis Diamantidis
+* @authors Παναγιώτης Κουτσαυτίκης 8100062, Vaggelis Marakis, Giannis Diamantidis
 */
 
 public final class FeedReaderContract {

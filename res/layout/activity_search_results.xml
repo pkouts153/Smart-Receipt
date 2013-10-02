@@ -27,7 +27,7 @@
             android:layout_height="37dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_action_discard" />
+            android:src="@drawable/pie_chart" />
 
     </RelativeLayout>
     

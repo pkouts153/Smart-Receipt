@@ -8,7 +8,7 @@ import android.os.Bundle;
 /**
 * Fragment that displays a dialog for a success message
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class SuccessDialogFragment extends DialogFragment {
 	

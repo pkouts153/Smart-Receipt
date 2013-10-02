@@ -22,7 +22,7 @@ import com.SR.processes.Functions;
 /**
 * This class represents product and is responsible for the necessary processes
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class Product {
     
@@ -80,16 +80,23 @@ public class Product {
 		return successful_save;
     }
     
-    
-
+    /**
+     * @author Ιωάννης Διαμαντίδης 8100039
+     * 
+     */
+        
     public Product() {
     	
 	}
-    
+   
+    //this method returns the maximum id that exists in product table in local database	   
 	public String fetchProductMaxId(SQLiteDatabase db){
 
 		String[] params ={"1", String.valueOf(User.USER_ID)};
-		Cursor result = db.rawQuery("SELECT max("+FeedProduct._ID+") AS max FROM "+FeedProduct.TABLE_NAME +
+		Cursor result = db.rawQuery("SELECT CASE" +
+												" WHEN max("+FeedProduct._ID+") IS NULL THEN 0" +
+											    " ELSE max("+FeedProduct._ID+")" +
+										  " END AS max FROM "+FeedProduct.TABLE_NAME +
 									" WHERE "+FeedProduct.ON_SERVER+"=? and "+FeedProduct.USER+" =?", params);
 		result.moveToNext();
 		String lastId = result.getString(result.getColumnIndexOrThrow("max"));
@@ -97,6 +104,7 @@ public class Product {
 		return lastId;
 	}
 	
+	//this method returns the products that are created from this app and are not saved on server
 	public Cursor fetchLocalProduct(SQLiteDatabase db){
 		
 		String[] params = {"0", String.valueOf(User.USER_ID)};	
@@ -105,6 +113,8 @@ public class Product {
 		return result;
 	}
 	
+	/*this method make a search whether there is a product is saved with a certain id or not, and if it does, 
+		then read the index of this record and re insert it in the first available id*/
 	private void makeIdAvailable(String id, SQLiteDatabase db){
 		
         Cursor result = fetchProductById(id, db);
@@ -115,52 +125,41 @@ public class Product {
 			String prevPrice = result.getString(result.getColumnIndexOrThrow(FeedProduct.PRICE));
 			String prevDate = result.getString(result.getColumnIndexOrThrow(FeedProduct.PURCHASE_DATE));
 			String prevUser = result.getString(result.getColumnIndexOrThrow(FeedProduct.USER));				
-			String prevStore = result.getString(result.getColumnIndexOrThrow(FeedProduct.PURCHASE_DATE));
+			String prevStore = result.getString(result.getColumnIndexOrThrow(FeedProduct.STORE));
 			String prevCreated = result.getString(result.getColumnIndexOrThrow(FeedProduct.PRODUCT_CREATED));
 			String prevOnServer = result.getString(result.getColumnIndexOrThrow(FeedProduct.ON_SERVER));
-
-			reInsertProduct(id, prevName, prevCategory, prevPrice, prevDate, prevUser, prevStore, prevCreated, prevOnServer, db);
+			
+			if("0".equals(prevOnServer))
+				insertProduct(null, prevName, prevCategory, prevPrice, prevDate, prevUser, prevStore, prevCreated, prevOnServer, db);
+			
+			db.execSQL("DELETE FROM "+FeedProduct.TABLE_NAME+" WHERE "+FeedProduct._ID +" = '"+id+"'");
 		}
 	}
-/*	
+	
+	/*this method returns a record from product table using its id*/
 	private Cursor fetchProductById(String id, SQLiteDatabase db){
-		String[] params = {id, String.valueOf(User.USER_ID)};
+		
+		String[] params = {id};
 		Cursor result = db.rawQuery("SELECT * FROM "+FeedProduct.TABLE_NAME +
-									" WHERE "+FeedProduct._ID +" = ? and "+FeedProduct.USER +" = ?", params);
+									" WHERE "+FeedProduct._ID +" = ?", params);
 		return result;
 	}
-*/	
-	private Cursor fetchProductById(String id, SQLiteDatabase db){
-		String[] params = {id, String.valueOf(User.USER_ID), String.valueOf(User.USER_ID), "1", String.valueOf(User.USER_ID), "1"};
-		Cursor result = db.rawQuery("SELECT * FROM "+FeedProduct.TABLE_NAME +
-									" WHERE "+FeedProduct._ID +" = ? and " +
-											"("+FeedProduct.USER +" = ? or "
-											   +FeedProduct.USER+" IN (SELECT "+FeedFamily.MEMBER1+" FROM "+FeedFamily.TABLE_NAME+" WHERE "+FeedFamily.MEMBER2+"=? and "+FeedFamily.CONFIRMED+"=?) or "
-											   +FeedProduct.USER+" IN (SELECT "+FeedFamily.MEMBER2+" FROM "+FeedFamily.TABLE_NAME+" WHERE "+FeedFamily.MEMBER1+"=? and "+FeedFamily.CONFIRMED+"=?))", params);
-		return result;
-	}
-	private void reInsertProduct(String id, String prevName, String prevCategory, String prevPrice, String prevDate,
-						String prevUser, String prevStore, String prevCreated, String prevOnServer, SQLiteDatabase db){
-
-		db.execSQL("INSERT INTO "+FeedProduct.TABLE_NAME +" ("+FeedProduct.NAME +", "+FeedProduct.PRODUCT_CATEGORY +", "
-											+FeedProduct.PRICE +", "+FeedProduct.PURCHASE_DATE +", "+FeedProduct.USER +", "
-											+FeedProduct.STORE +", "+FeedProduct.PRODUCT_CREATED +", "+FeedProduct.ON_SERVER +") " +
-					"VALUES ('"+prevName+"','"+prevCategory+"','"+prevPrice+"','"+prevDate+"','"
-							   +prevUser+"','"+prevStore+"','"+prevCreated+"', '"+prevOnServer+"')");			
 	
-		db.execSQL("DELETE FROM "+FeedProduct.TABLE_NAME +
-					" WHERE "+FeedProduct._ID +" = '"+id+"' and "+FeedProduct.USER +" = '"+prevUser+"'");
-	}
 	
+	/*this method insert a product into the database using a specific id(the one received from the server database)*/
 	private void insertProduct(String id, String name, String category, String price, String date, String user, 
-			String store, String created, SQLiteDatabase db){
+			String store, String created, String onServer, SQLiteDatabase db){
 
 		db.execSQL("INSERT INTO "+FeedProduct.TABLE_NAME +" ("+FeedProduct._ID +","+FeedProduct.NAME +", "+FeedProduct.PRODUCT_CATEGORY +
 												", "+FeedProduct.PRICE +", "+FeedProduct.PURCHASE_DATE +", "+FeedProduct.USER +
 												", "+FeedProduct.STORE +", "+FeedProduct.PRODUCT_CREATED +", "+FeedProduct.ON_SERVER +") " +
-				"VALUES ('"+id+"','"+name+"','"+category+"','"+price+"','"+date+"','"+user+"','"+store+"','"+created+"', '1')");	
+				"VALUES ("+id+",'"+name+"','"+category+"','"+price+"','"+date+"','"+user+"','"+store+"','"+created+"', '"+onServer+"')");	
 	}
     
+	/*this method updates a database record. It is used when a product created in this app, is sent to the server database.
+	 * There, this record is saved with the first available id in the server database and not the initial id with which
+	 * it was first saved in the app database. So, because ids should be the same in both databases, the local record is updated 
+	 * with the id from server database*/
 	private void updateProduct(String id, String name, String category, String price, String date, String user,
 			String store, String created, SQLiteDatabase db){
 
@@ -172,6 +171,7 @@ public class Product {
 		db.execSQL("UPDATE "+FeedProduct.TABLE_NAME +" SET "+FeedProduct.ON_SERVER +" =1 WHERE "+FeedProduct._ID +" ='"+id+"'" );
 	}
 	
+	/*this method creates a jsonArray that contains a product.*/
     public JSONArray convertStringToJson(String id, String name, String category, String price, 
 			String date, String user, String store, String created) throws JSONException {
 
@@ -192,7 +192,9 @@ public class Product {
 		
 		return json;
     }
-	
+    
+    /*this method handles the response JSONArray object from a GET request. It converts its data into String variables 
+     * and format them properly. Then it calls mekeIdAvailable method and insert the product with the proper id*/
 	public void handleProductJSONArrayForRetrieve(JSONArray json, SQLiteDatabase db) throws JSONException{
 				
         for(int i=0; i<json.length(); i++){
@@ -216,10 +218,13 @@ public class Product {
 
 			makeIdAvailable(id, db);
 			
-			insertProduct(id, name, category, price, date, user, store, created, db);
+			String onServer = "1";
+			insertProduct(id, name, category, price, date, user, store, created, onServer, db);
 		}
 	}
 	    
+	/*this method handles the response JSONArray object from a POST Request. It converts its data into String variables and 
+	 * format them properly. Then it calls mekeIdAvailable method and update the product with the proper id*/
     public void handleProductJSONArrayForUpload(JSONArray json, SQLiteDatabase db) throws JSONException{
 		
 		JSONObject json_data = json.getJSONObject(0);
@@ -243,11 +248,4 @@ public class Product {
 
 		updateProduct(id, name, category, price, date, user, store, created, db);
 	}
-/*    
-	public Cursor fetchProducts(SQLiteDatabase db){
-		
-		Cursor result = db.rawQuery("SELECT * FROM "+FeedProduct.TABLE_NAME +"", null);
-		return result;
-	}
-*/
 }

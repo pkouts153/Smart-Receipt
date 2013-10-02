@@ -6,6 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.SR.data.FeedReaderContract.FeedList;
 
+/**
+* This class represents a user's shopping list and is responsible for the necessary processes
+* 
+* @author Παναγιώτης Κουτσαυτίκης 8100062
+*/
 public class List {
 	
     SQLiteDatabase db;

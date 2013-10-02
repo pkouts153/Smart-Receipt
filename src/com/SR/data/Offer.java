@@ -52,19 +52,30 @@ public class Offer {
 
     
     
+/**
+ * @author Ιωάννης Διαμαντίδης 8100039
+ * 
+ */
+    
     public Offer() {
     	
 	}
     
-    public String fetchOfferMaxId(SQLiteDatabase db){
+    //this method returns the maximum id that exists in offer table in local database
+   public String fetchOfferMaxId(SQLiteDatabase db){
 
-		Cursor result = db.rawQuery("SELECT max("+FeedOffer._ID+") AS max FROM "+FeedOffer.TABLE_NAME+"", null);
+		Cursor result = db.rawQuery("SELECT CASE" +
+												" WHEN max("+FeedOffer._ID+") IS NULL THEN 0" +
+											    " ELSE max("+FeedOffer._ID+")" +
+										  " END AS max FROM "+FeedOffer.TABLE_NAME+"", null);
 		result.moveToNext();
 		String lastId = result.getString(result.getColumnIndexOrThrow("max"));
 		
 		return lastId;
 	}
 	
+   /*this method gets a jsonArray variable, converts its data to Java variables, converts this variable in to the proper format 
+     and call insertOffer method passing as parameters the retrieved data*/
 	public void handleOfferJSONArray(JSONArray json, SQLiteDatabase db) throws JSONException{
 		
 		for(int i=0; i<json.length(); i++){
@@ -86,12 +97,14 @@ public class Offer {
 		}	
 	}
 
+	/*this method gets as parameters the variables of an offer and insert them to local database*/
 	private void insertOffer(String id, String name, String category, String price, String discount, String date, String store, String created, SQLiteDatabase db){
 			 
 		db.execSQL("INSERT INTO "+FeedOffer.TABLE_NAME+" ("+FeedOffer._ID+", "+FeedOffer.PRODUCT_NAME+", "+FeedOffer.CATEGORY+", "+FeedOffer.PRICE+", "+FeedOffer.DISCOUNT+", "+FeedOffer.UNTIL_DATE+", "+FeedOffer.STORE+", "+FeedOffer.OFFER_CREATED+" )" +
 					" VALUES ('"+id+"','"+name+"','"+category+"','"+price+"','"+discount+"','"+date+"','"+store+"','"+created+"')");
 	}
 	
+	/*this method calculate current date and time and delete every ended offer */
 	public void deleteEndedOffers(SQLiteDatabase db){
 		Date date= new Date();
 		Timestamp timestampToday = new Timestamp(date.getTime());

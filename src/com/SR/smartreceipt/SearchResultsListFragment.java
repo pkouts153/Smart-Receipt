@@ -14,7 +14,7 @@ import android.widget.TextView;
 /**
 * Fragment that displays the search results product list
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 @SuppressLint("ValidFragment")
 public class SearchResultsListFragment extends ListFragment {

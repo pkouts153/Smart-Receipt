@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 /**
 * This class represents store and is responsible for the necessary processes
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class Store {
 	
@@ -97,22 +97,31 @@ public class Store {
 	
 	
 	
-	
+/**
+ * @author Ιωάννης Διαμαντίδης 8100039
+ * 
+ */
+
     public Store(){
 
     }   
 	
 	
-	
+    //this method returns the maximum id that exists in store table in local database	
 	public String fetchStoreMaxId(SQLiteDatabase db){
 
-		Cursor result = db.rawQuery("SELECT max("+FeedStore._ID+") AS max FROM "+FeedStore.TABLE_NAME+"", null);
+		Cursor result = db.rawQuery("SELECT CASE" +
+												" WHEN max("+FeedStore._ID+") IS NULL THEN 0" +
+											    " ELSE max("+FeedStore._ID+")" +
+										  " END AS max FROM "+FeedStore.TABLE_NAME+"", null);
 		result.moveToNext();
 		String lastId = result.getString(result.getColumnIndexOrThrow("max"));
 		
 		return lastId;
 	}
 
+    /*this method gets a jsonArray variable, converts its data to Java variables and call insertStore method
+	passing as parameters the retrieved data*/
 	public void handleStoreJSONArray(JSONArray json, SQLiteDatabase db) throws JSONException{
 		
 		for(int i=0; i<json.length(); i++){
@@ -129,10 +138,12 @@ public class Store {
 		}	
 	}
 	
+	/*this method gets as parameters an id, a name, an address, a vat number and the date this store record was created
+	  and insert them to local database*/
 	private void insertStore(String id, String name, String address, String vat, String created, SQLiteDatabase db){
 		 
 		db.execSQL("INSERT INTO "+FeedStore.TABLE_NAME+" ("+FeedStore._ID+", "+FeedStore.NAME+", "+FeedStore.ADDRESS+", "
 															+FeedStore.VAT_NUMBER+", "+FeedStore.STORE_CREATED+")" +
 				" VALUES ('"+id+"','"+name+"','"+address+"','"+vat+"','"+created+"')");
-	}	
+	}		
 }

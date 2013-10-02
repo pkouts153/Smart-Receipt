@@ -22,17 +22,21 @@ import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.User;
+import com.SR.processes.Functions;
 import com.SR.processes.MyApplication;
 import com.SR.processes.RetrieveBudgetsAfterIdTask;
 import com.SR.processes.RetrieveCategoriesAfterIdTask;
 import com.SR.processes.RetrieveDeletedBudgetsTask;
 import com.SR.processes.RetrieveDeletedFamilyTask;
 import com.SR.processes.RetrieveFamilyAfterIdTask;
+import com.SR.processes.RetrieveFamilyProductsTask;
+import com.SR.processes.RetrieveFamilyUserDataTask;
 import com.SR.processes.RetrieveNewFamilyMemberUserDataTask;
 import com.SR.processes.RetrieveOffersAfterIdTask;
 import com.SR.processes.RetrieveProductsAfterIdTask;
 import com.SR.processes.RetrieveStoresAfterIdTask;
 import com.SR.processes.RetrieveUpdatedBudgetsTask;
+import com.SR.processes.RetrieveUpdatedFamilyTask;
 import com.SR.processes.RetrieveUpdatedUserDataTask;
 import com.SR.processes.UploadBudgetTask;
 import com.SR.processes.UploadFamilyTask;
@@ -41,7 +45,7 @@ import com.SR.processes.UploadProductTask;
 /**
 * Activity that displays the budget addition screen
 * 
-* @author Panagiotis Koutsaftikis, Vaggelis Marakis
+* @author Παναγιώτης Κουτσαυτίκης 8100062, Vaggelis Marakis
 */
 public class MainActivity extends Activity {
 
@@ -65,12 +69,21 @@ public class MainActivity extends Activity {
 		setupActionBar();
 		getOverflowMenu();
 		
-		// get the id from the last logged in user
+		// get the details from the last logged in user
         sharedPref = getSharedPreferences(getString(R.string.preference_user_id), MODE_PRIVATE);
         int id = sharedPref.getInt("USER_ID", 0);
-	    
+        String email = sharedPref.getString("EMAIL", null);
+        String password = sharedPref.getString("PASSWORD", null);
+        
+        // set the user details with the shared preferences
         if (id!=0 && User.USER_ID != id)
         	User.USER_ID = id;
+        
+        if (email!=null && User.EMAIL != email)
+        	User.EMAIL = email;
+        
+        if (password!=null && User.PASSWORD != password)
+        	User.PASSWORD = password;
         
 		// if a user is logged in display the MainActivity
 		if (User.USER_ID != 0) {
@@ -215,11 +228,6 @@ public class MainActivity extends Activity {
     protected void onResume() {
     	super.onResume();
     	MyApplication.activityResumed();
-    	
-    	/*if (mDbHelper == null) {
-    		new FeedReaderDbHelper(this);
-    		db = mDbHelper.getWritableDatabase();
-    	}*/
     }
     
     @Override
@@ -227,73 +235,48 @@ public class MainActivity extends Activity {
     	super.onPause();
     	MyApplication.activityPaused();
     
-    	/*FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();*/
- /*    	Cursor queryResult = new Product().fetchProducts(db);
-    	
-		while(queryResult.moveToNext()){
-			
-			String id = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct._ID));
-			String name = queryResult.getString(queryResult.getColumnIndexOrThrow(FeedProduct.NAME));
-		
-			Log.i("id", id);
-			Log.i("name", name);
-		}
-	*/	
-    	/*Cursor queryResult1 = new User(this).getFamilyMembers(User.USER_ID);
-    	
-		while(queryResult1.moveToNext()){
-			
-			String username = queryResult1.getString(queryResult1.getColumnIndexOrThrow(FeedUser.USERNAME));
-
-			Log.i("username", username);
-
-		}
-		
-		Cursor queryResult2 = new Family().fetchFamilies(db);
-		while(queryResult2.moveToNext()){
-			String id = queryResult2.getString(queryResult2.getColumnIndexOrThrow(FeedFamily._ID));
-			
-			String member2 = queryResult2.getString(queryResult2.getColumnIndexOrThrow(FeedFamily.MEMBER2));
-			String member1 = queryResult2.getString(queryResult2.getColumnIndexOrThrow(FeedFamily.MEMBER1));
-
-			Log.i("id", id);
-			Log.i("member1", member1);
-			Log.i("member2", member2);
-		}*/
     	if (mDbHelper != null)
     		mDbHelper.close();
     }
     
-    /*@Override
+    @Override
     protected void onStop() {
         super.onStop();
 	      
         if(!(MyApplication.isActivityVisible())){
-			
-         	FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
-			SQLiteDatabase db = mDbHelper.getWritableDatabase();
-		
-			new RetrieveNewFamilyMemberUserDataTask().execute(db);
-			
-            new RetrieveBudgetsAfterIdTask().execute(db);
-  			new RetrieveFamilyAfterIdTask().execute(db);
-            new RetrieveProductsAfterIdTask().execute(db);
-            new RetrieveCategoriesAfterIdTask().execute(db);
-            new RetrieveStoresAfterIdTask().execute(db);
-    	    new RetrieveOffersAfterIdTask().execute(db);
-    	    
-            new UploadBudgetTask().execute(db);
-	  		new UploadFamilyTask().execute(db);  
-     		new UploadProductTask().execute(db);
-  
-    		new RetrieveDeletedBudgetsTask().execute(db);
-    		new RetrieveDeletedFamilyTask().execute(db);	
-
-      		new RetrieveUpdatedBudgetsTask().execute(db);
-      		new RetrieveUpdatedUserDataTask().execute(db);
-
+			/*to check if wifi connection exists, the following code in comments should be used
+			 * but because this emulator does not support wifi connection, i check if Mobile connection exists
+			 * if(new Functions().isWifiConnected(this)){
+			 * */
+			if(new Functions().isMobileConnected(this)){	
+				
+				FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
+				SQLiteDatabase db = mDbHelper.getWritableDatabase();
+				
+				new RetrieveNewFamilyMemberUserDataTask().execute(db);
+	          
+				new RetrieveCategoriesAfterIdTask().execute(db);
+	            new RetrieveStoresAfterIdTask().execute(db);			
+	    	    new RetrieveOffersAfterIdTask().execute(db);
+	            new RetrieveBudgetsAfterIdTask().execute(db);
+	            new RetrieveProductsAfterIdTask().execute(db);
+	  			new RetrieveFamilyAfterIdTask().execute(db);
+	
+	  			new UploadBudgetTask().execute(db);
+		  		new UploadFamilyTask().execute(db);  
+	     		new UploadProductTask().execute(db);
+	    		
+	     		new RetrieveDeletedBudgetsTask().execute(db);
+	    		new RetrieveDeletedFamilyTask().execute(db);	
+	
+	      		new RetrieveUpdatedBudgetsTask().execute(db);
+	      		new RetrieveUpdatedUserDataTask().execute(db);
+	      		new RetrieveUpdatedFamilyTask().execute(db);
+				
+	      		new RetrieveFamilyUserDataTask().execute(db);			
+	      		new RetrieveFamilyProductsTask().execute(db);
+			}
         }
-    }*/
+    }
 	
 }

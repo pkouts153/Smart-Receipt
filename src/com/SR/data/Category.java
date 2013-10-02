@@ -12,7 +12,7 @@ import com.SR.data.FeedReaderContract.FeedCategory;
 /**
 * This class represents category and is responsible for the necessary processes
 * 
-* @author Panagiotis Koutsaftikis
+* @author Παναγιώτης Κουτσαυτίκης 8100062
 */
 public class Category {
 	
@@ -56,20 +56,31 @@ public class Category {
     
 
     
-    
+    /**
+     * @author Ιωάννης Διαμαντίδης 8100039
+     * 
+     */
+        
+        
     public Category() {
     	
 	}
     
+    //this method returns the maximum id that exists in category table in local database
     public String fetchCategoryMaxId(SQLiteDatabase db){
 
-		Cursor result = db.rawQuery("SELECT max("+FeedCategory._ID+") AS max FROM "+FeedCategory.TABLE_NAME+"", null);
+		Cursor result = db.rawQuery("SELECT CASE" +
+												" WHEN max("+FeedCategory._ID+") IS NULL THEN 0" +
+											    " ELSE max("+FeedCategory._ID+")" +
+										  " END AS max FROM "+FeedCategory.TABLE_NAME+"", null);
 		result.moveToNext();
 		String lastId = result.getString(result.getColumnIndexOrThrow("max"));
 		
 		return lastId;
 	}
 	
+    /*this method gets a jsonArray variable, converts its data to Java variables and call insertCategory method
+    	passing as parameters the retrieved data*/
 	public void handleCategoryJSONArray(JSONArray json, SQLiteDatabase db) throws JSONException{
 		
 		for(int i=0; i<json.length(); i++){
@@ -83,11 +94,11 @@ public class Category {
 			insertCategory(id, name, created, db);
 		}	
 	}
-
+	/*this method gets as parameters an id, a name and the date this category was created
+	  and insert them to local database*/
 	private void insertCategory(String id, String name, String created, SQLiteDatabase db){
 			 
 		db.execSQL("INSERT INTO "+FeedCategory.TABLE_NAME+" ("+FeedCategory._ID+", "+FeedCategory.NAME+" ,"+FeedCategory.CATEGORY_CREATED+")" +
 					" VALUES ('"+id+"','"+name+"','"+created+"')");
 	}
-
 }
