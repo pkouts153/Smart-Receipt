@@ -34,8 +34,8 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     Button reset;
     
     // user's input
-    String mail;
-	String pass;
+    public static String mail;
+    public static String pass;
 	
 	// data variables
 	

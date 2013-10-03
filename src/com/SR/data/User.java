@@ -25,8 +25,6 @@ public class User {
 
 	// saves the details of the user that is logged in
 	public static int USER_ID;
-	public static String EMAIL;
-	public static String PASSWORD;
 		
     SQLiteDatabase db;
     Cursor c;
@@ -115,8 +113,6 @@ public class User {
     		if (password.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD))) && email.equals(c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL)))) {
     			found = true;
     			USER_ID = c.getInt(c.getColumnIndexOrThrow(FeedUser._ID));
-    			EMAIL = c.getString(c.getColumnIndexOrThrow(FeedUser.EMAIL));
-    			PASSWORD = c.getString(c.getColumnIndexOrThrow(FeedUser.PASSWORD));
     		}
     		c.moveToNext ();
     	}
@@ -128,8 +124,6 @@ public class User {
         // add the user details to the shared preferences, in order not to ask the user
         // to login every time he closes and opens the application
         editor.putInt("USER_ID", USER_ID);
-        editor.putString("EMAIL", EMAIL);
-        editor.putString("PASSWORD", PASSWORD);
         editor.commit();
         
     	return found;
@@ -164,13 +158,9 @@ public class User {
      */
     public void userLogout(Context context) {
     	USER_ID = 0;
-    	EMAIL = null;
-    	PASSWORD = null;
         sharedPref = context.getSharedPreferences(context.getString(R.string.preference_user_id), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("USER_ID", USER_ID);
-        editor.putString("EMAIL", EMAIL);
-        editor.putString("PASSWORD", PASSWORD);
         editor.commit();
     }
     

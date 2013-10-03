@@ -73,18 +73,10 @@ public class MainActivity extends Activity {
 		// get the details from the last logged in user
         sharedPref = getSharedPreferences(getString(R.string.preference_user_id), MODE_PRIVATE);
         int id = sharedPref.getInt("USER_ID", 0);
-        String email = sharedPref.getString("EMAIL", null);
-        String password = sharedPref.getString("PASSWORD", null);
         
         // set the user details with the shared preferences
         if (id!=0 && User.USER_ID != id)
         	User.USER_ID = id;
-        
-        if (email!=null && User.EMAIL != email)
-        	User.EMAIL = email;
-        
-        if (password!=null && User.PASSWORD != password)
-        	User.PASSWORD = password;
         
 		// if a user is logged in display the MainActivity
 		if (User.USER_ID != 0) {

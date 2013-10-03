@@ -31,6 +31,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.SR.data.User;
+import com.SR.smartreceipt.LoginActivity;
 
 /**
  * 
@@ -57,7 +58,7 @@ public class Functions {
 			//prepare a request object
 			request = new HttpGet(URL);
 			//set credentials
-			credentials = new UsernamePasswordCredentials(User.EMAIL, User.PASSWORD);
+			credentials = new UsernamePasswordCredentials(LoginActivity.mail, LoginActivity.pass);
 			//put credentials to header
 	        Header authorizationHeader = (new BasicScheme()).authenticate(credentials, request);
 	        //set request Header
@@ -104,7 +105,7 @@ public class Functions {
 			//assign as request entity the JSONArray as string
 			entity = new StringEntity(json.toString());
 			//set credentials
-			credentials = new UsernamePasswordCredentials(User.EMAIL, User.PASSWORD);
+			credentials = new UsernamePasswordCredentials(LoginActivity.mail, LoginActivity.pass);
 			//put credentials to header
 			Header authorizationHeader = (new BasicScheme()).authenticate(credentials, httpPost);
 	        //set request Header
@@ -152,7 +153,7 @@ public class Functions {
 			//assign as request entity the JSONArray as string
 			entity = new StringEntity(json.toString());
 			//set credentials
-			credentials = new UsernamePasswordCredentials(User.EMAIL, User.PASSWORD);
+			credentials = new UsernamePasswordCredentials(LoginActivity.mail, LoginActivity.pass);
 			//put credentials to header
 			Header authorizationHeader = (new BasicScheme()).authenticate(credentials, httpPut);
 	        //set request Header
@@ -191,7 +192,7 @@ public class Functions {
 			//prepare a request object			
 			httpDelete = new HttpDelete(URL);
 			//set credentials
-			credentials = new UsernamePasswordCredentials(User.EMAIL, User.PASSWORD);
+			credentials = new UsernamePasswordCredentials(LoginActivity.mail, LoginActivity.pass);
 			//put credentials to header
 	        Header authorizationHeader = (new BasicScheme()).authenticate(credentials, httpDelete);
 	        //set request Header
