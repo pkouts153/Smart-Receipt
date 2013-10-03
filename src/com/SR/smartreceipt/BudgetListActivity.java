@@ -291,11 +291,6 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
     protected void onResume() {
     	super.onResume();
     	MyApplication.activityResumed();
-    	
-    	/*if (mDbHelper == null) {
-    		new FeedReaderDbHelper(this);
-    		db = mDbHelper.getWritableDatabase();
-    	}*/
     }
     
     @Override
@@ -347,7 +342,7 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
         	
     		if (cursor.moveToPosition(position)){
     			if (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==1)
-    				budget_category.setTextColor(getResources().getColor(R.color.yellow));
+    				budget_category.setTextColor(getResources().getColor(R.color.e_yellow));
     			
     			else if (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==2)
     				budget_category.setTextColor(Color.RED);

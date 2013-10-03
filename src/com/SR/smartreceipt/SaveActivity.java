@@ -402,11 +402,6 @@ public class SaveActivity extends FragmentActivity implements OnClickListener {
     protected void onResume() {
     	super.onResume();
     	MyApplication.activityResumed();
-    	
-    	/*if (mDbHelper == null) {
-    		new FeedReaderDbHelper(this);
-    		db = mDbHelper.getWritableDatabase();
-    	}*/
     }
     
     @Override

@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
 * This class is responsible for initializing the database
 * 
-* @author Παναγιώτης Κουτσαυτίκης 8100062
+* @author Παναγιώτης Κουτσαυτίκης 8100062, Βαγγέλης Μαράκης 8100069, Γιάννης Διαμαντίδης 8100039
 */
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;

@@ -101,106 +101,111 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 		setupActionBar();
 		getOverflowMenu();
 		
-		//get the data from SearchActivity
-		extras = getIntent().getExtras();
-		
-		product = extras.getString("product");
-		category = extras.getString("category");
-		min_cost = extras.getString("mn_cost");
-		max_cost = extras.getString("mx_cost");
-		start_date = extras.getString("start_date");
-		end_date = extras.getString("end_date");
-		store = extras.getString("store");
-		family = extras.getString("family");
-		group_by = extras.getString("group_by");
-		
-		mDbHelper = new FeedReaderDbHelper(this);
-		db = mDbHelper.getWritableDatabase();
-		
-		//get the product results for these data
-		searchHandler = new SearchHandler(db);
-		general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
-		costs = searchHandler.getSums();
-		
-		group_names = new ArrayList<String>();
-		group_cost = new ArrayList<String>();
-		
-		// if the user has selected a group_by, then get the group_names for this group_by
-		if (!group_by.equals("")){
+		try{
+			//get the data from SearchActivity
+			extras = getIntent().getExtras();
 			
-			general_results.moveToFirst();
+			product = extras.getString("product");
+			category = extras.getString("category");
+			min_cost = extras.getString("mn_cost");
+			max_cost = extras.getString("mx_cost");
+			start_date = extras.getString("start_date");
+			end_date = extras.getString("end_date");
+			store = extras.getString("store");
+			family = extras.getString("family");
+			group_by = extras.getString("group_by");
 			
-			String group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
-			String group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+			mDbHelper = new FeedReaderDbHelper(this);
+			db = mDbHelper.getWritableDatabase();
 			
-			group_names.add(group_name);
+			//get the product results for these data
+			searchHandler = new SearchHandler(db);
+			general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
+			costs = searchHandler.getSums();
 			
-			if (general_results.moveToNext()){
+			group_names = new ArrayList<String>();
+			group_cost = new ArrayList<String>();
 			
-				while (!general_results.isAfterLast()){
-					group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
-					if (!group_name1.equals(group_name)) {
-						group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
-						group_names.add(group_name);
+			// if the user has selected a group_by, then get the group_names for this group_by
+			if (!group_by.equals("")){
+				
+				general_results.moveToFirst();
+				
+				String group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+				String group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+				
+				group_names.add(group_name);
+				
+				if (general_results.moveToNext()){
+				
+					while (!general_results.isAfterLast()){
+						group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+						if (!group_name1.equals(group_name)) {
+							group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+							group_names.add(group_name);
+						}
+						general_results.moveToNext();
 					}
-					general_results.moveToNext();
 				}
 			}
-		}
-		
-		// get the total cost for each group or the total cost if there is no group_by
-		if (costs.moveToFirst()){
 			
-			while (!costs.isAfterLast()){
-				group_cost.add(costs.getString(costs.getColumnIndexOrThrow("sum")));
-				costs.moveToNext();
+			// get the total cost for each group or the total cost if there is no group_by
+			if (costs.moveToFirst()){
+				
+				while (!costs.isAfterLast()){
+					group_cost.add(costs.getString(costs.getColumnIndexOrThrow("sum")));
+					costs.moveToNext();
+				}
 			}
-		}
-		
-		group_names.trimToSize();
-		group_cost.trimToSize();
-		
-		// if there is no group_by
-		if (group_by.equals("") || group_names.size()==0) {
 			
-			// set the content view to "no tabs"
-			setContentView(R.layout.activity_search_results_no_tabs);
-
-			// set up the fragment manager and add a SearchResultsListFragment
-		    FragmentManager fragmentManager = getSupportFragmentManager();
-		    FragmentTransaction ft = fragmentManager.beginTransaction();
-
-		    // the last variable (group_name) is null because the user hasn't selected a group_by and
-		    // we display all the product results
-		    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(general_results, group_cost.get(0), this, 
-		    		(ViewGroup) findViewById(R.id.search_results_no_tabs), null);
-		    
-		    ft.add(R.id.fragment_frame, listFragment);
-		    ft.commit();
-		    
-		    //mDbHelper.close();
-        } 
-		else{
+			group_names.trimToSize();
+			group_cost.trimToSize();
 			
-			setContentView(R.layout.activity_search_results);
-
-			graph = (ImageButton)findViewById(R.id.graph_button);
-			graph.setOnClickListener(this);
-			
-			// the list of fragments to be displayed
-			List<Fragment> fragments =  getFragments();
-			
-			// Create the adapter that will return a fragment for each section of the search results.
-			mSectionsPagerAdapter = new SectionsPagerAdapter(
-					getSupportFragmentManager(), fragments);
+			// if there is no group_by
+			if (group_by.equals("") || group_names.size()==0) {
+				
+				// set the content view to "no tabs"
+				setContentView(R.layout.activity_search_results_no_tabs);
 	
-			// Set up the ViewPager with the sections adapter.
-			mViewPager = (ViewPager) findViewById(R.id.pager);
-
-			mViewPager.setAdapter(mSectionsPagerAdapter);
-			
-			//mDbHelper.close();
+				// set up the fragment manager and add a SearchResultsListFragment
+			    FragmentManager fragmentManager = getSupportFragmentManager();
+			    FragmentTransaction ft = fragmentManager.beginTransaction();
+	
+			    // the last variable (group_name) is null because the user hasn't selected a group_by and
+			    // we display all the product results
+			    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(general_results, group_cost.get(0), this, 
+			    		(ViewGroup) findViewById(R.id.search_results_no_tabs), null);
+			    
+			    ft.add(R.id.fragment_frame, listFragment);
+			    ft.commit();
+			    
+			    //mDbHelper.close();
+	        } 
+			else{
+				
+				setContentView(R.layout.activity_search_results);
+	
+				graph = (ImageButton)findViewById(R.id.graph_button);
+				graph.setOnClickListener(this);
+				
+				// the list of fragments to be displayed
+				List<Fragment> fragments =  getFragments();
+				
+				// Create the adapter that will return a fragment for each section of the search results.
+				mSectionsPagerAdapter = new SectionsPagerAdapter(
+						getSupportFragmentManager(), fragments);
+		
+				// Set up the ViewPager with the sections adapter.
+				mViewPager = (ViewPager) findViewById(R.id.pager);
+	
+				mViewPager.setAdapter(mSectionsPagerAdapter);
+				
+				//mDbHelper.close();
+			}
+		} catch (Exception e){
+			setContentView(R.layout.activity_search_results_no_tabs);
 		}
+		
 	}
 
 	/**
@@ -319,11 +324,6 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
     protected void onResume() {
     	super.onResume();
     	MyApplication.activityResumed();
-    	
-    	/*if (mDbHelper == null) {
-    		new FeedReaderDbHelper(this);
-    		db = mDbHelper.getWritableDatabase();
-    	}*/
     }
     
     @Override

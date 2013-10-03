@@ -21,6 +21,7 @@ import com.SR.data.Family;
 import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.FeedReaderDbHelper;
+import com.SR.data.Offer;
 import com.SR.data.User;
 import com.SR.processes.Functions;
 import com.SR.processes.MyApplication;
@@ -45,7 +46,7 @@ import com.SR.processes.UploadProductTask;
 /**
 * Activity that displays the budget addition screen
 * 
-* @author Παναγιώτης Κουτσαυτίκης 8100062, Vaggelis Marakis
+* @author Παναγιώτης Κουτσαυτίκης 8100062, Βαγγέλης Μαράκης 8100069, Γιάννης Διαμαντίδης 8100039
 */
 public class MainActivity extends Activity {
 
@@ -88,6 +89,12 @@ public class MainActivity extends Activity {
 		// if a user is logged in display the MainActivity
 		if (User.USER_ID != 0) {
 			setContentView(R.layout.activity_main);
+			
+			mDbHelper = new FeedReaderDbHelper(this);
+			db = mDbHelper.getWritableDatabase();
+			
+			Offer offer = new Offer(db);
+			offer.deleteEndedOffers(db);
 		}
 		//else display LoginActivity
 		else {
@@ -202,14 +209,13 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Offers link */
 	public void goToOffers(View view) {
-		Intent intent = new Intent(this, AddBudgetActivity.class);
-		startActivity(intent);
+		//to be implemented
 	}
 	
 	/** Called when the user clicks the Family link */
 	public void goToFamily(View view) {
-		Intent intent = new Intent(this, AddFamilyMemberActivity.class);
-		startActivity(intent);
+		//Intent intent = new Intent(this, AddFamilyMemberActivity.class);
+		//startActivity(intent);
 	}
 	
 	/** Called when the user clicks the List link */
@@ -220,8 +226,7 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Stores link */
 	public void goToStores(View view) {
-		Intent intent = new Intent(this, AddBudgetActivity.class);
-		startActivity(intent);
+		//to be implemented
 	}
 	
 	@Override

@@ -17,6 +17,12 @@
         android:textSize="22sp"
         android:textStyle="bold" />
     
+    <TextView 
+        android:id="@id/android:empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/no_results"/>
+    
 	<FrameLayout
 	    android:id="@+id/fragment_frame"
 	    android:layout_width="fill_parent"  

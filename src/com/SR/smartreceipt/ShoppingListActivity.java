@@ -6,6 +6,7 @@ import com.SR.data.FeedReaderContract.FeedList;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.List;
 import com.SR.data.User;
+import com.SR.processes.MyApplication;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -262,6 +263,21 @@ public class ShoppingListActivity extends ListActivity implements OnClickListene
 			}
 		}
 	}
+	
+	@Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }
 	
     /**
      * Custom adapter to bind list rows to cursor and 

@@ -35,17 +35,6 @@
     <string name="title_activity_list">Make a shopping list</string>
     <string name="heading_activity_list">Products list</string>
 
-    <!-- colors -->
-
-    <color name="light_blue">#59B6E5</color>
-    <color name="white_transparent">#80FFFFFF</color>
-    <color name="yellow">#EED377</color>
-    <color name="blue">#76B8F1</color>
-    <color name="light_green">#78EC7C</color>
-    <color name="brown">#A89672</color>
-    <color name="light_red">#DF2B00</color>
-    <color name="purple">#BE7DE8</color>
-
     <!-- Strings of activity_main -->
 
     <string name="link1">Save</string>

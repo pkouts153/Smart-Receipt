@@ -22,7 +22,7 @@ import com.SR.processes.RetrieveUserDataTask;
 /**
 * Activity that displays the login screen
 * 
-* @author Παναγιώτης Κουτσαυτίκης 8100062
+* @author Παναγιώτης Κουτσαυτίκης 8100062, Γιάννης Διαμαντίδης 8100039
 */
 public class LoginActivity extends FragmentActivity implements OnClickListener {
 
@@ -168,17 +168,19 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
 		password.getText().clear();
 	}
 	
-    @Override
+	@Override
     protected void onResume() {
     	super.onResume();
     	MyApplication.activityResumed();
-
     }
     
     @Override
     protected void onPause() {
     	super.onPause();
     	MyApplication.activityPaused();
-    }	
+    
+    	if (mDbHelper != null)
+    		mDbHelper.close();
+    }
 
 }

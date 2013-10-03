@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.User;
+import com.SR.processes.MyApplication;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,14 +70,22 @@ public class ChartActivity extends Activity {
 		
 		Bundle extras = getIntent().getExtras();
 		
-		// initialize the colors
-		COLORS = new int[6];
-		COLORS[0]=getResources().getColor(R.color.brown);
-		COLORS[1]=getResources().getColor(R.color.blue);
-		COLORS[2]=getResources().getColor(R.color.light_green);
-		COLORS[3]=getResources().getColor(R.color.yellow);
-		COLORS[4]=getResources().getColor(R.color.light_red);
-		COLORS[5]=getResources().getColor(R.color.purple);
+		// get all the color names from resources
+		Field[] fields = R.color.class.getFields();
+		String[] allColorNames = new String[fields.length];
+		for (int  i =0; i < fields.length; i++) {           
+			allColorNames[i] = fields[i].getName();
+		}
+
+		int resId;
+		
+		// initialize the colors with the names created above
+		// the colors for the pie chart in the resources are 6 at this point
+		COLORS = new int[allColorNames.length];
+		for (int  i =0; i < allColorNames.length; i++) { 
+			resId = getResources().getIdentifier(allColorNames[i], "color", this.getPackageName());
+			COLORS[i] = getResources().getColor(resId);
+		}
 		
 		groups_names = extras.getStringArrayList("groups names");
 		groups_costs = extras.getStringArrayList("groups costs");
@@ -212,7 +222,7 @@ public class ChartActivity extends Activity {
         private int[] COLORS;
         
         /** Holds the coordinates of the chart */
-        RectF rectf = new RectF (10, 10, 200, 200);
+        RectF rectf = new RectF (0, 0, 210, 210);
         
         int temp=0;
         
@@ -251,6 +261,21 @@ public class ChartActivity extends Activity {
                 }
             }
         }
+    }
+    
+	@Override
+    protected void onResume() {
+    	super.onResume();
+    	MyApplication.activityResumed();
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MyApplication.activityPaused();
+    
+    	if (mDbHelper != null)
+    		mDbHelper.close();
     }
 }
 

@@ -379,11 +379,6 @@ public class AddBudgetActivity extends FragmentActivity implements OnClickListen
     protected void onResume() {
     	super.onResume();
     	MyApplication.activityResumed();
-    	
-    	/*if (mDbHelper == null) {
-    		new FeedReaderDbHelper(this);
-    		db = mDbHelper.getWritableDatabase();
-    	}*/
     }
     
     @Override
