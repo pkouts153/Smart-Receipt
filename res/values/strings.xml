@@ -2,7 +2,6 @@
 <resources>
 
     <string name="preference_user_id">user_id</string>
-    <string name="users_products">users_products</string>
     <string name="app_name">Smart-Receipt</string>
     <string name="action_settings">Settings</string>
     <string name="action_overflow">Overflow</string>
@@ -15,42 +14,29 @@
     <string name="title_activity_budget">Control your budget</string>
     <string name="heading_activity_budget">Select your preferences</string>
     <string name="heading_activity_budget_list">Budget list</string>
-    
     <string name="title_activity_add_family">Unite the family</string>
     <string name="heading_add_family_member">Add a family member</string>
-    
     <string name="title_activity_save">Save your receipts</string>
     <string name="heading_activity_save">Fill in the fields</string>
-    
     <string name="title_activity_login">Login</string>
-    
     <string name="title_activity_search">Search your transactions</string>
     <string name="heading_search_selection">Search selection</string>
     <string name="heading_search_results">Search results</string>
     <string name="heading_search_diagrams">Search chart</string>
     <string name="title_search_results">Search results</string>
-    
     <string name="title_activity_map">Find associated stores</string>
-    
     <string name="title_activity_list">Make a shopping list</string>
     <string name="heading_activity_list">Products list</string>
 
     <!-- Strings of activity_main -->
 
-    <string name="link1">Save</string>
-    <string name="text1">your receipts</string>
-    <string name="text2">Control your</string>
-    <string name="link2">budget</string>
-    <string name="link3">Search</string>
-    <string name="text3">your transactions</string>
-    <string name="text4">Know the latest</string>
-    <string name="link4">offers</string>
-    <string name="text5">Unite the</string>
-    <string name="link5">family</string>
-    <string name="text6">Make a shopping</string>
-    <string name="link6">list</string>
-    <string name="text7">Find associated</string>
-    <string name="link7">stores</string>
+    <string name="main_save">Save your receipts</string>
+    <string name="main_budget">Control your budget</string>
+    <string name="main_search">Search your transactions</string>
+    <string name="main_offers">Know the latest offers</string>
+    <string name="main_family">Unite the family</string>
+    <string name="main_list">Make a shopping list</string>
+    <string name="main_stores">Find associated stores</string>
 
     <!-- Strings of activity_budget -->
 
@@ -105,9 +91,9 @@
     <string name="store_hint">store</string>
 
     <!-- Strings of activity_search -->
-    
+
     <string name="add_product_string">Product to be added</string>
-    
+
     <!-- Button strings -->
 
     <string name="submit">Submit</string>
@@ -140,9 +126,6 @@
     <string name="budget_save_error">There was an error during the saving of your budget! Please try again.</string>
     <string name="product_save_error">There was an error during the saving of your products! Please try again.</string>
     <string name="added">Your product has been added successfully!</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="no_results">There are no results for these data!</string>
 
 </resources>

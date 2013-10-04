@@ -17,9 +17,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.SR.data.Budget;
-import com.SR.data.Family;
-import com.SR.data.FeedReaderContract.FeedFamily;
-import com.SR.data.FeedReaderContract.FeedUser;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.Offer;
 import com.SR.data.User;

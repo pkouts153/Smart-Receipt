@@ -125,194 +125,83 @@
 		
 		</LinearLayout>
 		
-	    <LinearLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="@dimen/main_heights"
-		    android:orientation="horizontal"
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/main_heights"
+	        android:textSize="19sp"
+	        android:text="@string/main_save"
+	        android:clickable="true"
+		    android:paddingTop="@dimen/main_pading_top"
+		    android:paddingLeft="@dimen/drawable_horizontal_margin"
+		    android:paddingRight="@dimen/drawable_horizontal_margin"
+	        android:onClick="goToSave" />
+    			  
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/main_heights"
+	        android:textSize="19sp"
+	        android:text="@string/main_budget"
+	        android:clickable="true"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 		    android:paddingTop="@dimen/main_pading_top"
-		    tools:context=".MainActivity" >
-		    
-		    <TextView
-		        android:layout_width="50dp"
-		        android:layout_height="wrap_content"
-		        android:textSize="19sp"
-		        android:text="@string/link1"
-		        android:textStyle="italic"
-		        android:clickable="true"
-		        android:onClick="goToSave" />
-	    			    
-		    <TextView
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		        android:textSize="17sp"
-		        android:text="@string/text1" />
-		    
-	    </LinearLayout>
-	    	
-	    <LinearLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="@dimen/main_heights"
-		    android:orientation="horizontal"
-		    android:paddingLeft="@dimen/drawable_horizontal_margin"
-		    android:paddingRight="@dimen/drawable_horizontal_margin"
-		    android:paddingTop="@dimen/main_pading_top"
-		    tools:context=".MainActivity" >
-		
-		    <TextView
-		        android:layout_width="103dp"
-		        android:layout_height="wrap_content"
-		        android:textSize="17sp"
-		        android:text="@string/text2" />
-		    
-		    <TextView
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		        android:textSize="19sp"
-		        android:text="@string/link2"
-		        android:textStyle="italic"
-		        android:clickable="true"
-		        android:onClick="goToBudget" />
+	        android:onClick="goToBudget" />
 	    
-	    </LinearLayout>
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/main_heights"
+	        android:textSize="19sp"
+	        android:text="@string/main_search"
+	        android:clickable="true"
+		    android:paddingLeft="@dimen/drawable_horizontal_margin"
+		    android:paddingRight="@dimen/drawable_horizontal_margin"
+		    android:paddingTop="@dimen/main_pading_top"
+	        android:onClick="goToSearch" />
+	
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/main_heights"
+		    android:textSize="19sp"
+		    android:paddingLeft="@dimen/drawable_horizontal_margin"
+		    android:paddingRight="@dimen/drawable_horizontal_margin"
+		    android:paddingTop="@dimen/main_pading_top"
+	        android:text="@string/main_offers"
+	        android:clickable="true"
+	        android:onClick="goToOffers" />
 	    
-	    <LinearLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="@dimen/main_heights"
-		    android:orientation="horizontal"
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/main_heights"
+	        android:textSize="19sp"
+	        android:text="@string/main_family"
+	        android:clickable="true"  
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 		    android:paddingTop="@dimen/main_pading_top"
-		    tools:context=".MainActivity" >
-		    
-		    <TextView
-		        android:layout_width="68dp"
-		        android:layout_height="wrap_content"
-		        android:textSize="19sp"
-		        android:text="@string/link3"
-		        android:textStyle="italic"
-		        android:clickable="true"
-		        android:onClick="goToSearch" />
-		    
-		    <TextView
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		        android:text="@string/text3"
-		        android:textSize="17sp" />
-		    
-		</LinearLayout>
-		    
-		<LinearLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="@dimen/main_heights"
-		    android:orientation="horizontal"
+	        android:onClick="goToFamily" />
+		    	 
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/main_heights"
+	        android:textSize="19sp"
+	        android:text="@string/main_list"
+	        android:clickable="true"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 		    android:paddingTop="@dimen/main_pading_top"
-		    tools:context=".MainActivity" >
-		    
-		    <TextView
-		        android:layout_width="128dp"
-		        android:layout_height="wrap_content"
-		        android:text="@string/text4"
-		        android:textSize="17sp" />
-		    
-		    <TextView
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		        android:textSize="19sp"
-		        android:text="@string/link4"
-		        android:textStyle="italic"
-		        android:clickable="true"
-		        android:onClick="goToOffers" />
-		    
-		</LinearLayout>
-		    
-	    <LinearLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="@dimen/main_heights"
-		    android:orientation="horizontal"
-		    android:paddingLeft="@dimen/drawable_horizontal_margin"
-		    android:paddingRight="@dimen/drawable_horizontal_margin"
-		    android:paddingTop="@dimen/main_pading_top"
-		    tools:context=".MainActivity" >
-		    
-		    <TextView
-		        android:layout_width="78dp"
-		        android:layout_height="wrap_content"
-		        android:text="@string/text5"
-		        android:textSize="17sp" />
-		    
-		    <TextView
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		        android:textSize="19sp"
-		        android:text="@string/link5"
-		        android:textStyle="italic"
-		        android:clickable="true"
-		        android:onClick="goToFamily" />
-		    	   	
-		</LinearLayout>
+	        android:onClick="goToList" />
 		
-	    <LinearLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="@dimen/main_heights"
-		    android:orientation="horizontal"
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/main_heights"
+	        android:textSize="19sp"
+	        android:text="@string/main_stores"
+	        android:clickable="true"
 		    android:paddingLeft="@dimen/drawable_horizontal_margin"
 		    android:paddingRight="@dimen/drawable_horizontal_margin"
 		    android:paddingTop="@dimen/main_pading_top"
-		    tools:context=".MainActivity" >
-		    
-		    <TextView
-		        android:layout_width="142dp"
-		        android:layout_height="wrap_content"
-		        android:textSize="17sp"
-		        android:text="@string/text6" />
-		    
-		    <TextView
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		        android:textSize="19sp"
-		        android:text="@string/link6"
-		        android:textStyle="italic"
-		        android:clickable="true"
-		        android:onClick="goToList" />
-		    
-		</LinearLayout>
-		
-	    <LinearLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="@dimen/main_heights"
-		    android:orientation="horizontal"
-		    android:paddingLeft="@dimen/drawable_horizontal_margin"
-		    android:paddingRight="@dimen/drawable_horizontal_margin"
-		    android:paddingTop="@dimen/main_pading_top"
-		    tools:context=".MainActivity" >
-		    
-		    <TextView
-		        android:layout_width="132dp"
-		        android:layout_height="wrap_content"
-		        android:text="@string/text7"
-		        android:textSize="17sp" />
-		    
-		    <TextView
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		        android:textSize="19sp"
-		        android:text="@string/link7"
-		        android:textStyle="italic"
-		        android:clickable="true"
-		        android:onClick="goToStores" />
+	        android:onClick="goToStores" />
 		   			    
-		</LinearLayout>
 		
 	</LinearLayout>
 	
