@@ -17,10 +17,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
@@ -32,7 +35,7 @@ import android.support.v4.app.NavUtils;
  * @author Παναγιώτης Κουτσαυτίκης 8100062
  *
  */
-public class ChartActivity extends Activity {
+public class ChartActivity extends Activity implements OnClickListener{
    
 	/**
 	 * The cost of each group that specifies the group area on the pie chart
@@ -55,6 +58,7 @@ public class ChartActivity extends Activity {
     
     // UI component
     TextView total_cost;
+    ImageButton results;
     
     // the total cost that is displayed in the right upper corner
     float cost;
@@ -67,53 +71,60 @@ public class ChartActivity extends Activity {
 		setupActionBar();
 		getOverflowMenu();
 		
-		Bundle extras = getIntent().getExtras();
-		
-		// get all the color names from resources
-		Field[] fields = R.color.class.getFields();
-		String[] allColorNames = new String[fields.length];
-		for (int  i =0; i < fields.length; i++) {           
-			allColorNames[i] = fields[i].getName();
+		try{
+			results = (ImageButton)findViewById(R.id.results_button);
+			results.setOnClickListener(this);
+	
+			// get all the color names from resources
+			Field[] fields = R.color.class.getFields();
+			String[] allColorNames = new String[fields.length];
+			for (int  i =0; i < fields.length; i++) {           
+				allColorNames[i] = fields[i].getName();
+			}
+	
+			int resId;
+			
+			// initialize the colors with the names created above
+			// the colors for the pie chart in the resources are 6 at this point
+			COLORS = new int[allColorNames.length];
+			for (int  i =0; i < allColorNames.length; i++) { 
+				resId = getResources().getIdentifier(allColorNames[i], "color", this.getPackageName());
+				COLORS[i] = getResources().getColor(resId);
+			}
+			
+			Bundle extras = getIntent().getExtras();
+			
+			groups_names = extras.getStringArrayList("group_names");
+			groups_costs = extras.getStringArrayList("group_cost");
+	
+			// find the total cost and set it in the total cost textview
+			costs = new float[groups_costs.size()];
+	
+			for (int i=0; i<groups_costs.size(); i++){
+				costs[i] = Float.parseFloat(groups_costs.get(i));
+				cost += costs[i];
+			}
+	
+			total_cost = (TextView)findViewById(R.id.cost);
+			total_cost.setText("" + cost);
+			
+	        // create the frame with the group names and their costs
+			LinearLayout linear=(LinearLayout) findViewById(R.id.categories);
+			
+			for (int i=0; i<groups_names.size(); i++){
+				TextView group = new TextView(this);
+				group.setText(groups_names.get(i) + ": " + groups_costs.get(i) + "€");
+				group.setTextColor(COLORS[i]);
+				linear.addView(group);
+			}
+			
+			// create and add the pie chart
+			LinearLayout chart_activity=(LinearLayout) findViewById(R.id.chart_activity);
+	        costs=calculateData(costs);
+	        chart_activity.addView(new PieChart(this,costs,COLORS));
+		} catch (Exception e){
+			//setContentView(R.layout.activity_search_results_no_tabs);
 		}
-
-		int resId;
-		
-		// initialize the colors with the names created above
-		// the colors for the pie chart in the resources are 6 at this point
-		COLORS = new int[allColorNames.length];
-		for (int  i =0; i < allColorNames.length; i++) { 
-			resId = getResources().getIdentifier(allColorNames[i], "color", this.getPackageName());
-			COLORS[i] = getResources().getColor(resId);
-		}
-		
-		groups_names = extras.getStringArrayList("groups names");
-		groups_costs = extras.getStringArrayList("groups costs");
-		
-		// find the total cost and set it in the total cost textview
-		costs = new float[groups_costs.size()];
-		
-		for (int i=0; i<groups_costs.size(); i++){
-			costs[i] = Float.parseFloat(groups_costs.get(i));
-			cost += costs[i];
-		}
-		
-		total_cost = (TextView)findViewById(R.id.cost);
-		total_cost.setText("" + cost);
-		
-        // create the frame with the group names and their costs
-		LinearLayout linear=(LinearLayout) findViewById(R.id.categories);
-		
-		for (int i=0; i<groups_names.size(); i++){
-			TextView group = new TextView(this);
-			group.setText(groups_names.get(i) + ": " + groups_costs.get(i) + "€");
-			group.setTextColor(COLORS[i]);
-			linear.addView(group);
-		}
-		
-		// create and add the pie chart
-		LinearLayout chart_activity=(LinearLayout) findViewById(R.id.chart_activity);
-        costs=calculateData(costs);
-        chart_activity.addView(new PieChart(this,costs,COLORS));
 	}
 
 	/**
@@ -177,11 +188,8 @@ public class ChartActivity extends Activity {
 	    		startActivity(intent1);
 	            return true;
 			case android.R.id.home:
-				Intent upIntent = new Intent(this, SearchResultsActivity.class);
-				upIntent.putExtras(getIntent().getExtras());
 				// This action represents the Home or Up button which leads the user to the previous screen
-				NavUtils.navigateUpTo(this, upIntent);
-				
+				NavUtils.navigateUpFromSameTask(this);
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -204,6 +212,15 @@ public class ChartActivity extends Activity {
 	    }
 	}
 
+	@Override
+	public void onClick(View v) {
+		Intent intent = new Intent(this, SearchResultsActivity.class);
+		Bundle b = getIntent().getExtras();
+		b.putString("activity", "chart");
+		intent.putExtras(b);
+		startActivity(intent);
+	}
+	
 	/**
 	 * Class that represents a pie chart for the groups of the search results
 	 * 

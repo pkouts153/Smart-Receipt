@@ -1,6 +1,7 @@
 package com.SR.smartreceipt;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import com.SR.data.Category;
 import com.SR.data.FeedReaderDbHelper;
@@ -78,6 +79,22 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
      */
 	DatePickerFragment dateFragment;
 
+	// search results without separation of the groups
+	Cursor general_results;
+	
+	// the costs of the groups
+	Cursor costs;
+	
+	/**
+	 * Saves the group names depending on the group_by selection of the user for further manipulation
+	 */
+	ArrayList<String> group_names;
+	
+	/**
+	 * Saves the cost for each group or the total cost if there are no groups for further manipulation
+	 */
+	ArrayList<String> group_cost;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -307,6 +324,53 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 								group_by = "username";
 						}
 						
+						
+						mDbHelper = new FeedReaderDbHelper(this);
+						db = mDbHelper.getWritableDatabase();
+						
+						//get the product results for these data
+						searchHandler = new SearchHandler(db);
+						general_results = searchHandler.getSearchResults(product, category, mn_cost, mx_cost, start_date, end_date, store, family, group_by, null);
+						costs = searchHandler.getSums();
+						
+						group_names = new ArrayList<String>();
+						group_cost = new ArrayList<String>();
+						
+						// if the user has selected a group_by, then get the group_names for this group_by
+						if (!group_by.equals("") && general_results.getCount()>0){
+							
+							general_results.moveToFirst();
+							
+							String group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+							String group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+							
+							group_names.add(group_name);
+							
+							if (general_results.moveToNext()){
+							
+								while (!general_results.isAfterLast()){
+									group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+									if (!group_name1.equals(group_name)) {
+										group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
+										group_names.add(group_name);
+									}
+									general_results.moveToNext();
+								}
+							}
+						}
+						
+						// get the total cost for each group or the total cost if there is no group_by
+						if (costs.moveToFirst()){
+							
+							while (!costs.isAfterLast()){
+								group_cost.add(costs.getString(costs.getColumnIndexOrThrow("sum")));
+								costs.moveToNext();
+							}
+						}
+						
+						group_names.trimToSize();
+						group_cost.trimToSize();
+
 						// add the input data into a Bundle and call SearchResultsActivity
 						extras = new Bundle();
 						extras.putString("product", product);
@@ -318,10 +382,21 @@ public class SearchActivity extends FragmentActivity implements OnClickListener{
 						extras.putString("store", store);
 						extras.putString("family", family);
 						extras.putString("group_by", group_by);
+						extras.putStringArrayList("group_names", group_names);
+						extras.putStringArrayList("group_cost", group_cost);
 						
-						Intent intent = new Intent(this, SearchResultsActivity.class);
-						intent.putExtras(extras);
-						startActivity(intent);
+						if (group_by.equals("") || group_names.size()==0){
+							Intent intent = new Intent(this, SearchResultsActivity.class);
+							extras.putString("activity", "search");
+							intent.putExtras(extras);
+							startActivity(intent);
+						}
+						else {
+							Intent intent = new Intent(this, ChartActivity.class);
+							intent.putExtras(extras);
+							startActivity(intent);
+						}
+						
 					}
 				}
 				//else if the button that was clicked was reset

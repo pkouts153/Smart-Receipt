@@ -16,7 +16,7 @@
             android:background="#59B6E5"
             android:paddingLeft="95dp"
             android:paddingTop="@dimen/drawable_horizontal_margin"
-            android:text="@string/heading_activity_list"
+            android:text="@string/heading_search_results"
             android:textColor="#fff"
             android:textSize="22sp"
             android:textStyle="bold" />

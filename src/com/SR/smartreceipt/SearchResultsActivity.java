@@ -63,7 +63,8 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 	String store;
 	String family;
 	String group_by;
-
+	String activity;
+	
 	//data variables
 	User user;
 	SearchHandler searchHandler;
@@ -113,13 +114,16 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 			store = extras.getString("store");
 			family = extras.getString("family");
 			group_by = extras.getString("group_by");
+			group_names = extras.getStringArrayList("group_names");
+			group_cost = extras.getStringArrayList("group_cost");
+			activity = extras.getString("activity");
 			
 			mDbHelper = new FeedReaderDbHelper(this);
 			db = mDbHelper.getWritableDatabase();
 			
 			//get the product results for these data
 			searchHandler = new SearchHandler(db);
-			general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
+			/*general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
 			costs = searchHandler.getSums();
 			
 			group_names = new ArrayList<String>();
@@ -158,10 +162,10 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 			}
 			
 			group_names.trimToSize();
-			group_cost.trimToSize();
+			group_cost.trimToSize();*/
 			
 			// if there is no group_by
-			if (group_by.equals("") || group_names.size()==0) {
+			if (activity.equals("search")) {
 				
 				// set the content view to "no tabs"
 				setContentView(R.layout.activity_search_results_no_tabs);
@@ -169,7 +173,9 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 				// set up the fragment manager and add a SearchResultsListFragment
 			    FragmentManager fragmentManager = getSupportFragmentManager();
 			    FragmentTransaction ft = fragmentManager.beginTransaction();
-	
+			    
+			    general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
+				
 			    // the last variable (group_name) is null because the user hasn't selected a group_by and
 			    // we display all the product results
 			    SearchResultsListFragment listFragment = SearchResultsListFragment.newInstance(general_results, group_cost.get(0), this, 
