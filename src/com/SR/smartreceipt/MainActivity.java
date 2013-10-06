@@ -198,7 +198,8 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Offers link */
 	public void goToOffers(View view) {
-		//to be implemented
+		Intent intent = new Intent(this, OffersActivity.class);
+		startActivity(intent);
 	}
 	
 	/** Called when the user clicks the Family link */
@@ -237,12 +238,12 @@ public class MainActivity extends Activity {
     protected void onStop() {
         super.onStop();
 	      
-        if(!(MyApplication.isActivityVisible())){
+        //if(!(MyApplication.isActivityVisible())){
 			/*to check if wifi connection exists, the following code in comments should be used
 			 * but because this emulator does not support wifi connection, i check if Mobile connection exists
 			 * if(new Functions().isWifiConnected(this)){
 			 * */
-			if(new Functions().isMobileConnected(this)){	
+			/*if(new Functions().isMobileConnected(this)){	
 				
 				FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
 				SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -270,7 +271,7 @@ public class MainActivity extends Activity {
 	      		new RetrieveFamilyUserDataTask().execute(db);			
 	      		new RetrieveFamilyProductsTask().execute(db);
 			}
-        }
+        }*/
     }
 	
 }

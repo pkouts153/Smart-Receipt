@@ -145,6 +145,13 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		" UNION SELECT '4', 'Public', 'Mall', '444', '2013-09-26 00:00:00'" +
 		" UNION SELECT '5', 'Zara', 'Mall', '555', '2013-09-26 00:00:00'";
 
+	private static final String SQL_ADD_OFFER =
+		    "INSERT INTO '" + FeedOffer.TABLE_NAME + "'" +
+	        " SELECT '1' AS '" + FeedOffer._ID + "', 'Coffee' AS '" + FeedOffer.PRODUCT_NAME + 
+	        				"', 'Food' AS '" + FeedOffer.CATEGORY + "', '3' AS '" + FeedOffer.PRICE + "', " +
+	        				"'2' AS '" + FeedOffer.DISCOUNT + "', '2013-10-20' AS '" + FeedOffer.UNTIL_DATE + "', " +
+	        				"'3' AS '" + FeedOffer.STORE + "', '2013-09-26 00:00:00' AS '" + FeedOffer.OFFER_CREATED + "'" +
+			" UNION SELECT '2', 'Inferno', 'Entertainment', '22', '15', '2013-10-25', '4', '2013-09-26 00:00:00'";
 	
 	private static final String SQL_ADD_FAMILY =
 	    "INSERT INTO '" + FeedFamily.TABLE_NAME + "'" +
@@ -182,6 +189,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_ADD_USER);
 		db.execSQL(SQL_ADD_STORE);
 		db.execSQL(SQL_ADD_FAMILY);
+		db.execSQL(SQL_ADD_OFFER);
 	
 	}
 

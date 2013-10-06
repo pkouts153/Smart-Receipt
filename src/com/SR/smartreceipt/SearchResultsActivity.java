@@ -102,7 +102,7 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 		getOverflowMenu();
 		
 		try{
-			//get the data from SearchActivity
+			//get the data from SearchActivity or ChartActivity
 			extras = getIntent().getExtras();
 			
 			product = extras.getString("product");
@@ -121,48 +121,7 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 			mDbHelper = new FeedReaderDbHelper(this);
 			db = mDbHelper.getWritableDatabase();
 			
-			//get the product results for these data
 			searchHandler = new SearchHandler(db);
-			/*general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
-			costs = searchHandler.getSums();
-			
-			group_names = new ArrayList<String>();
-			group_cost = new ArrayList<String>();
-			
-			// if the user has selected a group_by, then get the group_names for this group_by
-			if (!group_by.equals("")){
-				
-				general_results.moveToFirst();
-				
-				String group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
-				String group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
-				
-				group_names.add(group_name);
-				
-				if (general_results.moveToNext()){
-				
-					while (!general_results.isAfterLast()){
-						group_name1 = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
-						if (!group_name1.equals(group_name)) {
-							group_name = general_results.getString(general_results.getColumnIndexOrThrow(group_by));
-							group_names.add(group_name);
-						}
-						general_results.moveToNext();
-					}
-				}
-			}
-			
-			// get the total cost for each group or the total cost if there is no group_by
-			if (costs.moveToFirst()){
-				
-				while (!costs.isAfterLast()){
-					group_cost.add(costs.getString(costs.getColumnIndexOrThrow("sum")));
-					costs.moveToNext();
-				}
-			}
-			
-			group_names.trimToSize();
-			group_cost.trimToSize();*/
 			
 			// if there is no group_by
 			if (activity.equals("search")) {
@@ -173,7 +132,8 @@ public class SearchResultsActivity extends FragmentActivity implements OnClickLi
 				// set up the fragment manager and add a SearchResultsListFragment
 			    FragmentManager fragmentManager = getSupportFragmentManager();
 			    FragmentTransaction ft = fragmentManager.beginTransaction();
-			    
+
+				//get the product results for these data
 			    general_results = searchHandler.getSearchResults(product, category, min_cost, max_cost, start_date, end_date, store, family, group_by, null);
 				
 			    // the last variable (group_name) is null because the user hasn't selected a group_by and

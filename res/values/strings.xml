@@ -94,6 +94,11 @@
 
     <string name="add_product_string">Product to be added</string>
 
+    <!-- Strings of activity_offers -->
+
+    <string name="discount_hint">discount</string>
+    <string name="until_date_hint">expiration date</string>
+    
     <!-- Button strings -->
 
     <string name="submit">Submit</string>
@@ -127,5 +132,8 @@
     <string name="product_save_error">There was an error during the saving of your products! Please try again.</string>
     <string name="added">Your product has been added successfully!</string>
     <string name="no_results">There are no results for these data!</string>
+    <string name="title_activity_offers">OffersActivity</string>
+    <string name="title_offers_categories">Categories</string>
+    <string name="title_offers_stores">Stores</string>
 
 </resources>

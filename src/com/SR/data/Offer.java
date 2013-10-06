@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.SR.data.FeedReaderContract.FeedOffer;
+import com.SR.data.FeedReaderContract.FeedStore;
 import com.SR.processes.Functions;
 
 public class Offer {
@@ -23,25 +24,33 @@ public class Offer {
     	db = database;
     }
     
-    public Cursor getOffers(){
+    public Cursor getOffersByCategory(String category){
 
 		// Specifies which columns are needed from the database
 		String[] projection = {
-			FeedOffer._ID,	
+			FeedOffer.TABLE_NAME + "." + FeedOffer._ID,	
 			FeedOffer.PRODUCT_NAME,
-			FeedOffer.CATEGORY,
 			FeedOffer.PRICE,
 			FeedOffer.DISCOUNT,
 			FeedOffer.UNTIL_DATE,
-			FeedOffer.STORE
+			FeedStore.NAME,
+			FeedOffer.CATEGORY
 		    };
 		
+		String where = FeedStore.NAME + "!='Unknown store' AND " + 
+				FeedStore.TABLE_NAME + "." + FeedStore._ID + " IN (SELECT " + FeedOffer.STORE + " FROM " + FeedOffer.TABLE_NAME + ")";
+		
+		if (category!=null)
+			where = where + " AND " + FeedOffer.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID + " AND " + FeedOffer.CATEGORY + "='" + category +"'";
+		
+		String group_by = "" + FeedOffer.CATEGORY;
+		
 		c = db.query(
-			FeedOffer.TABLE_NAME,  				  // The table to query
+			FeedOffer.TABLE_NAME + ", " + FeedStore.TABLE_NAME,  				      // The table to query
 		    projection,                               // The columns to return
-		    null,                                	  // The columns for the WHERE clause
+		    where,                                	  // The columns for the WHERE clause
 		    null,                            		  // The values for the WHERE clause
-		    null,                                     // don't group the rows
+		    group_by,                                 // don't group the rows
 		    null,                                     // don't filter by row groups
 		    null                                 	  // The sort order
 		    );
@@ -49,7 +58,41 @@ public class Offer {
 		return c;
     }
     
-
+    public Cursor getOffersByStore(String store){
+    	
+		// Specifies which columns are needed from the database
+		String[] projection = {
+			FeedOffer.TABLE_NAME + "." + FeedOffer._ID,	
+			FeedOffer.PRODUCT_NAME,
+			FeedOffer.PRICE,
+			FeedOffer.DISCOUNT,
+			FeedOffer.UNTIL_DATE,
+			FeedOffer.CATEGORY,
+			FeedStore.NAME
+		    };
+		
+		String where = FeedStore.NAME + "!='Unknown store' AND " + 
+				FeedStore.TABLE_NAME + "." + FeedStore._ID + " IN (SELECT " + FeedOffer.STORE + " FROM " + FeedOffer.TABLE_NAME + ")";
+		
+		if (store!=null)
+			where = where + " AND " + FeedOffer.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID + 
+					" AND " + FeedStore.NAME + "='" + store + "'";
+		
+		String group_by = "" + FeedStore.NAME;
+		
+		c = db.query(
+			FeedOffer.TABLE_NAME + ", " + FeedStore.TABLE_NAME,  // The table to query
+		    projection,                               // The columns to return
+		    where,                                	  // The columns for the WHERE clause
+		    null,                            		  // The values for the WHERE clause
+		    group_by,                                 // don't group the rows
+		    null,                                     // don't filter by row groups
+		    null                                 	  // The sort order
+		    );
+		
+		return c;
+    }
+    
     
     
 /**
