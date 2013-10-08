@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -63,6 +65,10 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
 	ImageButton delete;
 	Button add_budget;
 	
+	private ProgressBar remaining;
+    private int remainingStatus = 0;
+    private Handler mHandler = new Handler();
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -338,18 +344,46 @@ public class BudgetListActivity extends ListActivity implements OnClickListener{
                 mView = vi.inflate(id, null);
             }
         	
-        	TextView budget_category = (TextView)mView.findViewById(R.id.exp_category);
-        	
-    		if (cursor.moveToPosition(position)){
-    			if (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==1)
-    				budget_category.setTextColor(getResources().getColor(R.color.e_yellow));
-    			
+        	if (cursor.moveToPosition(position)){
+        		
+	        	remaining = (ProgressBar) mView.findViewById(R.id.remaining);
+	        	
+	    		remaining.setMax(cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT)));
+	
+	    		float remaining_budget = findRemainingBudget(cursor.getString(cursor.getColumnIndexOrThrow(FeedBudget.START_DATE)), 
+						cursor.getString(cursor.getColumnIndexOrThrow(FeedBudget.END_DATE)),
+						cursor.getString(cursor.getColumnIndexOrThrow(FeedBudget.EXPENSE_CATEGORY)));
+	    		
+	    		remainingStatus = Math.round(remaining_budget);
+	    		
+	    		remaining.setProgress(remainingStatus);
+	    		
+	        	TextView rest_budget = (TextView)mView.findViewById(R.id.rest_budget);
+	        	rest_budget.setText("" + (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.SPEND_LIMIT))-remaining_budget));
+	        	
+    			if (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==0)
+    				//budget_category.setTextColor(getResources().getColor(R.color.e_yellow));
+    				remaining.setProgressDrawable(getResources().getDrawable(R.drawable.progress_color_green));
     			else if (cursor.getInt(cursor.getColumnIndexOrThrow(FeedBudget.IS_SURPASSED))==2)
-    				budget_category.setTextColor(Color.RED);
-    			
+    				//budget_category.setTextColor(Color.RED);
+    				remaining.setProgressDrawable(getResources().getDrawable(R.drawable.progress_color_red));
+	    			
     		}
     		bindView(mView, context, cursor);
 			return mView;
+        }
+        
+        public float findRemainingBudget(String s_date, String e_date, String category){
+        	float rest = 0;
+        	
+        	mDbHelper = new FeedReaderDbHelper(BudgetListActivity.this);
+    		db = mDbHelper.getWritableDatabase();
+    		
+        	budget = new Budget(db);
+        	
+        	rest = budget.getRemainingOfBudget(s_date, e_date, category);
+        	
+        	return rest;
         }
     }
 }

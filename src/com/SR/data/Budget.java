@@ -181,7 +181,23 @@ public class Budget {
     	return surpassed;
     }
 
-    
+    public float getRemainingOfBudget(String start_date, String end_date, String category){
+    	
+    	String productQuery = "SELECT SUM(" + FeedProduct.PRICE + ") AS sum" + 
+			   	   " FROM " + FeedProduct.TABLE_NAME +
+				   " WHERE " + FeedProduct.USER + "=" + User.USER_ID +
+				   " AND " + FeedProduct.PURCHASE_DATE + " BETWEEN Date('" + start_date + "')" +
+				   " AND Date('" + end_date + "')";
+
+		if (!category.equals("All"))
+		productQuery = productQuery +" AND " + FeedProduct.PRODUCT_CATEGORY + "='" + category + "'";
+		
+		
+		c1 = db.rawQuery(productQuery, null);
+		
+		c1.moveToFirst();
+		return c1.getFloat(c1.getColumnIndexOrThrow("sum"));
+    }
     
     
     /**

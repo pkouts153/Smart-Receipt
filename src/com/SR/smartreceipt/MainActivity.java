@@ -85,6 +85,8 @@ public class MainActivity extends Activity {
 			
 			Offer offer = new Offer(db);
 			offer.deleteEndedOffers(db);
+			
+			mDbHelper.close();
 		}
 		//else display LoginActivity
 		else {
