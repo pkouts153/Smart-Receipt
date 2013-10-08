@@ -1,6 +1,5 @@
 package com.SR.smartreceipt;
 
-import java.lang.reflect.Field;
 import java.util.Locale;
 
 import com.SR.data.FeedReaderDbHelper;
@@ -19,7 +18,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewConfiguration;
 
 public class OffersActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -128,23 +126,6 @@ public class OffersActivity extends FragmentActivity implements
 	    }
 	}
 	
-	/**
-	 * Set up the Overflow menu.
-	 */
-	private void getOverflowMenu() {
-
-	     try {
-	        ViewConfiguration config = ViewConfiguration.get(this);
-	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-	        if(menuKeyField != null) {
-	            menuKeyField.setAccessible(true);
-	            menuKeyField.setBoolean(config, false);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
-	
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -205,32 +186,5 @@ public class OffersActivity extends FragmentActivity implements
 			return null;
 		}
 	}
-
-	/**
-	 * A dummy fragment representing a section of the app, but that simply
-	 * displays dummy text.
-	 */
-	//public static class DummySectionFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		/*public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_offers,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}*/
 
 }

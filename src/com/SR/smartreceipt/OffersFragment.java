@@ -1,39 +1,23 @@
 package com.SR.smartreceipt;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.SR.data.FeedReaderContract.FeedOffer;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.Offer;
-import com.SR.data.SearchHandler;
 import com.SR.data.User;
-import com.SR.processes.MyApplication;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 /**
 * Activity that displays the search results screen
@@ -100,9 +84,6 @@ public class OffersFragment extends Fragment{
 			c = offer.getOffersByCategory(null);
 		else
 			c = offer.getOffersByStore(null);
-		
-		while (c.moveToNext())
-			Log.w("", "" +c.getInt(c.getColumnIndexOrThrow(FeedOffer._ID)));
 		
 		List<Fragment> fragments =  getFragments(c, section_number);
 		

@@ -124,34 +124,44 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	    " SELECT NULL AS '" + FeedCategory._ID + "', '" + "All" + "' AS '" + FeedCategory.NAME + "', '2013-09-26 00:00:00' AS '" + FeedCategory.CATEGORY_CREATED + "'" +
 	    " UNION SELECT NULL, '" + "Food" + "', '2013-09-26 00:00:00'" +
 	    " UNION SELECT NULL, '" + "Entertainment" + "', '2013-09-26 00:00:00'" +
-	    " UNION SELECT NULL, '" + "Clothes" + "', '2013-09-26 00:00:00'";
+	    " UNION SELECT NULL, '" + "Clothes" + "', '2013-09-26 00:00:00'" +
+	    " UNION SELECT NULL, '" + "Appliances" + "', '2013-09-26 00:00:00'";
 	
 	private static final String SQL_ADD_USER =
 	    "INSERT INTO '" + FeedUser.TABLE_NAME + "'" +
 	    " SELECT NULL AS '" + FeedUser._ID + "', 'Vag' AS '" + FeedUser.USERNAME + "', " + 
-	    		"'Vag' AS '" + FeedUser.PASSWORD + "', 'Vag@example.com' AS '" + FeedUser.EMAIL + "', " +
+	    		"'vaggelis' AS '" + FeedUser.PASSWORD + "', 'vaggelis@example.com' AS '" + FeedUser.EMAIL + "', " +
 	    		"'0' AS '" + FeedUser.FOR_UPDATE + "', '1' AS '" + FeedUser.FROM_SERVER + "', " + "" +
 	    		"'2013-09-26 00:00:00' AS '" + FeedUser.USER_CREATED + "'" +
-		" UNION SELECT NULL, 'Panos', 'Panos', 'Panos@example.com', '0', '1', '2013-09-26 00:00:00'" +
-		" UNION SELECT NULL, 'Giannis', 'Giannis', 'Giannis@example.com', '0', '1', '2013-09-26 00:00:00'" +
+		" UNION SELECT NULL, 'panagiotis', 'panos', 'panagiotis@example.com', '0', '1', '2013-09-26 00:00:00'" +
+		" UNION SELECT NULL, 'giannis', 'giannis', 'giannis@example.com', '0', '1', '2013-09-26 00:00:00'" +
 		" UNION SELECT NULL, 'user', 'user', 'user@example.com', '0', '1', '2013-09-26 00:00:00'";
 
 	private static final String SQL_ADD_STORE =
 	    "INSERT INTO '" + FeedStore.TABLE_NAME + "'" +
         " SELECT '1' AS '" + FeedStore._ID + "', 'Unknown store' AS '" + FeedStore.NAME + 
         				"', 'Unknown' AS '" + FeedStore.ADDRESS + "', 'Unknown' AS '" + FeedStore.VAT_NUMBER + "', '2013-09-26 00:00:00' AS '" + FeedStore.STORE_CREATED + "'" +
-		" UNION SELECT '2', 'Nike', 'Syntagma', '222', '2013-09-26 00:00:00'" +
-		" UNION SELECT '3', 'Everest', 'Victoria', '333', '2013-09-26 00:00:00'" +
-		" UNION SELECT '4', 'Public', 'Mall', '444', '2013-09-26 00:00:00'" +
-		" UNION SELECT '5', 'Zara', 'Mall', '555', '2013-09-26 00:00:00'";
+		" UNION SELECT '2', 'Nike', 'Syntagma', '222222222', '2013-09-26 00:00:00'" +
+		" UNION SELECT '3', 'Everest', 'Victoria', '333333333', '2013-09-26 00:00:00'" +
+		" UNION SELECT '4', 'Public', 'Mall', '444444444', '2013-09-26 00:00:00'" +
+		" UNION SELECT '5', 'Zara', 'Mall', '555555555', '2013-09-26 00:00:00'" +
+		" UNION SELECT '6', 'Carrefour', 'Ampelokopi', '666666666', '2013-09-26 00:00:00'";
 
 	private static final String SQL_ADD_OFFER =
 		    "INSERT INTO '" + FeedOffer.TABLE_NAME + "'" +
-	        " SELECT '1' AS '" + FeedOffer._ID + "', 'Coffee' AS '" + FeedOffer.PRODUCT_NAME + 
-	        				"', 'Food' AS '" + FeedOffer.CATEGORY + "', '3' AS '" + FeedOffer.PRICE + "', " +
-	        				"'2' AS '" + FeedOffer.DISCOUNT + "', '2013-10-20' AS '" + FeedOffer.UNTIL_DATE + "', " +
-	        				"'3' AS '" + FeedOffer.STORE + "', '2013-09-26 00:00:00' AS '" + FeedOffer.OFFER_CREATED + "'" +
-			" UNION SELECT '2', 'Inferno', 'Entertainment', '22', '15', '2013-10-25', '4', '2013-09-26 00:00:00'";
+	        " SELECT '1' AS '" + FeedOffer._ID + "', 'Freddo Espresso' AS '" + FeedOffer.PRODUCT_NAME + 
+	        				"', 'Food' AS '" + FeedOffer.CATEGORY + "', '1.5' AS '" + FeedOffer.PRICE + "', " +
+	        				"'1' AS '" + FeedOffer.DISCOUNT + "', '2013-10-20' AS '" + FeedOffer.UNTIL_DATE + "', " +
+	        				"'3' AS '" + FeedOffer.STORE + "', '2013-10-26 00:00:00' AS '" + FeedOffer.OFFER_CREATED + "'" +
+			" UNION SELECT '2', 'Sandwitch', 'Food', '3.50', '2.80', '2013-10-28', '3', '2013-09-26 00:00:00'" + 
+			" UNION SELECT '3', 'Papadopoulou cookies', 'Food', '1.08', '0.70', '2013-11-08', '6', '2013-09-26 00:00:00'" + 
+			" UNION SELECT '4', 'Basketball shorts', 'Clothes', '45', '30', '2013-10-25', '2', '2013-09-26 00:00:00'" +
+			" UNION SELECT '5', '-', 'Clothes', '-', '30%', '2013-10-15', '5', '2013-09-26 00:00:00'" +
+			" UNION SELECT '6', 'Jean', 'Clothes', '29.99', '20', '2013-11-02', '5', '2013-09-26 00:00:00'" +
+			" UNION SELECT '7', 'T-shirts', 'Clothes', '-', '9.99', '2013-10-22', '5', '2013-09-26 00:00:00'" +
+			" UNION SELECT '8', 'Godfather trilogy blu-ray', 'Entertainment', '30', '20', '2013-10-19', '4', '2013-09-26 00:00:00'" +
+			" UNION SELECT '10', 'The idiot - F.Dostoevsky', 'Entertainment', '14.99', '9.99', '2013-10-17', '4', '2013-09-26 00:00:00'" +
+			" UNION SELECT '9', 'Samsung PS51F4500', 'Appliances', '590', '565', '2013-10-28', '4', '2013-09-26 00:00:00'";
 	
 	private static final String SQL_ADD_FAMILY =
 	    "INSERT INTO '" + FeedFamily.TABLE_NAME + "'" +
@@ -163,12 +173,11 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 	    		"'1' AS '" + FeedFamily.ON_SERVER + "', " +
 	    		"'0' AS '" + FeedFamily.FOR_UPDATE + "', " +
 	    		"'2013-09-26 00:00:00' AS '" + FeedFamily.FAMILY_CREATED + "'" +
-	    " UNION SELECT NULL, '3', '2', '1', '0', '0', '0', '2013-09-26 00:00:00'" +
-	    " UNION SELECT NULL, '4', '1', '1', '0', '0', '0', '2013-09-26 00:00:00'" +
-	    " UNION SELECT NULL, '4', '3', '1', '0', '0', '0', '2013-09-26 00:00:00'";
+	    " UNION SELECT NULL, '3', '2', '1', '0', '1', '0', '2013-09-26 00:00:00'" +
+	    " UNION SELECT NULL, '4', '1', '1', '0', '1', '0', '2013-09-26 00:00:00'" +
+	    " UNION SELECT NULL, '4', '3', '1', '0', '1', '0', '2013-09-26 00:00:00'";
 		
 
-	
     public FeedReaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }

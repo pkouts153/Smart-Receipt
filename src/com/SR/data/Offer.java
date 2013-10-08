@@ -37,20 +37,17 @@ public class Offer {
 			FeedOffer.CATEGORY
 		    };
 		
-		String where = FeedStore.NAME + "!='Unknown store' AND " + 
-				FeedStore.TABLE_NAME + "." + FeedStore._ID + " IN (SELECT " + FeedOffer.STORE + " FROM " + FeedOffer.TABLE_NAME + ")";
-		
+		String where = FeedOffer.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID;
+				
 		if (category!=null)
-			where = where + " AND " + FeedOffer.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID + " AND " + FeedOffer.CATEGORY + "='" + category +"'";
-		
-		String group_by = "" + FeedOffer.CATEGORY;
+			where = where + " AND " + FeedOffer.CATEGORY + "='" + category +"'";
 		
 		c = db.query(
 			FeedOffer.TABLE_NAME + ", " + FeedStore.TABLE_NAME,  				      // The table to query
 		    projection,                               // The columns to return
 		    where,                                	  // The columns for the WHERE clause
 		    null,                            		  // The values for the WHERE clause
-		    group_by,                                 // don't group the rows
+		    null,                                 // don't group the rows
 		    null,                                     // don't filter by row groups
 		    null                                 	  // The sort order
 		    );
@@ -71,25 +68,21 @@ public class Offer {
 			FeedStore.NAME
 		    };
 		
-		String where = FeedStore.NAME + "!='Unknown store' AND " + 
-				FeedStore.TABLE_NAME + "." + FeedStore._ID + " IN (SELECT " + FeedOffer.STORE + " FROM " + FeedOffer.TABLE_NAME + ")";
+		String where = FeedOffer.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID;
 		
 		if (store!=null)
-			where = where + " AND " + FeedOffer.STORE + "=" + FeedStore.TABLE_NAME + "." + FeedStore._ID + 
-					" AND " + FeedStore.NAME + "='" + store + "'";
-		
-		String group_by = "" + FeedStore.NAME;
+			where = where + " AND " + FeedStore.NAME + "='" + store + "'";
 		
 		c = db.query(
 			FeedOffer.TABLE_NAME + ", " + FeedStore.TABLE_NAME,  // The table to query
 		    projection,                               // The columns to return
 		    where,                                	  // The columns for the WHERE clause
 		    null,                            		  // The values for the WHERE clause
-		    group_by,                                 // don't group the rows
+		    null,                                 // don't group the rows
 		    null,                                     // don't filter by row groups
 		    null                                 	  // The sort order
 		    );
-		
+    	
 		return c;
     }
     
