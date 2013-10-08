@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.SR.data.Budget;
+import com.SR.data.Family;
 import com.SR.data.FeedReaderDbHelper;
 import com.SR.data.Offer;
 import com.SR.data.User;
@@ -204,8 +205,23 @@ public class MainActivity extends Activity {
 	
 	/** Called when the user clicks the Family link */
 	public void goToFamily(View view) {
-		//Intent intent = new Intent(this, AddFamilyMemberActivity.class);
-		//startActivity(intent);
+		mDbHelper = new FeedReaderDbHelper(this);
+		db = mDbHelper.getWritableDatabase();
+		
+		Cursor c =	new Family().fetchFamily(db);
+		
+		if (c!=null && c.getCount()>0){
+			mDbHelper.close();
+			Intent intent = new Intent(this, FamilyListActivity.class);
+			startActivity(intent);
+		}
+		else{
+			mDbHelper.close();
+			Intent intent = new Intent(this, AddFamilyActivity.class);
+			intent.putExtra("Activity", "Main");
+			startActivity(intent);
+		}
+
 	}
 	
 	/** Called when the user clicks the List link */

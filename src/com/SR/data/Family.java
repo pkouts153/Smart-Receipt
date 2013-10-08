@@ -10,9 +10,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.SR.data.FeedReaderContract.FeedBudget;
 import com.SR.data.FeedReaderContract.FeedFamily;
 import com.SR.data.FeedReaderContract.FeedProduct;
 import com.SR.data.FeedReaderContract.FeedUser;
@@ -25,6 +27,34 @@ import com.SR.data.FeedReaderContract.FeedUser;
 
 public class Family {
 
+	SQLiteDatabase db;
+    Cursor c;
+    
+    /**
+    * Product constructor 
+    * 
+    * @param database   saves the database object, that was passed from the Activity, 
+    * 					in the database object of the class for use in the methods
+    */
+	public Family(SQLiteDatabase database) {
+		db = database;
+	}
+	
+	
+	public boolean deleteFamilyMember(int id){
+		
+		ContentValues values = new ContentValues();
+		values.put(FeedFamily.FOR_DELETION, 1);
+		return db.update(FeedFamily.TABLE_NAME, values, FeedFamily._ID + "=" + id, null) > 0;
+		
+	}
+	
+	
+	
+    public Family() {
+    	
+	}
+	
 	/*this method returns maximum value of id in the family table for the family records of this user.
 	 * The records created from an other user of this phone are excluded
 	 */
@@ -327,4 +357,17 @@ public class Family {
 				"VALUES (NULL,'"+member1+"','"+member2+"','"+confirmed+"','"+created+"','"+forDeletion+"', '"+forUpdate+"', '"+onServer+"')");
 		
 	}
+	
+	
+	public Cursor fetchFamily(SQLiteDatabase db){
+		
+		String[] params = {String.valueOf(User.USER_ID), "1", String.valueOf(User.USER_ID),"1"};	
+		Cursor result = db.rawQuery("SELECT "+FeedUser.TABLE_NAME+"."+FeedUser._ID+","+FeedUser.USERNAME+"  FROM "+FeedUser.TABLE_NAME+
+						" WHERE ("+FeedUser.TABLE_NAME+"."+FeedUser._ID+" IN (SELECT "+FeedFamily.MEMBER2+" FROM "+FeedFamily.TABLE_NAME+
+																			" WHERE "+FeedFamily.MEMBER1+"= ? AND "+FeedFamily.CONFIRMED+"=? AND "+FeedFamily.FOR_DELETION +"=0))" +
+							"OR ("+FeedUser.TABLE_NAME+"."+FeedUser._ID+" IN (SELECT "+FeedFamily.MEMBER1+" FROM "+FeedFamily.TABLE_NAME+
+																			" WHERE "+FeedFamily.MEMBER2+"= ? AND "+FeedFamily.CONFIRMED+"=? AND "+FeedFamily.FOR_DELETION +"=0))", params);
+		return result;
+	}
+
 }

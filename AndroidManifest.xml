@@ -113,6 +113,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.SR.smartreceipt.MainActivity" />
         </activity>
+        <activity
+            android:name="com.SR.smartreceipt.FamilyListActivity"
+            android:label="@string/title_activity_add_family"
+            android:parentActivityName="com.SR.smartreceipt.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.SR.smartreceipt.AddFamilyActivity"
+            android:label="@string/title_activity_add_family"
+            android:parentActivityName="com.SR.smartreceipt.FamilyListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.SR.smartreceipt.FamilyListActivity" />
+        </activity>
     </application>
 
 </manifest>

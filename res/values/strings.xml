@@ -99,6 +99,12 @@
     <string name="discount_hint">discount</string>
     <string name="until_date_hint">expiration date</string>
     
+    <!-- Strings of activity_family -->
+    
+    <string name="member2_email">Please insert the email of the member you want to add to your family</string>
+    <string name="heading_activity_family_list">Current Family Members</string>
+    <string name="add_family">Add Family</string>
+    
     <!-- Button strings -->
 
     <string name="submit">Submit</string>
